@@ -312,7 +312,7 @@
 p.product a .gizli {
     display: none;
     position: absolute;
-    left: 100px;
+    left: 175px;
     top: -20px;
 }
 
@@ -327,6 +327,8 @@ p.product a {
 
     p.product a:hover .gizli {
         display: inherit;
+        width: 500px;
+        height: 500px;
     }
 
 .fl-table a {
@@ -334,6 +336,7 @@ p.product a {
     color: gray;
     font-weight: lighter;
 }
-.fl-table a:hover {
-    font-weight: initial;
-}
+    .fl-table a:hover {
+        color: gray;
+        font-weight: initial;
+    }
