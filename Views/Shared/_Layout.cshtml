@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tweetly_MVC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bulma.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bulma.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Tweetly_MVC</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Indexx">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container" style="margin: 0px">
+        <div class="row">
+
+        </div>
+        <div class="row">
+
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="profile">
+                        <div class="image">
+                            <div class="circle-1"></div>
+                            <div class="circle-2"></div>
+                            <img src="https://100dayscss.com/codepen/jessica-potter.jpg" width="70" height="70" alt="Jessica Potter">
+                        </div>
+
+                        <div class="name">Niyazi Keklik</div>
+                        <div class="job">alienationxs</div>
+
+                        <div class="stats">
+                            <div class="box">
+                                <span class="value">523</span>
+                                <span class="parameter">Takipçi <br> Sayısı</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">1387</span>
+                                <span class="parameter">Takip <br> Edilen</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">146</span>
+                                <span class="parameter">Tweet <br> Sayısı</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">146</span>
+                                <span class="parameter">Beğeni <br> Sayısı</span>
+                            </div>
+
+                        </div>
+                        <div class="stats">
+                            <div class="box">
+                                <span class="value">523</span>
+                                <span class="parameter">Takipçi <br> Sayısı</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">1387</span>
+                                <span class="parameter">Takip <br> Edilen</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">146</span>
+                                <span class="parameter">Tweet <br> Sayısı</span>
+                            </div>
+                            <div class="box">
+                                <span class="value">146</span>
+                                <span class="parameter">Beğeni <br> Sayısı</span>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="off" checked="">
+                        <label class="btn btn-outline-danger" for="vbtn-radio1">Radio 1</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="vbtn-radio2">Radio 2</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
+                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
+
+                    </div>
+                </div>
+            </div>
+                @RenderBody()
+        </div>
+    </div>
+
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

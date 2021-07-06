@@ -1,0 +1,70 @@
+﻿@using Tweetly_MVC.Models;
+
+@model List<User>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="col-md-10">
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+                <tr>
+                    <th>Count</th>
+                    <th>Fotoğraf</th>
+                    <th>Cinsiyet</th>
+                    <th>Konum</th>
+                    <th>Bio</th>
+                    <th>Takipçi</th>
+                    <th>Takip<br />Edilen</th>
+                    <th>Kayıt <br />Tarihi</th>
+                    <th>Tweet</th>
+                    <th>Son<br />Tweet</th>
+                    <th>Ortalama<br />Tweet</th>
+                    <th>Beğeni</th>
+                    <th>Son <br />Beğeni</th>
+                    <th>Ortalama<br />Beğeni</th>
+                    <th>Takipçi<br />Durumu</th>
+                    <th>Takip<br />Durumu</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+
+                    <td>@item.Count</td>
+                    <td>
+                        <p class="product">
+                            <a href="#">
+                            <img src="@item.PhotoURL" alt="" style="border-radius:50%; width:150px; height:150px;" />
+                            <img class="gizli" src="@item.PhotoURL.Replace("200", "400")" alt="" /></a>
+                        </p>
+                        <div class="metinkaydir" style="display:inline;">@item.Name</div>
+                        <a href="https://twitter.com/" + @item.Username) > - @item.Username</a>
+                    </td>
+                    <td>@item.Cinsiyet</td>
+                    <td>@item.Location</td>
+                    <td><div class="metinkaydir" style="width: 150px;">@item.Bio</div></td>
+                    <td>@item.Followers</td>
+                    <td>@item.Following</td>
+                    <td>@item.Date</td>
+                    <td>@item.TweetCount</td>
+                    <td>@item.LastTweetsDate</td>
+                    <td>@item.TweetSikligi</td>
+                    <td>@item.LikeCount</td>
+                    <td>@item.LastLikesDate</td>
+                    <td>@item.BegeniSikligi</td>
+                    <td><div class="metinkaydir">@item.FollowersStatus</div></td>
+                    <td>
+                        <div class="metinkaydir" style="width: 92px"><button type="button" class="btn btn-primary">@item.FollowStatus</button></div>
+                        <button type="button" class="btn btn-danger" style="display: inline-block; width: 92px; margin-top: 10px; margin-bottom: 10px;">Engelle</button>
+                        <br />
+                        <button type="button" class="btn btn-warning" style="display: inline-block; width: 92px;">Sessize Al</button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+        </table>
+    </div>
+</div>
