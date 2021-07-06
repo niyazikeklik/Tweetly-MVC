@@ -305,7 +305,6 @@
 /*TABLE*/
 .metinkaydir {
     white-space: pre-wrap;
-    width: 60px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -330,3 +329,11 @@ p.product a {
         display: inherit;
     }
 
+.fl-table a {
+    text-decoration: none;
+    color: gray;
+    font-weight: lighter;
+}
+.fl-table a:hover {
+    font-weight: initial;
+}

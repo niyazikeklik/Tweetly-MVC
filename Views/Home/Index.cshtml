@@ -40,8 +40,8 @@
                             <img src="@item.PhotoURL" alt="" style="border-radius:50%; width:150px; height:150px;" />
                             <img class="gizli" src="@item.PhotoURL.Replace("200", "400")" alt="" /></a>
                         </p>
-                        <div class="metinkaydir" style="display:inline;">@item.Name</div>
-                        <a href="https://twitter.com/" + @item.Username) > - @item.Username</a>
+                        <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
+                        <a href="https://twitter.com/@item.Username") >@item.Username</a>
                     </td>
                     <td>@item.Cinsiyet</td>
                     <td>@item.Location</td>
@@ -55,7 +55,7 @@
                     <td>@item.LikeCount</td>
                     <td>@item.LastLikesDate</td>
                     <td>@item.BegeniSikligi</td>
-                    <td><div class="metinkaydir">@item.FollowersStatus</div></td>
+                    <td><div class="metinkaydir" style="width:60px">@item.FollowersStatus</div></td>
                     <td>
                         <div class="metinkaydir" style="width: 92px"><button type="button" class="btn btn-primary">@item.FollowStatus</button></div>
                         <button type="button" class="btn btn-danger" style="display: inline-block; width: 92px; margin-top: 10px; margin-bottom: 10px;">Engelle</button>
