@@ -20,23 +20,7 @@ namespace Tweetly_MVC.Controllers
         {
             _logger = logger;
         }
-        bool isSayfaSonu(IWebDriver driverr)
-        {
-            try
-            {
-                IJavaScriptExecutor jse = (IJavaScriptExecutor)driverr;
-                double oncekiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                double sonrakiY = Convert.ToDouble(jse.ExecuteScript("window.scrollBy(0,1500); return window.scrollY;"));
-
-                if (oncekiY == sonrakiY) return true;
-                else return false;
-            }
-            catch (Exception)
-            {
-                return isSayfaSonu(driverr);
-            }
-
-        }
+       
         public IActionResult Index()
         {
             List<User> bos = new List<User>();
@@ -53,7 +37,7 @@ namespace Tweetly_MVC.Controllers
             List<IWebElement> kontrolEdildi = new List<IWebElement>();
             int count = 10;
 
-            while (!isSayfaSonu(driverr))
+            while (!Yardimci.isSayfaSonu(driverr))
             {
                 var listelenenKullanicilar = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
                 var kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi);

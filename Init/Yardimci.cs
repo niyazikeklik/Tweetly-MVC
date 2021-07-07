@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,6 +77,27 @@ namespace Tweetly_MVC.Init
             DateTime bitisTarihi = DateTime.Today;
             var kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
+        }
+        public static bool isSayfaSonu(IWebDriver driverr)
+        {
+            try
+            {
+                IJavaScriptExecutor jse = (IJavaScriptExecutor)driverr;
+                double oncekiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
+                double sonrakiY = Convert.ToDouble(jse.ExecuteScript("window.scrollBy(0,1500); return window.scrollY;"));
+
+                if (oncekiY == sonrakiY) return true;
+                else return false;
+            }
+            catch (Exception)
+            {
+                return isSayfaSonu(driverr);
+            }
+
+        }
+        public static string CinsiyetBul(string isim)
+        {
+            return null;
         }
     }
 }
