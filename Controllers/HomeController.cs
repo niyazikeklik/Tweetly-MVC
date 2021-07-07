@@ -15,17 +15,19 @@ namespace Tweetly_MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
+        int toplam = 861;
+        int count = 0;
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
-       
+
         public IActionResult Index()
         {
             List<User> bos = new List<User>();
             return View(bos);
         }
+
         public IActionResult Indexx()
         {
             IWebDriver driverr = Drivers.Driver;
@@ -35,41 +37,46 @@ namespace Tweetly_MVC.Controllers
             Thread.Sleep(1500);
             List<User> takipciler = new List<User>();
             List<IWebElement> kontrolEdildi = new List<IWebElement>();
-            int count = 10;
 
             while (!Yardimci.isSayfaSonu(driverr))
             {
                 var listelenenKullanicilar = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
                 var kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi);
 
-
                 foreach (var item in kontrolEdilecekler)
                 {
-                    if (takipciler.Count >= count) break;
                     try
                     {
                         string followingUserName = item.FindElements(By.TagName("a"))[1].GetAttribute("href");
                         followingUserName = followingUserName.Substring(followingUserName.LastIndexOf('/') + 1);
                         IWebDriver calismadriver = Drivers.MusaitOlanDriver();
-                        Thread baslat = new Thread(new ThreadStart(() => {
+                        Thread baslat = new Thread(new ThreadStart(() =>
+                        {
+                           
                             CreateUser profil = new CreateUser();
                             takipciler.Add(profil.getProfil(calismadriver, followingUserName, false));
                         }));
                         baslat.Start();
-
                     }
                     catch (Exception) { continue; }
+                    count++;
                 }
-                if (takipciler.Count >= count) break;
                 kontrolEdildi.AddRange(kontrolEdilecekler);
             }
-
+            /*
+             800 125
+             100 x
+             */
             int countt = 1;
             takipciler.All(x => { x.Count = countt++; return true; });
             // var json = JsonConvert.SerializeObject(takipciler);
-            return View("Index",takipciler);
+            return View("Index", takipciler);
         }
-
+        [HttpPost]
+        public int GuncelleProgress()
+        {
+            return (100 * count) / toplam;
+        }
         public IActionResult Privacy()
         {
             return View();

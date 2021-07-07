@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tweetly_MVC.Init
@@ -77,6 +79,47 @@ namespace Tweetly_MVC.Init
             DateTime bitisTarihi = DateTime.Today;
             var kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
+        }
+        public static void WaitForLoad(IWebDriver driver, int timeoutSec = 15)
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
+            wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
+        }
+        public static void Control(IWebDriver driver, string userName, string link)
+        {
+            //By.cssSelector("a[href='mysite.com']");
+            //https://mobile.twitter.com/login
+            ///login
+            try
+            {
+                if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
+                {
+                    driver.Navigate().Refresh();
+                    WaitForLoad(driver);
+                    Control(driver, userName, link);
+                }
+
+
+                while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
+                {
+                    if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
+                    if (driver.Url.Contains("limit"))
+                    {
+                        Thread.Sleep(300000);
+                        driver.Navigate().GoToUrl(link);
+                        Control(driver, userName,link);
+                    }
+                    Thread.Sleep(5);
+                }
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(300000);
+                driver.Navigate().GoToUrl(link);
+                Control(driver, userName, link);
+            }
+
         }
         public static bool isSayfaSonu(IWebDriver driverr)
         {

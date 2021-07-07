@@ -102,11 +102,15 @@ namespace Tweetly_MVC.Init
             }
             catch (Exception)
             {
-                ;
+                return 0;
             }
-            return 0;
+           
         }
-
+        static public async Task<bool> isPrivate(IWebDriver driverr)
+        {
+                return driverr.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
+          
+        }
         static public async Task<string> getfollowStatus(IWebDriver driverr)
         {
             return driverr.FindElement(By.CssSelector("[data-testid=placementTracking]")).Text;

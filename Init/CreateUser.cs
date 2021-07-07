@@ -1,9 +1,5 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Tweetly_MVC.Models;
 
@@ -11,132 +7,139 @@ namespace Tweetly_MVC.Init
 {
     public class CreateUser
     {
-        string userName;
-        string link;
-        bool fast;
-        public static void WaitForLoad(IWebDriver driver, int timeoutSec = 15)
+        public User getList(IWebElement element)
         {
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
-            wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
-        }
-        void Control(IWebDriver driver)
-        {
-            //By.cssSelector("a[href='mysite.com']");
-            //https://mobile.twitter.com/login
-            ///login
-            try
-            {
-                if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
-                {
-                    driver.Navigate().Refresh();
-                    WaitForLoad(driver);
-                    Control(driver);
-                }
+            User profil = new User();
+
+            string Text = element.Text;
+
+            profil.Name = Text.Split('\n')[0].StartsWith('@') ? null: Text.Split('\n')[0];
+
+            int basla = Text.IndexOf('@');
+            profil.Username = Text.Substring(basla, Text.IndexOf('\n', basla) - basla);
+
+            profil.PhotoURL = element.FindElement(By.TagName("img")).GetAttribute("src").Replace("x96", "200x200");
+            profil.isPrivate = element.FindElements(By.CssSelector("[aria-label=Korumalı hesap]")).Count > 0;
+
+            if (Text.Contains("Seni takip ediyor"))
+                profil.FollowersStatus = "Seni takip ediyor";
+            else profil.FollowersStatus = "Takip etmiyor";
+
+            if (Text.Contains("Takip ediliyor"))
+                profil.FollowStatus = "Takip ediliyor";
+            else if (Text.Contains("Takip et")) profil.FollowStatus = "Takip et";
 
 
-                while (driver.FindElements(By.XPath("//a[@href='/" + this.userName + "/followers']")).Count == 0)
-                {
-                    if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
-                    if (driver.Url.Contains("limit"))
-                    {
-                        Thread.Sleep(300000);
-                        driver.Navigate().GoToUrl(this.link);
-                        Control(driver);
-                    }
-                    Thread.Sleep(5);
-                }
-            }
-            catch (Exception)
-            {
-                Thread.Sleep(300000);
-                driver.Navigate().GoToUrl(link);
-                Control(driver);
-            }
 
+
+            var bios = element.FindElements(By.XPath("/div/div[2]/div[2]/span"));
+            if (bios.Count > 0) profil.Bio = bios[0].Text;
+
+
+
+            return profil;
         }
 
         public User getProfil(IWebDriver driver, string username, bool fast)
         {
             List<Task> tasks = new List<Task>();
-            this.userName = username;
-            this.fast = fast;
+            string link;
         yeniden:
             try
             {
-                link = "https://mobile.twitter.com/" + userName;
+                link = "https://mobile.twitter.com/" + username;
                 driver.Navigate().GoToUrl(link);
-                WaitForLoad(driver);
+                Yardimci.WaitForLoad(driver);
             }
             catch { goto yeniden; }
-            Control(driver);
+
+            Yardimci.Control(driver, username, link);
+
             User profil = new User();
-            profil.Username = userName;
 
-            Task g5 = UserSetMethods.getDate(driver).ContinueWith(x => profil.Date = x.Result);
-            tasks.Add(g5);
+            profil.Username = username;
 
-            Task g6 = UserSetMethods.getLocation(driver).ContinueWith(x => profil.Location = x.Result);
-            tasks.Add(g6);
+            Task g1 = UserSetMethods.getTweetCount(driver).ContinueWith(x => profil.TweetCount = x.Result);
 
-            Task g13 = UserSetMethods.getPhotoURL(driver, userName).ContinueWith(x => {
-                profil.PhotoURL = x.Result;
-            });
-            tasks.Add(g13);
+            Task g2 = UserSetMethods.getName(driver).ContinueWith(x => profil.Name = x.Result);
 
-            Task g7 = UserSetMethods.getFollowing(driver, userName).ContinueWith(x => profil.Following = x.Result);
-            tasks.Add(g7);
+            Task g3 = UserSetMethods.getDate(driver).ContinueWith(x => profil.Date = x.Result);
 
-            Task g8 = UserSetMethods.getFollowers(driver, userName).ContinueWith(x => profil.Followers = x.Result);
-            tasks.Add(g8);
+            Task g4 = UserSetMethods.getLocation(driver).ContinueWith(x => profil.Location = x.Result);
 
-            Task g1 = UserSetMethods.getName(driver).ContinueWith(x => profil.Name = x.Result);
-            tasks.Add(g1);
+            Task g5 = UserSetMethods.getPhotoURL(driver, username).ContinueWith(x => profil.PhotoURL = x.Result);
 
-            Task g2 = UserSetMethods.IsFollowers(driver).ContinueWith(x => profil.FollowersStatus = x.Result);
-            tasks.Add(g2);
+            Task g6 = UserSetMethods.getFollowing(driver, username).ContinueWith(x => profil.Following = x.Result);
 
-            Task g3 = UserSetMethods.getfollowStatus(driver).ContinueWith(x => profil.FollowStatus = x.Result);
-            tasks.Add(g3);
+            Task g7 = UserSetMethods.getFollowers(driver, username).ContinueWith(x => profil.Followers = x.Result);
 
-            Task g4 = UserSetMethods.getBio(driver).ContinueWith(x => profil.Bio = x.Result);
-            tasks.Add(g4);
+            Task g8 = UserSetMethods.IsFollowers(driver).ContinueWith(x => profil.FollowersStatus = x.Result);
 
-            Task g11 = UserSetMethods.getTweetCount(driver).ContinueWith(x => profil.TweetCount = x.Result);
-            tasks.Add(g11);
+            Task g9 = UserSetMethods.getfollowStatus(driver).ContinueWith(x => profil.FollowStatus = x.Result);
 
-            Task.WaitAll(new Task[] { g5, g11 });
-            Task g15 = UserSetMethods.getGunlukSiklik(profil.TweetCount, profil.Date).ContinueWith(x => profil.TweetSikligi = x.Result);
-            tasks.Add(g15);
+            Task g10 = UserSetMethods.getBio(driver).ContinueWith(x => profil.Bio = x.Result);
+
+            Task g11 = UserSetMethods.isPrivate(driver).ContinueWith(x => profil.isPrivate = x.Result);
+
+            Task.WaitAll(new Task[] { g3, g1 });
+
+            Task g12 = UserSetMethods.getGunlukSiklik(profil.TweetCount, profil.Date).ContinueWith(x => profil.TweetSikligi = x.Result);
 
             if (!fast)
             {
+                profil.LastTweetsDate = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.TweetCount).Result;
 
-                Task.WaitAny(g11);
-                Task g12 = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.TweetCount).ContinueWith(x => profil.LastTweetsDate = x.Result);
+                Task.WaitAll(new Task[] { g2 });
 
+                driver.FindElement(By.XPath("//a[@href='/" + username + "/likes']")).Click();
 
-                Task.WaitAll(new Task[] { g1, g12 });
+                profil.LikeCount = UserSetMethods.getLikeCount(driver).Result;
 
-                try
-                {
-                    driver.FindElement(By.XPath("//a[@href='/" + userName + "/likes']")).Click();
+                profil.BegeniSikligi = UserSetMethods.getGunlukSiklik(profil.LikeCount, profil.Date).Result;
 
-                    Task g9 = UserSetMethods.getLikeCount(driver).ContinueWith(x => profil.LikeCount = x.Result);
-                    tasks.Add(g9);
-                    Task.WaitAny(g9);
-
-                    Task g16 = UserSetMethods.getGunlukSiklik(profil.LikeCount, profil.Date).ContinueWith(x => profil.BegeniSikligi = x.Result);
-                    tasks.Add(g16);
-
-                    Task g10 = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.LikeCount).ContinueWith(x => profil.LastLikesDate = x.Result);
-                    tasks.Add(g10);
-                }
-                catch {; }
+                profil.LastLikesDate = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.LikeCount).Result;
             }
 
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(new Task[] { g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12 });
+
             Drivers.kullanıyorum.Remove(driver);
+            return profil;
+        }
+
+        public User getEconomicProfil(User profil, IWebDriver driver)
+        {
+            string link = driver.Url;
+
+            Yardimci.Control(driver, profil.Username, link);
+
+            Task g1 = UserSetMethods.getTweetCount(driver).ContinueWith(x => profil.TweetCount = x.Result);
+
+            Task g3 = UserSetMethods.getDate(driver).ContinueWith(x => profil.Date = x.Result);
+
+            Task g4 = UserSetMethods.getLocation(driver).ContinueWith(x => profil.Location = x.Result);
+
+            Task g6 = UserSetMethods.getFollowing(driver, profil.Username).ContinueWith(x => profil.Following = x.Result);
+
+            Task g7 = UserSetMethods.getFollowers(driver, profil.Username).ContinueWith(x => profil.Followers = x.Result);
+
+            Task.WaitAll(new Task[] { g3, g1 });
+
+            Task g11 = UserSetMethods.getGunlukSiklik(profil.TweetCount, profil.Date).ContinueWith(x => profil.TweetSikligi = x.Result);
+
+            profil.LastTweetsDate = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.TweetCount).Result;
+
+            driver.FindElement(By.XPath("//a[@href='/" + profil.Username + "/likes']")).Click();
+
+            profil.LikeCount = UserSetMethods.getLikeCount(driver).Result;
+
+            profil.BegeniSikligi = UserSetMethods.getGunlukSiklik(profil.LikeCount, profil.Date).Result;
+
+            profil.LastLikesDate = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.LikeCount).Result;
+
+            Task.WaitAll(new Task[] { g4, g6, g7, g11 });
+
+            Drivers.kullanıyorum.Remove(driver);
+
             return profil;
         }
     }

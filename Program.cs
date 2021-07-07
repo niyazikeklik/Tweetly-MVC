@@ -17,33 +17,52 @@ namespace Tweetly_MVC
 {
     public class Program
     {
+        static void Giris(string ka, string ps, IWebDriver driver)
+        {
+            Thread.Sleep(1000);
+            if(driver.Url.Contains("flow"))
+            {
+                driver.FindElement(By.Name("username")).Clear();
+                driver.FindElement(By.Name("username")).SendKeys(ka + Keys.Enter);
+                Thread.Sleep(2500);
+                driver.FindElement(By.Name("password")).Clear();
+                driver.FindElement(By.Name("password")).SendKeys(ps + Keys.Enter);
+            }
+            else
+            {
+            tekrar:
+                try
+                {
+                    driver.FindElement(By.Name("session[username_or_email]")).Clear();
+                    driver.FindElement(By.Name("session[username_or_email]")).SendKeys(ka);
+                    driver.FindElement(By.Name("session[password]")).Clear();
+                    driver.FindElement(By.Name("session[password]")).SendKeys(ps);
+                    driver.FindElement(By.CssSelector("[data-testid=LoginForm_Login_Button]")).Click();
+                    Thread.Sleep(1000);
+                    if (driver.Url.Contains("redirect_after_login"))
+                        Giris("niyazikeklik@gmail.com", "Galatasaray1453", driver);
+                }
+                catch (Exception)
+                {
+
+                    goto tekrar;
+                }
+            }
+       
+        }
         static IWebDriver optionDriver(string un)
         {
             var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArgument("--headless");
+            // chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
-
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
-
             driver.Navigate().GoToUrl("https://mobile.twitter.com/login");
-            Thread.Sleep(2500);
-        tekrar:
-            try
-            {
-                driver.FindElement(By.Name("session[username_or_email]")).Clear();
-                driver.FindElement(By.Name("session[username_or_email]")).SendKeys(un);
-                driver.FindElement(By.Name("session[password]")).Clear();
-                driver.FindElement(By.Name("session[password]")).SendKeys("Galatasaray1453");
-                driver.FindElement(By.CssSelector("[data-testid=LoginForm_Login_Button]")).Click();
-            }
-            catch (Exception)
-            {
+           
+            Giris(Drivers.loginUserName, "Galatasaray1453", driver);
 
-                goto tekrar;
-            }
 
             return driver;
         }

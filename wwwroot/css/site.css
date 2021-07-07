@@ -313,7 +313,7 @@ p.product a .gizli {
     display: none;
     position: absolute;
     left: 175px;
-    top: -20px;
+    top: -150px;
 }
 
 p.product a {
@@ -327,8 +327,8 @@ p.product a {
 
     p.product a:hover .gizli {
         display: inherit;
-        width: 500px;
-        height: 500px;
+        width: 550px;
+        height: 550px;
     }
 
 .fl-table a {

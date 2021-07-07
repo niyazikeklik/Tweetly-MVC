@@ -7,6 +7,7 @@ namespace Tweetly_MVC.Models
 {
     public class User
     {
+        public bool isPrivate { get; set; }
         public int Count { get; set; }
         public string PhotoURL { get; set; }
         public string Name { get; set; }
