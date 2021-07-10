@@ -1,15 +1,16 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
+using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Init
 {
-    public class Yardimci
+    public static class Yardimci
     {
+        public static int toplam = 861;
+        public static int count = 0;
         public static string Donustur(string metin)
         {
             metin = metin.Replace(" ", "");
@@ -30,7 +31,7 @@ namespace Tweetly_MVC.Init
             string[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
             kayittarihi = kayittarihi.Replace("tarihinde katıldı", "").Replace("joined", "");
             string ayadi = "";
-            foreach (var item in months)
+            foreach (string item in months)
                 if (kayittarihi.Contains(item)) ayadi = item;
             kayittarihi = kayittarihi.Replace(" ", "").Replace(ayadi, "");
             int yil = Convert.ToInt32(kayittarihi);
@@ -77,7 +78,7 @@ namespace Tweetly_MVC.Init
             }
             DateTime baslamaTarihi = new DateTime(yil, kacinciay, 01);
             DateTime bitisTarihi = DateTime.Today;
-            var kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
+            TimeSpan kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
         }
         public static void WaitForLoad(IWebDriver driver, int timeoutSec = 15)
@@ -93,33 +94,54 @@ namespace Tweetly_MVC.Init
             ///login
             try
             {
+                while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
+                {
+                    if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
+                    if (driver.Url.Contains("limit"))
+                    {
+                        Hesap.progressText = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000);
+                        Thread.Sleep(360000);
+                        Hesap.progressText = "";
+                        driver.Navigate().GoToUrl(link);
+                        Control(driver, userName, link);
+
+                    }
+                    Thread.Sleep(5);
+                }
                 if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
                 {
                     driver.Navigate().Refresh();
                     WaitForLoad(driver);
                     Control(driver, userName, link);
                 }
-
-
-                while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
-                {
-                    if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
-                    if (driver.Url.Contains("limit"))
-                    {
-                        Thread.Sleep(300000);
-                        driver.Navigate().GoToUrl(link);
-                        Control(driver, userName,link);
-                    }
-                    Thread.Sleep(5);
-                }
             }
             catch (Exception)
             {
-                Thread.Sleep(300000);
+                Hesap.progressText = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000);
+
+                Thread.Sleep(360000);
+                Hesap.progressText = "";
                 driver.Navigate().GoToUrl(link);
                 Control(driver, userName, link);
             }
 
+        }
+        public static void killProcces()
+        {
+            Process[] runingProcess = Process.GetProcesses();
+            for (int i = 0; i < runingProcess.Length; i++)
+            {
+                if (runingProcess[i].ProcessName == "chrome" || runingProcess[i].ProcessName == "chromedriver" || runingProcess[i].ProcessName == "conhost")
+                {
+                    try
+                    {
+                        double s = (DateTime.Now - runingProcess[i].StartTime).TotalSeconds;
+                        if (s >= 30) { runingProcess[i].Kill(); }
+                    }
+                    catch {; }
+                }
+
+            }
         }
         public static bool isSayfaSonu(IWebDriver driverr)
         {

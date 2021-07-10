@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Tweetly_MVC.Init;
 using Tweetly_MVC.Models;
 
@@ -14,78 +13,70 @@ namespace Tweetly_MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        int toplam = 861;
-        int count = 0;
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
 
         public IActionResult Index()
         {
-            List<User> bos = new List<User>();
-            return View(bos);
+            if (Hesap.Takipciler != null) return View(Hesap.Takipciler);
+
+            Hesap.OturumBilgileri = CreateUser.getProfil(Drivers.Driver, Hesap.loginUserName, false);
+            List<User> user = new List<User>();
+            return View(user);
         }
 
         public IActionResult Indexx()
         {
-            IWebDriver driverr = Drivers.Driver;
+            if (Hesap.Takipciler != null) return View("Index", Hesap.Takipciler);
 
+            Yardimci.count = 0;
+            IWebDriver driverr = Drivers.Driver;
+            
             string link = "https://mobile.twitter.com/alienationxs/following";
             driverr.Navigate().GoToUrl(link);
             Thread.Sleep(1500);
             List<User> takipciler = new List<User>();
             List<IWebElement> kontrolEdildi = new List<IWebElement>();
 
-            while (!Yardimci.isSayfaSonu(driverr))
+            while (!Yardimci.isSayfaSonu(driverr) || takipciler.Count < Hesap.OturumBilgileri.Following - 30)
             {
-                var listelenenKullanicilar = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
-                var kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi);
+                System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> listelenenKullanicilar = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
+                IEnumerable<IWebElement> kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi);
 
-                foreach (var item in kontrolEdilecekler)
+                foreach (IWebElement item in kontrolEdilecekler)
                 {
                     try
                     {
+                        if (takipciler.Count == 5) break;
                         string followingUserName = item.FindElements(By.TagName("a"))[1].GetAttribute("href");
                         followingUserName = followingUserName.Substring(followingUserName.LastIndexOf('/') + 1);
                         IWebDriver calismadriver = Drivers.MusaitOlanDriver();
                         Thread baslat = new Thread(new ThreadStart(() =>
                         {
-                           
-                            CreateUser profil = new CreateUser();
-                            takipciler.Add(profil.getProfil(calismadriver, followingUserName, false));
+                            takipciler.Add(CreateUser.getProfil(calismadriver, followingUserName, false));
                         }));
                         baslat.Start();
                     }
                     catch (Exception) { continue; }
-                    count++;
+                    Yardimci.count++;
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
+                if (takipciler.Count == 5) break;
             }
-            /*
-             800 125
-             100 x
-             */
+
             int countt = 1;
             takipciler.All(x => { x.Count = countt++; return true; });
             // var json = JsonConvert.SerializeObject(takipciler);
+            Hesap.Takipciler = takipciler;
             return View("Index", takipciler);
         }
-        [HttpPost]
+        [HttpGet]
         public int GuncelleProgress()
         {
-            return (100 * count) / toplam;
+            return (100 * Yardimci.count) / Hesap.OturumBilgileri.Following;
         }
-        public IActionResult Privacy()
+        [HttpGet]
+        public string LimitText()
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return Hesap.progressText;
         }
     }
 }
