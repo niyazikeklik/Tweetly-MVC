@@ -23,7 +23,7 @@ namespace Tweetly_MVC.Controllers
             return View(user);
         }
 
-        public IActionResult Indexx()
+        public IActionResult TakipciList()
         {
             if (Hesap.Takipciler != null) return View("Index", Hesap.Takipciler);
 

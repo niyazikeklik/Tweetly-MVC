@@ -22,27 +22,18 @@ namespace Tweetly_MVC.Init
                 Thread.Sleep(2500);
                 driver.FindElement(By.Name("password")).SendKeys(ps + Keys.Enter);
                 while (driver.Url.Contains("login")) Thread.Sleep(500);
-                
+
 
             }
             else
             {
-            tekrar:
-                try
-                {
-                    driver.FindElement(By.Name("session[username_or_email]")).Clear();
-                    driver.FindElement(By.Name("session[username_or_email]")).SendKeys(ka);
-                    driver.FindElement(By.Name("session[password]")).Clear();
-                    driver.FindElement(By.Name("session[password]")).SendKeys(ps + Keys.Enter);
-                    Thread.Sleep(1000);
-                    if (driver.Url.Contains("redirect_after_login"))
-                        Giris("niyazikeklik@gmail.com", "Galatasaray1453", driver);
-                }
-                catch (Exception)
-                {
-
-                    goto tekrar;
-                }
+                driver.FindElement(By.Name("session[username_or_email]")).Clear();
+                driver.FindElement(By.Name("session[username_or_email]")).SendKeys(ka);
+                driver.FindElement(By.Name("session[password]")).Clear();
+                driver.FindElement(By.Name("session[password]")).SendKeys(ps + Keys.Enter);
+                Thread.Sleep(1000);
+                if (driver.Url.Contains("redirect_after_login"))
+                    Giris("niyazikeklik@gmail.com", "Galatasaray1453", driver);
             }
 
         }
