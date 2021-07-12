@@ -27,10 +27,20 @@ namespace Tweetly_MVC.Init
             }
             else
             {
-                driver.FindElement(By.Name("session[username_or_email]")).Clear();
-                driver.FindElement(By.Name("session[username_or_email]")).SendKeys(ka);
-                driver.FindElement(By.Name("session[password]")).Clear();
-                driver.FindElement(By.Name("session[password]")).SendKeys(ps + Keys.Enter);
+            yeniden:
+                try
+                {
+                    driver.FindElement(By.Name("session[username_or_email]")).Clear();
+                    driver.FindElement(By.Name("session[username_or_email]")).SendKeys(ka);
+                    driver.FindElement(By.Name("session[password]")).Clear();
+                    driver.FindElement(By.Name("session[password]")).SendKeys(ps + Keys.Enter);
+                }
+                catch (Exception)
+                {
+
+                    goto yeniden;
+                }
+
                 Thread.Sleep(1000);
                 if (driver.Url.Contains("redirect_after_login"))
                     Giris("niyazikeklik@gmail.com", "Galatasaray1453", driver);
@@ -42,7 +52,7 @@ namespace Tweetly_MVC.Init
         {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            //   chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 
@@ -58,15 +68,13 @@ namespace Tweetly_MVC.Init
 
         public static Task CreateDrivers()
         {
-            List<Task> gorevler = new List<Task>();
-            for (int i = 0; i < Drivers.drivers.Length; i++)
-            {
-                Task gorev = Task.Run(() =>
-                   Drivers.drivers[i] = optionDriver()
-                );
-                gorevler.Add(gorev);
-            }
-            Task.WaitAll(gorevler.ToArray());
+            Task g1 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver = x.Result);
+            Task g2 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver2 = x.Result);
+            Task g3 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver3 = x.Result);
+            Task g4 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver4 = x.Result);
+            Task g5 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver5 = x.Result);
+
+            Task.WaitAll(new Task[] { g1, g2, g3, g4, g5 });
             return Task.CompletedTask;
         }
 

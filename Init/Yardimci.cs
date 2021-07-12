@@ -1,9 +1,16 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using Tweetly_MVC.Models;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace Tweetly_MVC.Init
 {
@@ -99,9 +106,9 @@ namespace Tweetly_MVC.Init
                     if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
                     if (driver.Url.Contains("limit"))
                     {
-                        Hesap.progressText = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000);
+                        Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
                         Thread.Sleep(360000);
-                        Hesap.progressText = "";
+                        Hesap.Iletisim.metin = "";
                         driver.Navigate().GoToUrl(link);
                         Control(driver, userName, link);
 
@@ -117,10 +124,10 @@ namespace Tweetly_MVC.Init
             }
             catch (Exception)
             {
-                Hesap.progressText = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000);
+                Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
 
                 Thread.Sleep(360000);
-                Hesap.progressText = "";
+                Hesap.Iletisim.metin = "";
                 driver.Navigate().GoToUrl(link);
                 Control(driver, userName, link);
             }
@@ -143,6 +150,49 @@ namespace Tweetly_MVC.Init
 
             }
         }
+        public static string StringReplace(this string text)
+        {
+            text = text.Replace("İ", "I");
+            text = text.Replace("ı", "i");
+            text = text.Replace("Ğ", "G");
+            text = text.Replace("ğ", "g");
+            text = text.Replace("Ö", "O");
+            text = text.Replace("ö", "o");
+            text = text.Replace("Ü", "U");
+            text = text.Replace("ü", "u");
+            text = text.Replace("Ş", "S");
+            text = text.Replace("ş", "s");
+            text = text.Replace("Ç", "C");
+            text = text.Replace("ç", "c");
+            return text;
+        }
+        private static readonly HttpClient client = new HttpClient();
+        public async static Task<string> CinsiyetBul(string name)
+        {
+            if (String.IsNullOrEmpty(name)) return "Belirsiz";
+            string[] isimler = name?.Split(' ');
+            string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
+            string cinsiyet = "";
+            var result = Hesap.cins.FirstOrDefault(x => x.Ad == isim);
+            if (result != null)
+            {
+                cinsiyet = result.Cinsiyet == "e" ? "Erkek" : 
+                           result.Cinsiyet == "k" ? "Kadın" : 
+                           result.Cinsiyet == "u" ? "Unisex" : "Belirsi...z";
+                return cinsiyet;
+            }
+            else
+            {
+                /*
+                isim = isim.StringReplace();
+                var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
+                cinsiyet = msg.Contains("male") ? "Erke-k" : 
+                           msg.Contains("female") ? "Kadı-n" : 
+                           "Belirsiz";
+                return cinsiyet;*/
+                return "Belirsiz";
+            }
+        }
         public static bool isSayfaSonu(IWebDriver driverr)
         {
             try
@@ -159,10 +209,6 @@ namespace Tweetly_MVC.Init
                 return isSayfaSonu(driverr);
             }
 
-        }
-        public static string CinsiyetBul(string isim)
-        {
-            return null;
         }
     }
 }

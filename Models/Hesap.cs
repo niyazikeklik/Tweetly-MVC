@@ -1,7 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Tweetly_MVC.Models
 {
+    public struct İletisim
+    {
+        public string metin;
+        public int veri;
+    }
     public static class Hesap
     {
         public static string loginUserName { get; set; }
@@ -10,7 +17,13 @@ namespace Tweetly_MVC.Models
 
         public static List<User> Takipciler = null;
 
-        public static string progressText = "";
+        public static İletisim Iletisim = new İletisim();
+
+        public static List<Cinsiyetler> cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
+
+
+
+
 
     }
 }

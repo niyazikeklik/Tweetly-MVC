@@ -75,19 +75,19 @@ namespace Tweetly_MVC.Init
         {
             try
             {
-                if (tweetorlikecount < 100) return Math.Round((date / tweetorlikecount), 2);
+                if (tweetorlikecount < 21) return (Math.Round((date / tweetorlikecount), 2));
                 else
                 {
                     double toplamGunSayisi = 0;
                     List<IWebElement> sonTweetler = driverr.FindElements(By.CssSelector("[data-testid=tweet]")).ToList();
                     int count = 0;
-                    while (sonTweetler.Count < 1 && count < 15)
+                    while (sonTweetler.Count < 1 && count < 20)
                     {
                         sonTweetler = driverr.FindElements(By.CssSelector("[data-testid=tweet]")).ToList();
                         Thread.Sleep(100);
                         count++;
                     }
-
+                    if (sonTweetler.Count == 0) return 0;
                     if (driverr.FindElements(By.CssSelector("[data-testid=socialContext]")).Count > 0)
                         sonTweetler.Remove(sonTweetler[0]);
 
@@ -96,8 +96,8 @@ namespace Tweetly_MVC.Init
                         string datee = item.FindElement(By.TagName("time")).GetAttribute("datetime");
                         toplamGunSayisi += (DateTime.Today - Convert.ToDateTime(datee)).TotalDays;
                     }
-                    return Math.Round((toplamGunSayisi / sonTweetler.Count), 2);
-
+                    var i = Math.Round((toplamGunSayisi / sonTweetler.Count), 2);
+                    return i;
                 }
             }
             catch (Exception)

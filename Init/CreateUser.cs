@@ -14,7 +14,7 @@ namespace Tweetly_MVC.Init
             string Text = element.Text;
 
             profil.Name = Text.Split('\n')[0].StartsWith('@') ? null : Text.Split('\n')[0];
-
+            profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name).Result;
             int basla = Text.IndexOf('@');
             profil.Username = Text.Substring(basla, Text.IndexOf('\n', basla) - basla);
 
@@ -58,10 +58,6 @@ namespace Tweetly_MVC.Init
             User profil = new User();
             try
             {
-
-
-
-
                 profil.Username = username;
 
                 Task g1 = UserSetMethods.getTweetCount(driver).ContinueWith(x => profil.TweetCount = x.Result);
@@ -86,15 +82,17 @@ namespace Tweetly_MVC.Init
 
                 Task g11 = UserSetMethods.isPrivate(driver).ContinueWith(x => profil.isPrivate = x.Result);
 
-                Task.WaitAll(new Task[] { g3, g1 });
+                Task.WaitAll(new Task[] { g3, g1, g2 });
 
-                Task g12 = UserSetMethods.getGunlukSiklik(profil.TweetCount, profil.Date).ContinueWith(x => profil.TweetSikligi = x.Result);
+                Task g13 = Yardimci.CinsiyetBul(profil.Name).ContinueWith(x => profil.Cinsiyet = x.Result) ;
+
+            Task g12 = UserSetMethods.getGunlukSiklik(profil.TweetCount, profil.Date).ContinueWith(x => profil.TweetSikligi = x.Result);
 
                 if (!fast)
                 {
                     profil.LastTweetsDate = UserSetMethods.getLastTweetsoOrLikesDateAVC(driver, profil.Date, profil.TweetCount).Result;
 
-                    Task.WaitAll(new Task[] { g2 });
+                    
 
                     driver.FindElement(By.XPath("//a[@href='/" + username + "/likes']")).Click();
 
@@ -111,8 +109,7 @@ namespace Tweetly_MVC.Init
             }
             catch (System.Exception)
             {
-
-                throw;
+                ;
             }
             return profil;
         }
