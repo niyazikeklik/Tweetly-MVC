@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -18,18 +19,26 @@ namespace Tweetly_MVC.Controllers
 
         public IActionResult Index()
         {
-            if (Hesap.Takipciler.Count == 0)
+            if (Hesap.Takipciler.Count != 0)
                 return View(Hesap.Takipciler);
        
 
             List<User> user = new List<User>();
             return View(user);
         }
+        [HttpPost]
+        public void TakipCik(string Usernames)
+        {
+            var takiptenCikilicaklar = Usernames.Split(';');
+            foreach (var item in takiptenCikilicaklar)
+            {
 
+            }
+        }
         public IActionResult TakipciList()
         {
             DatabasesContext context = new DatabasesContext();
-            if (Hesap.Takipciler.Count == 0) return View("Index", Hesap.Takipciler);
+            //if (Hesap.Takipciler.Count != 0) return View("Index", Hesap.Takipciler);
 
 
             IWebDriver driverr = Drivers.Driver;
@@ -80,8 +89,9 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Hesap.Iletisim.veri = (100 * Hesap.Takipciler.Count) / Hesap.OturumBilgileri.Following;
-            return Json(Hesap.Iletisim);
+            Hesap.Iletisim.veri = 100 * Hesap.Takipciler.Count / Hesap.OturumBilgileri.Following;
+            var yedek = Hesap.Iletisim;
+            return Json(JsonConvert.SerializeObject(yedek));
         }
     }
 }

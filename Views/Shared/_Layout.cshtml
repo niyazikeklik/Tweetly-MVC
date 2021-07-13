@@ -9,26 +9,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tweetly_MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
+    <script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
 
 
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bulma.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/3.1.9/js/dataTables.fixedHeader.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bulma.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.9/css/fixedHeader.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css">
+
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
     <link rel="stylesheet" href="~/css/site.css" />
 
 </head>
@@ -54,26 +47,11 @@
             </div>
         </nav>
     </header>
-    <nav class="menu">
-        <a href="#" class="menu__item" data-tooltip="Dashboard">
-            <i class="material-icons">home</i>
-        </a>
-        <a href="#" class="menu__item menu__item--active" data-tooltip="Music Library">
-            <i class="material-icons">music_note</i>
-        </a>
-        <a href="#" class="menu__item" data-tooltip="Statistics">
-            <i class="material-icons">timeline</i>
-        </a>
-        <a href="#" class="menu__item" data-tooltip="Account Security">
-            <i class="material-icons">https</i>
-        </a>
-        <a href="#" class="menu__item" data-tooltip="Settings">
-            <i class="material-icons">settings</i>
-        </a>
-    </nav>
+
+
     <div class="container-fluid" style="margin: 0px">
         <div class="row">
-            <div class="col-md-2">
+            <div class="row">
                 <div class="row">
                     <div class="profile">
                         <div class="image">
@@ -83,46 +61,44 @@
                         </div>
 
                         <div class="name">@Hesap.OturumBilgileri.Name</div>
-                        <div class="job">@Hesap.OturumBilgileri.Username</div>
+                        <div class="job">   <a id="username" href="https://twitter.com/@Hesap.OturumBilgileri.Username" target="_blank"><i class="bi bi-link-45deg">@Hesap.OturumBilgileri.Username</i></a></div>
 
                         <div class="stats">
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.Followers</span>
-                                <span class="parameter">Takipçi<br>Sayısı</span>
+                                <span class="parameter">Takipçi Sayısı</span>
                             </div>
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.BegeniSikligi</span>
-                                <span class="parameter">Beğeni<br>Sıklığı </span>
+                                <span class="parameter">Beğeni Sıklığı </span>
                             </div>
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.LastLikesDate</span>
-                                <span class="parameter">Son<br>Beğeni</span>
+                                <span class="parameter">Son Beğeni</span>
                             </div>
 
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.TweetCount</span>
-                                <span class="parameter">Tweet<br>Sayısı</span>
+                                <span class="parameter">Tweet Sayısı</span>
                             </div>
 
-                        </div>
-                        <div class="stats">
 
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.Following</span>
-                                <span class="parameter">Takip<br>Edilen</span>
+                                <span class="parameter">Takip Edilen</span>
                             </div>
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.TweetSikligi</span>
-                                <span class="parameter">Tweet<br>Sıklığı<br /></span>
+                                <span class="parameter">Tweet Sıklığı<br /></span>
                             </div>
 
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.LastTweetsDate</span>
-                                <span class="parameter">Son<br>Tweet</span>
+                                <span class="parameter">Son Tweet</span>
                             </div>
                             <div class="box">
                                 <span class="value">@Hesap.OturumBilgileri.Date</span>
-                                <span class="parameter">Kayıt<br>Tarihi</span>
+                                <span class="parameter">Kayıt Tarihi</span>
                             </div>
 
                         </div>
@@ -130,30 +106,28 @@
 
                     </div>
                 </div>
-                <div class="row">
 
-                    <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="off" checked="">
-                        <label class="btn btn-outline-danger" for="vbtn-radio1">Radio 1</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="off">
-                        <label class="btn btn-outline-danger" for="vbtn-radio2">Radio 2</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-                        <label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label>
-                        <input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="off">
-
-                    </div>
-                </div>
             </div>
             @RenderBody()
         </div>
     </div>
-
+    <nav class="menu">
+        <a href="#" class="menu__item" data-tooltip="Dashboard">
+            <i class="bi bi-house-door-fill"></i>
+        </a>
+        <a href="@Url.ActionLink("TakipciList","Home")" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takipçiler">
+            <i class="bi bi-people-fill"></i>
+        </a>
+        <a href="#" class="menu__item" data-tooltip="Statistics">
+            <i class="bi bi-envelope-fill"></i>
+        </a>
+        <a href="#" class="menu__item" data-tooltip="Account Security">
+            <i class="bi bi-person-dash-fill"></i>
+        </a>
+        <a href="#" class="menu__item" data-tooltip="Settings">
+            <i class="bi bi-gear-fill"></i>
+        </a>
+    </nav>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

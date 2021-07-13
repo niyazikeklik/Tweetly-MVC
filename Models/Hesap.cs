@@ -10,7 +10,7 @@ namespace Tweetly_MVC.Models
         public string Cinsiyet { get; set; }
 
     }
-    public struct İletisim
+    public struct IILetisim
     {
         public string metin;
         public int veri;
@@ -24,10 +24,8 @@ namespace Tweetly_MVC.Models
 
         public static List<User> Takipciler = new List<User>();
 
-        public static İletisim Iletisim;
+        public static IILetisim Iletisim = new IILetisim();
 
         public static List<Cinsiyetler> cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
-
-
     }
 }

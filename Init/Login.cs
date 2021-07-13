@@ -52,7 +52,7 @@ namespace Tweetly_MVC.Init
         {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            //chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 

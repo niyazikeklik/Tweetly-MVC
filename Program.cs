@@ -18,7 +18,7 @@ namespace Tweetly_MVC
         public static void Main(string[] args)
         {
             
-            Hesap.loginUserName = Test.username;
+           Hesap.loginUserName = Test.username;
             Hesap.loginPass = Test.pass;
             Yardimci.killProcces();
             Login.CreateDrivers().Wait();

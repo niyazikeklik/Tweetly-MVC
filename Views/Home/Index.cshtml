@@ -8,9 +8,9 @@
 }
 
 
-<div class="col-md-10">
+<div class="col">
     <div id="row">
-        <div class="progress"  id="progressbox" style="display:none; height:30px;">
+        <div class="progress" id="progressbox" style="display:none; height:30px;">
             <div class="progress-bar progress-bar-striped active" role="progressbar" id="progress" style="width: 40%; height: 30px;">
                 40%
             </div>
@@ -54,9 +54,18 @@
                                 </a>
                             </p>
                             <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
-                            <a href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@item.Username</i></a>
+                            <a id="username" href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@@@item.Username</i></a>
                         </td>
-                        <td>@item.Cinsiyet</td>
+                        <td>
+                            @{ string classIsım = "";
+                                classIsım = item.Cinsiyet.StartsWith('K') ? "female" :
+                                            item.Cinsiyet.StartsWith('E') ? "male" :
+                                            item.Cinsiyet.StartsWith('U') ? "ambiguous" : "trans";
+
+                            }
+                            <i style="display: block; font-size: 17pt;" class="bi bi-gender-@classIsım"></i>
+                            @item.Cinsiyet
+                        </td>
                         <td>@item.Location</td>
                         <td><div class="metinkaydir" style="width: 150px;">@item.Bio</div></td>
                         <td>@item.Followers</td>
@@ -83,7 +92,7 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
-        $("#menu").on("click", function () {
+        $("#takipciler").on("click", function () {
             $("#progressbox").css("display", "block");
             setInterval(() => {
                 $.ajax({
@@ -91,19 +100,20 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
+                        data = JSON.parse(data)
                         console.log(data);
-                        console.log(data.textt);
-                        console.log(data.taluee);
-                        console.log(data.textt + " " + data.valuee);
-                        $("#progress").css("width", data.valuee + "%");
-                        $("#progress").text(data.textt + " " + data.valuee + "%");
+                        console.log(data.metin);
+                        console.log(data.veri);
+                        console.log(data.metin + " " + data.veri);
+                        $("#progress").css("width", data.veri + "%");
+                        $("#progress").text(data.metin + " " + data.veri + "%");
                     }
                 });
             }, 5000);
 
         });
 
-
+        
 
 
     });
