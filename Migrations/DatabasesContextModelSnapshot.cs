@@ -33,7 +33,8 @@ namespace Tweetly_MVC.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Count")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<double>("Date")
                         .HasColumnType("float");

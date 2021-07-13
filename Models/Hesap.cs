@@ -4,6 +4,12 @@ using System.IO;
 
 namespace Tweetly_MVC.Models
 {
+    public class Cinsiyetler
+    {
+        public string Ad { get; set; }
+        public string Cinsiyet { get; set; }
+
+    }
     public struct İletisim
     {
         public string metin;
@@ -11,18 +17,16 @@ namespace Tweetly_MVC.Models
     }
     public static class Hesap
     {
+       
         public static string loginUserName { get; set; }
         public static string loginPass { get; set; }
         public static User OturumBilgileri { get; set; }
 
-        public static List<User> Takipciler = null;
+        public static List<User> Takipciler = new List<User>();
 
-        public static İletisim Iletisim = new İletisim();
+        public static İletisim Iletisim;
 
         public static List<Cinsiyetler> cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
-
-
-
 
 
     }

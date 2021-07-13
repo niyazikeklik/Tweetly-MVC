@@ -16,8 +16,6 @@ namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
-        public static int toplam = 861;
-        public static int count = 0;
         public static string Donustur(string metin)
         {
             metin = metin.Replace(" ", "");
@@ -88,13 +86,13 @@ namespace Tweetly_MVC.Init
             TimeSpan kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
         }
-        public static void WaitForLoad(IWebDriver driver, int timeoutSec = 15)
+        public static void WaitForLoad(this IWebDriver driver, int timeoutSec = 15)
         {
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
         }
-        public static void Control(IWebDriver driver, string userName, string link)
+        public static void Control(this IWebDriver driver, string userName, string link)
         {
             //By.cssSelector("a[href='mysite.com']");
             //https://mobile.twitter.com/login
@@ -110,7 +108,7 @@ namespace Tweetly_MVC.Init
                         Thread.Sleep(360000);
                         Hesap.Iletisim.metin = "";
                         driver.Navigate().GoToUrl(link);
-                        Control(driver, userName, link);
+                        driver.Control(userName, link);
 
                     }
                     Thread.Sleep(5);
@@ -118,8 +116,8 @@ namespace Tweetly_MVC.Init
                 if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
                 {
                     driver.Navigate().Refresh();
-                    WaitForLoad(driver);
-                    Control(driver, userName, link);
+                    driver.WaitForLoad();
+                    driver.Control(userName, link);
                 }
             }
             catch (Exception)
@@ -129,7 +127,7 @@ namespace Tweetly_MVC.Init
                 Thread.Sleep(360000);
                 Hesap.Iletisim.metin = "";
                 driver.Navigate().GoToUrl(link);
-                Control(driver, userName, link);
+                driver.Control(userName, link);
             }
 
         }
@@ -150,7 +148,7 @@ namespace Tweetly_MVC.Init
 
             }
         }
-        public static string StringReplace(this string text)
+        private static string StringReplace(this string text)
         {
             text = text.Replace("İ", "I");
             text = text.Replace("ı", "i");
@@ -166,34 +164,10 @@ namespace Tweetly_MVC.Init
             text = text.Replace("ç", "c");
             return text;
         }
+
         private static readonly HttpClient client = new HttpClient();
-        public async static Task<string> CinsiyetBul(string name)
-        {
-            if (String.IsNullOrEmpty(name)) return "Belirsiz";
-            string[] isimler = name?.Split(' ');
-            string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
-            string cinsiyet = "";
-            var result = Hesap.cins.FirstOrDefault(x => x.Ad == isim);
-            if (result != null)
-            {
-                cinsiyet = result.Cinsiyet == "e" ? "Erkek" : 
-                           result.Cinsiyet == "k" ? "Kadın" : 
-                           result.Cinsiyet == "u" ? "Unisex" : "Belirsi...z";
-                return cinsiyet;
-            }
-            else
-            {
-                /*
-                isim = isim.StringReplace();
-                var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
-                cinsiyet = msg.Contains("male") ? "Erke-k" : 
-                           msg.Contains("female") ? "Kadı-n" : 
-                           "Belirsiz";
-                return cinsiyet;*/
-                return "Belirsiz";
-            }
-        }
-        public static bool isSayfaSonu(IWebDriver driverr)
+    
+        public static bool isSayfaSonu(this IWebDriver driverr)
         {
             try
             {

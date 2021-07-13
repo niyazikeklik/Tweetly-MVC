@@ -43,7 +43,7 @@ namespace Tweetly_MVC.Init
 
                 Thread.Sleep(1000);
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", "Galatasaray1453", driver);
+                    Giris("niyazikeklik@gmail.com", Hesap.loginPass, driver);
             }
 
         }
@@ -52,7 +52,7 @@ namespace Tweetly_MVC.Init
         {
             ChromeOptions chromeOptions = new ChromeOptions();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            chromeOptions.AddArgument("--headless");
+            //chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 
@@ -68,7 +68,11 @@ namespace Tweetly_MVC.Init
 
         public static Task CreateDrivers()
         {
-            Task g1 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver = x.Result);
+            Task g1 = Task.Run(() => optionDriver()).ContinueWith(x =>
+            {
+                Drivers.Driver = x.Result;
+                Hesap.OturumBilgileri = Drivers.Driver.getProfil(Hesap.loginUserName, false);
+            });
             Task g2 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver2 = x.Result);
             Task g3 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver3 = x.Result);
             Task g4 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver4 = x.Result);
