@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Tweetly_MVC.Models;
@@ -10,147 +11,173 @@ namespace Tweetly_MVC.Init
 {
     public static class UserSetMethods
     {
-        public static async Task<string> getName(this IWebDriver driverr)
+        static IWebDriver driver;
+        public static object JSCodeRun(this IWebDriver driver, string command)
         {
-
-            string[] res = driverr.FindElement(By.XPath("//header[@role='banner']")).Text.Split('\r');
-            string isim = res.Length == 1 ? null : res[0];
-            return isim;
-        }
-
-        public static async Task<int> getTweetCount(this IWebDriver driverr)
-        {
-            string TweetCount = driverr.FindElement(By.XPath("//header[@role='banner']")).Text;
-            TweetCount = TweetCount.Split('\n').Length == 1 ? TweetCount.Split('\n')[0] : TweetCount.Split('\n')[1];
-            TweetCount = TweetCount.Replace("Tweets", "")
-                                   .Replace("Tweet", "")
-                                   .Replace("Tweetler", "");
-            TweetCount = Yardimci.Donustur(TweetCount);
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
             int count = 0;
-            count = Convert.ToInt32(TweetCount);
-            count = count > 1 ? count : count + 1;
-            return count;
+            while (count < 10)
+                try
+                {
+                    return jse.ExecuteScript(command);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    count++;
+                }
+                catch (WebDriverException)
+                {
+                    Thread.Sleep(150);
+                    count++;
+                }
+                catch
+                {
+                    throw;
+                }
+            return null;
         }
-        public static async Task<string> getGunlukSiklik(int count, double date)
+        static void main()
+        {
+            IWebElement element = (IWebElement)driver.JSCodeRun("return document.getElemenyById('x')");
+            string elementText = (string)driver.JSCodeRun("return document.getElementById('x').innerText;");
+            int elementsLength = (int)driver.JSCodeRun("return document.getElementsyByClassName('x').length;");
+            bool elementsExist = (bool)driver.JSCodeRun("return document.getElementsByClassName('x').length > 0;");
+            dynamic elementList = driver.JSCodeRun("return document.getElementsByClassName('x')");
+
+        }
+        public static string getName(this IWebDriver driverr)
+        {
+            return driverr.JSCodeRun("return document.querySelector('header h2').textContent;").ToString();
+        }
+        public static int getTweetCount(this IWebDriver driverr)
+        {
+            string TweetCount = driverr.JSCodeRun("return document.querySelector('header').innerText;").ToString().Replace("\r", "");
+            var dizi = TweetCount.Split("\n");
+            TweetCount = dizi[dizi.Length - 2];
+            TweetCount = Yardimci.Donustur(TweetCount);
+            int countt = -1;
+            if (int.TryParse(TweetCount, out countt))
+            {
+                var r = countt > 1 ? countt : countt + 1;
+                return r;
+            }
+            else
+                return countt;
+        }
+        public static string getGunlukSiklik(int count, double date)
         {
             string result = "";
             double gunluktweet = (count / date);
-            if (gunluktweet >= 1) result = "1/" + Math.Round(gunluktweet, 1);
-            else result = Math.Round((1 / gunluktweet), 0) + "/1";
+            if (gunluktweet >= 1) result = Math.Round(gunluktweet, 0).ToString();
+            else result = "~" + Math.Round((1 / gunluktweet), 0) + " Günde bir";
             return result;
         }
-        public static async Task<double> getDate(this IWebDriver driverr)
+        public static double getDate(this IWebDriver driverr)
         {
-            System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> cocuklar = driverr.FindElement(By.CssSelector("[data-testid=UserProfileHeader_Items]")).FindElements(By.TagName("span"));
-            return Yardimci.KayıtTarihi(cocuklar[cocuklar.Count - 1].Text);
+            var secilenElement = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
+            return Yardimci.KayıtTarihi(secilenElement.ToString());
 
 
         }
-        public static async Task<string> getLocation(this IWebDriver driverr)
+        public static string getLocation(this IWebDriver driverr)
         {
-            string res = driverr.FindElement(By.CssSelector("[data-testid=UserProfileHeader_Items]")).FindElements(By.TagName("span"))[0].Text;
-            if (!res.Contains("Doğum") && !res.Contains("Birthday") && !res.Contains("Born") && !res.Contains("Joined") && !res.Contains("tarih"))
+            var res = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span').textContent;")?.ToString().ToLower();
+            if (res != null && !res.Contains("doğum") && !res.Contains("birthday") && !res.Contains("born") && !res.Contains("joined") && !res.Contains("tarih"))
                 return res;
             else return null;
         }
-
-        public static async Task<int> getFollowing(this IWebDriver driverr, string ka)
+        public static int getFollowing(this IWebDriver driverr, string ka)
         {
-            string countText = driverr.FindElement(By.XPath("//a[@href='/" + ka + "/following']")).Text;
-            countText = countText.Replace(" Takip edilen", "").Replace(" Following", "");
-            countText = Yardimci.Donustur(countText);
-            return Convert.ToInt32(countText);
+            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/following\"] > span ').textContent;");
+            secilenElement = Yardimci.Donustur(secilenElement);
+            return Convert.ToInt32(secilenElement);
+        }
+        public static int getFollowers(this IWebDriver driverr, string ka)
+        {
+
+            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/followers\"] > span ').textContent;");
+            secilenElement = Yardimci.Donustur(secilenElement);
+            return Convert.ToInt32(secilenElement);
 
         }
-        public static async Task<int> getFollowers(this IWebDriver driverr, string ka)
+        public static double getLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)
         {
 
-            string countText = driverr.FindElement(By.XPath("//a[@href='/" + ka + "/followers']")).Text;
-            countText = countText.Replace(" Takipçi", "").Replace(" Followers", "");
-            countText = Yardimci.Donustur(countText);
-            return Convert.ToInt32(countText);
-
-        }
-
-        public static async Task<double> getLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)
-        {
-            try
+            if (tweetorlikecount < 21) return (Math.Round((date / tweetorlikecount), 2));
+            else
             {
-                if (tweetorlikecount < 21) return (Math.Round((date / tweetorlikecount), 2));
-                else
+                int count = 0;
+                while (driverr.FindElements(By.CssSelector("[data-testid=tweet]")).Count == 0 && count < 20)
                 {
-                    double toplamGunSayisi = 0;
-                    List<IWebElement> sonTweetler = driverr.FindElements(By.CssSelector("[data-testid=tweet]")).ToList();
-                    int count = 0;
-                    while (sonTweetler.Count < 1 && count < 20)
-                    {
-                        sonTweetler = driverr.FindElements(By.CssSelector("[data-testid=tweet]")).ToList();
-                        Thread.Sleep(100);
-                        count++;
-                    }
-                    if (sonTweetler.Count == 0) return 0;
-                    if (driverr.FindElements(By.CssSelector("[data-testid=socialContext]")).Count > 0)
-                        sonTweetler.Remove(sonTweetler[0]);
-
-                    foreach (IWebElement item in sonTweetler)
-                    {
-                        string datee = item.FindElement(By.TagName("time")).GetAttribute("datetime");
-                        toplamGunSayisi += (DateTime.Today - Convert.ToDateTime(datee)).TotalDays;
-                    }
-                    var i = Math.Round((toplamGunSayisi / sonTweetler.Count), 2);
-                    return i;
+                    Thread.Sleep(150);
+                    count++;
+                    if (count >= 20) return 0;
                 }
-            }
-            catch (Exception)
-            {
-                return 0;
+
+                double toplamGunSayisi = 0;
+                dynamic result = driverr.JSCodeRun(
+                    "var tarihler= []; var x = document.querySelectorAll('[data-testid=tweet] time'); x.forEach(x => tarihler.push(x.getAttribute('datetime'))); return tarihler;");
+                bool sabitTweetVarmi = (bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=socialContext]').length > 0");
+                int kuralaUygunTarihler = 0;
+                for (int i = 0; i < result.Count; i++)
+                {
+                    DateTime tarih = Convert.ToDateTime(result[i]);
+                    DateTime tarih2 = new DateTime();
+                    for (int j = i + 1; j < result.Count; j++)
+                    {
+                        tarih2 = Convert.ToDateTime(result[j]);
+                        if (tarih < tarih2) break;
+                    }
+                    if (tarih > tarih2)
+                    {
+                        toplamGunSayisi += (DateTime.Now - tarih).TotalDays;
+                        kuralaUygunTarihler++;
+                    }
+                }
+                return Math.Round((toplamGunSayisi / kuralaUygunTarihler), 1);
             }
 
         }
-        public static async Task<bool> isPrivate(this IWebDriver driverr)
+        public static bool isPrivate(this IWebDriver driverr)
         {
-            return driverr.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
-
+            return (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
         }
-        public static async Task<string> getfollowStatus(this IWebDriver driverr)
+        public static string getfollowStatus(this IWebDriver driverr)
         {
-            if (driverr.FindElements(By.CssSelector("[data-testid=placementTracking]")).Count > 0)
-                return driverr.FindElement(By.CssSelector("[data-testid=placementTracking]")).Text;
-            return null;
+            if ((Int64)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=placementTracking]').length;") > 0)
+                return (string)driverr.JSCodeRun("return document.querySelector('[data-testid=placementTracking]').textContent;");
+            else return null;
         }
-        public static async Task<string> IsFollowers(this IWebDriver driverr)
+        public static string IsFollowers(this IWebDriver driverr)
         {
-            if (driverr.FindElements(By.CssSelector("div.css-901oao.css-bfa6kz.r-1awozwy.r-1sw30gj.r-z2wwpe.r-14j79pv.r-6koalj.r-1q142lx.r-1qd0xha.r-1enofrn.r-16dba41.r-fxxt2n.r-13hce6t.r-bcqeeo.r-s1qlax.r-qvutc0")).Count > 0)
+            if ((Int64)driverr.JSCodeRun("return document.querySelectorAll('div.css-901oao.css-bfa6kz.r-1awozwy.r-1sw30gj.r-z2wwpe.r-14j79pv.r-6koalj.r-1q142lx.r-1qd0xha.r-1enofrn.r-16dba41.r-fxxt2n.r-13hce6t.r-bcqeeo.r-s1qlax.r-qvutc0').length;") > 0)
                 return "Seni\ntakip ediyor";
             else return "Takip\netmiyor";
 
         }
-
-        public static async Task<string> getBio(this IWebDriver driverr)
+        public static string getBio(this IWebDriver driverr)
         {
-            System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> x = driverr.FindElements(By.CssSelector("[data-testid=UserDescription]"));
-            if (x.Count > 0)
-                return x[0].Text;
+
+            var x = (Int64)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserDescription]').length;") > 0;
+            if (x) return (string)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserDescription]')[0].textContent;");
             else return null;
         }
-
-        public static async Task<int> getLikeCount(this IWebDriver driverr)
+        public static int getLikeCount(this IWebDriver driverr)
         {
-            string lc = driverr.FindElement(By.XPath("//header[@role='banner']")).Text;
-            lc = lc.Split('\n').Length == 1 ? lc.Split('\n')[0] : lc.Split('\n')[1];
-            lc = lc.Replace("Beğeniler", "").Replace("Beğeni", "").Replace("Likes", "").Replace("Like", "");
+            string lc = ((string)driverr.JSCodeRun("return document.querySelector('header').innerText;"));
+            var dizi = lc.Split("\n");
+            lc = dizi[dizi.Length - 2];
             int likecount = Convert.ToInt32(Yardimci.Donustur(lc));
             likecount = likecount > 1 ? likecount : likecount + 1;
             return likecount;
         }
-        public static async Task<string> getPhotoURL(this IWebDriver driverr, string ka)
+        public static string getPhotoURL(this IWebDriver driverr, string ka)
         {
-            string photoURL = driverr.FindElement(By.XPath("//a[@href='/" + ka + "/photo']")).FindElement(By.TagName("img")).GetAttribute("src");
-            return photoURL;
+            return (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/photo\"] img').getAttribute(\"src\");");
         }
-
-        public async static Task<string> CinsiyetBul(string name)
+        public static string CinsiyetBul(string name)
         {
+
             if (String.IsNullOrEmpty(name)) return "Belirsiz";
             string[] isimler = name?.Split(' ');
             string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
@@ -174,6 +201,14 @@ namespace Tweetly_MVC.Init
                 return cinsiyet;*/
                 return "Belirsiz";
             }
+        }
+
+        public static string profilUserButtonClick(this IWebDriver driverr)
+        {
+            driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
+            Thread.Sleep(100);
+            driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
+            return driverr.getfollowStatus();
         }
 
     }

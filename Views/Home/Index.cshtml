@@ -1,5 +1,6 @@
 ﻿@using Tweetly_MVC.Models;
-
+@using FormHelper
+@addTagHelper *, FormHelper
 @model List<User>
 
 @{
@@ -11,7 +12,7 @@
 <div class="col">
     <div id="row">
         <div class="progress" id="progressbox" style="display:none; height:30px;">
-            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progress" style="width: 40%; height: 30px;">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progress" style="width: 40%; height: 30px; margin-bottom:15px;">
                 40%
             </div>
         </div>
@@ -46,11 +47,13 @@
                         <td>@item.Count</td>
                         <td>
                             <p class="product">
-                                <a href="#">
+                                <a class="images" href="@item.PhotoURL.Replace("200x200", "400x400")" target="_blank">
                                     @if (item.isPrivate)
-                                    {<img style="position:absolute; left: -20px" src="https://cdn4.iconfinder.com/data/icons/materia-flat-security-vol-1/24/022_044_lock_padlock_password_secure_private_protection-32.png">}
-                                    <img src="@item.PhotoURL" alt="" style="border-radius:50%; width:150px; height:150px;" />
-                                    <img class="gizli" src="@item.PhotoURL.Replace("200", "400")" alt="" />
+                                    {
+                                        <img style="position:absolute; left: -10px" src="https://cdn0.iconfinder.com/data/icons/security-8/500/lock2-32.png">
+                                    }
+                                    <img class="photo" src="@item.PhotoURL" alt="" style="border-radius: 50%; width: 200px; height: 200px;" />
+                                    <img class="gizli" src="#" alt="" />
                                 </a>
                             </p>
                             <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
@@ -72,16 +75,28 @@
                         <td>@item.Following</td>
                         <td>@item.Date</td>
                         <td>@item.TweetCount</td>
-                        <td>@item.LastTweetsDate</td>
+                        <td>@item.LastTweetsDate.ToString().Replace(",", ".")</td>
                         <td>@item.TweetSikligi</td>
                         <td>@item.LikeCount</td>
-                        <td>@item.LastLikesDate</td>
+                        <td>@item.LastLikesDate.ToString().Replace(",", ".")</td>
                         <td>@item.BegeniSikligi</td>
                         <td><div class="metinkaydir" style="width:60px">@item.FollowersStatus</div></td>
                         <td>
-                            <button value="@item.Username" style="width: 92px;display: block;" type="button" class="btn btn-primary metinkaydir">@item.FollowStatus</button>
-                            <button type="button" value="@item.Username" class="btn btn-danger" style="display: block; width: 92px; margin-top: 10px;">Engelle</button>
-                            <button type="button" value="@item.Username" class="btn btn-warning" style=" display: block; width: 92px; margin-top: 10px;">Sessize Al</button>
+                            @{ string id = item.Username + "Unf";}
+                            <form method="post" asp-controller="Home" asp-action="TakipCik" data-ajax="true" data-ajax-method="post"
+                                 data-ajax-update="#@id" data-ajax-mode="replace" >
+                                <button id="@id" name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
+                            </form>
+                            <button asp-action="Engelle" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-danger userbutons">Engelle</button>
+                            <button asp-action="SessizeAl" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-warning userbutons">Sessize Al</button>
+                            @*<form action="@Url.Action("TakipCik")" method="post">
+                                    <button name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
+                                </form>*@
+
+
+
+
+
                         </td>
                     </tr>
                 }
@@ -89,32 +104,23 @@
         </table>
     </div>
 </div>
-<script type="text/javascript">
-
-    $(document).ready(function () {
-        $("#takipciler").on("click", function () {
-            $("#progressbox").css("display", "block");
-            setInterval(() => {
-                $.ajax({
-                    url: '/Home/GuncelleProgress/',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        data = JSON.parse(data)
-                        console.log(data);
-                        console.log(data.metin);
-                        console.log(data.veri);
-                        console.log(data.metin + " " + data.veri);
-                        $("#progress").css("width", data.veri + "%");
-                        $("#progress").text(data.metin + " " + data.veri + "%");
-                    }
-                });
-            }, 5000);
-
-        });
-
-        
 
 
+
+<script>
+    $(".gizli2").hide();
+    $(".images").on({
+        mouseenter: function () {
+            var element = $(this.getElementsByClassName("gizli"));
+            element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('x96', "400x400"));
+            element.show(500);
+        },
+        mouseleave: function () {
+            var element = $(this.getElementsByClassName("gizli"));
+            element.hide(500);
+            element.attr('src', '#');
+        }
     });
+
+
 </script>

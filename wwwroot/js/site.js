@@ -1,7 +1,63 @@
-﻿$(document).ready(function () {
-    $(".stats").width($(".stats .box").length * ($(".stats .box").width() + 50));
-    var table = $('.fl-table').DataTable({
-        paging: false,
+﻿function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+            break;
+        }
+    }
+}
+
+var el = document.getElementById('graph'); // get canvas
+
+var options = {
+    percent: el.getAttribute('data-percent') || 25,
+    size: el.getAttribute('data-size') || 220,
+    lineWidth: el.getAttribute('data-line') || 15,
+    rotate: el.getAttribute('data-rotate') || 0
+}
+
+var canvas = document.createElement('canvas');
+var span = document.createElement('span');
+span.textContent = options.percent + '%';
+
+if (typeof (G_vmlCanvasManager) !== 'undefined') {
+    G_vmlCanvasManager.initElement(canvas);
+}
+
+var ctx = canvas.getContext('2d');
+canvas.width = canvas.height = options.size;
+
+el.appendChild(span);
+el.appendChild(canvas);
+
+ctx.translate(options.size / 2, options.size / 2); // change center
+ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
+
+//imd = ctx.getImageData(0, 0, 240, 240);
+var radius = (options.size - options.lineWidth) / 2;
+
+var drawCircle = function (color, lineWidth, percent) {
+    percent = Math.min(Math.max(0, percent || 1), 1);
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2 * percent, false);
+    ctx.strokeStyle = color;
+    ctx.lineCap = 'round'; // butt, round or square
+    ctx.lineWidth = lineWidth
+    ctx.stroke();
+};
+
+drawCircle('#efefef', options.lineWidth, 100 / 100);
+
+
+var table;
+async function tableAyarla() {
+    console.log(1);
+    table = await $('.fl-table').DataTable({
+        paging: true,
+        lengthMenu: [
+            [10, 25, 50, 100, 200, 500, -1],
+            ['10 Satır', '25 Satır', '50 Satır', '100 Satır', '200 Satır', '500 Satır', 'Hepsini Göster']
+        ],
         info: false,
         ordering: true,
         searching: true,
@@ -9,67 +65,95 @@
         responsive: true,
         colReorder: true,
         select: true,
+        //columnDefs: [{
+        //    orderable: false,
+        //    className: 'select-checkbox',
+        //    targets: 0
+        //}],
         select: {
-            style: 'multi'
-
+            style: 'multi',
+            blurable: true,
+            //  selector: 'td:first-child'
         },
         lengthChange: false,
         buttons: [
             {
+                extend: 'pageLength',
+                text: 'Satır Sayısı',
+                className: 'tablobutonlar'
+            },
+            {
                 extend: 'searchBuilder',
                 text: 'Gelişmiş Arama',
-                className: 'btn btn-danger'
+                className: 'tablobutonlar'
             },
             {
                 extend: 'colvis',
-                text: 'Sütun Gizle'
-            },
-            {
-                extend: 'selectAll',
-                text: 'Tümünü Seç',
-                className: 'btn btn-danger'
-            },
-            {
-                extend: 'selected',
-                text: 'Count selected rows',
-                action: function (e, dt, button, config) {
-                    alert(dt.rows({ selected: true }) + ' row(s) selected');
-                }
+                text: 'Sütun Gizle',
+                collectionLayout: 'two-column',
+                className: 'tablobutonlar'
             }
+            /*,
+            {
+                extend: 'collection',
+                text: 'Diğerleri',
+                className: 'tablobutonlar',
+                buttons: [
+                    {
+                        collectionTitle: 'Visibility control',
+                        extend: 'colvis',
+                        collectionLayout: 'two-column',
+                        className: 'tablobutonlar'
+                    }
+                ]
+            }*/
+
         ]
 
     });
+    table.buttons().container().appendTo($('div.column.is-one-half', table.table().container()).eq(0));
+    $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="button is-light buttons-collection tablobutonlar"">Seçilenleri Takipten Çık</button>`);
+    $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
+    $('#DataTables_Table_0_filter').css("text-align", "left");
+    $('#DataTables_Table_0_filter').html($('#DataTables_Table_0_filter input'));
 
-    table.buttons().container()
-        .appendTo($('div.column.is-one-half', table.table().container()).eq(0));
-    $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="btn btn-danger"">Seçilenleri Takipten Çık</button>`);
 
     $("#TakipCik").on("click", function () {
-        var kullaniciAdi = "";
-        var secilenlerArray = $('.fl-table').DataTable().rows({ selected: true }).data().toArray();
-        for (var i = 0; i < secilenlerArray.length; i++) {
-            var satir = secilenlerArray[i];
-            var sutunText = satir[1];
-            var basla = sutunText.indexOf('@');
-            var kullaniciadi = sutunText.substring(basla, sutunText.indexOf('<', basla));
-            kullaniciAdi += kullaniciadi+';';
-        }
-        setTimeout(function () {
-            
-            $.ajax({
-                type: "POST",
-                url: "/Home/TakipCik",
-                data: { Usernames: kullaniciAdi },
-                dataType: "text",
-                success: function (msg) {
-                    // Replace the div's content with the page method's return.
-                    $("#Result").text(msg.d);
-                }
-            });
 
-           
-        }, 2000);
+        $.ajax({
+            type: "POST",
+            url: "/Home/TakipCik",
+            data: { Usernames: $("tr.selected #username").text() },
+            dataType: "text",
+            success: function (msg) {
+                // $("tr.selected").css("background-color", "#dc3545");
+                //$("tr.selected").css("color", "white");
+                $('tr.selected button[name="Usernames"]').text("Takip et")
+            }
+        });
 
     });
 
+}
+
+tableAyarla();
+
+$("#takipciler").on("click", function () {
+    $("#progressbox").css("display", "block");
+    setInterval(() => {
+        $.ajax({
+            url: '/Home/GuncelleProgress/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                data = JSON.parse(data)
+                $("#progress").css("width", data.veri + "%");
+                $("#progress").text(data.metin + " " + data.veri + "%");
+            }
+        });
+    }, 5000);
+
 });
+
+
+

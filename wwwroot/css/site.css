@@ -1,6 +1,5 @@
 ﻿body {
     font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: 650;
 }
 
 .v::-webkit-scrollbar {
@@ -132,7 +131,6 @@
             }
 
 .stats {
-   
     background-color: yellow;
     margin-bottom: 10px;
     margin: 0 auto;
@@ -144,7 +142,7 @@
         background: #ffffff;
         text-align: center;
         transition: all 0.4s ease-in-out;
-        margin-left:10px;
+        margin-left: 10px;
         float: left;
     }
 
@@ -175,17 +173,17 @@
 
 /* Table Styles */
 
-    .fl-table {
-        border-radius: 5px;
-        font-size: 14px;
-        font-weight: normal;
-        border: none;
-        border-collapse: collapse;
-        width: 100%;
-        max-width: 100%;
-        white-space: nowrap;
-        background-color: white;
-    }
+.fl-table {
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
 
     .fl-table td,
     .fl-table th {
@@ -298,53 +296,73 @@
         text-align: center;
     }
 }
-
+.userbutons {
+    display: block;
+    margin:auto;
+    width: 92px;
+    margin-bottom: 10px;
+}
 
 /*TABLE*/
-    .metinkaydir {
-        white-space: pre-wrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.metinkaydir {
+    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+p.product a .gizli {
+    border-radius: 5%;
+    box-shadow: 0px 0px 25px #000000;
+    display: none;
+    position: absolute;
+    left: 200px;
+    top: -150px;
+}
+
+p.product a {
+    display: inline-block;
+    position: relative;
+}
+
+
 
     p.product a .gizli {
-        display: none;
-        position: absolute;
-        left: 175px;
-        top: -150px;
+        max-width: 400px;
+        width: 400px;
+        height: 400px;
     }
 
-    p.product a {
-        display: inline-block;
-        position: relative;
-    }
-
-    p.product a .gizli {
-        display: none;
-    }
-
-    p.product a:hover .gizli {
-        display: block;
-        max-width:550px;
-        width: 550px;
-        height: 550px;
-    }
-
-    #username {
-        text-decoration: none;
-        color: gray;
-        font-weight: lighter;
-    }
+#username {
+    text-decoration: none;
+    color: gray;
+    font-weight: lighter;
+}
 
     #username:hover {
         color: gray;
         font-weight: 700;
     }
 
+.dt-buttons.field.is-grouped{
+    margin-bottom:5px;
+}
 
-
-
-
+.tablobutonlar {
+    margin-right: 10px !important;
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+    .tablobutonlar:hover {
+        background-color: #6610f2 !important;
+        color: white !important;
+    }
+#DataTables_Table_0_wrapper .column {
+    display: block !important;
+    flex-basis: unset !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    /* padding: .75rem; */
+}
 
 /*SOL MENU BAR*/
 html {
@@ -390,8 +408,7 @@ html {
 /* create tooltip after each menu item  */
 .menu__item::after {
     position: absolute;
-    display: inline-block; 
-  
+    display: inline-block;
     top: 50%;
     transform: translateY(-50%);
     left: 100%;
@@ -414,7 +431,35 @@ html {
     opacity: 1;
     visibility: visible;
 }
+
 table td, table th {
     text-align: center !important;
-    vertical-align: middle!important;
+    vertical-align: middle !important;
+}
+
+
+#graph div {
+    position: relative;
+    margin: 80px;
+    width: 220px;
+    height: 220px;
+}
+
+#graph canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#graph span {
+    color: #555;
+    display: block;
+    line-height: 220px;
+    text-align: center;
+    width: 220px;
+    font-family: sans-serif;
+    font-size: 40px;
+    font-weight: 100;
+    margin-left: 5px;
 }

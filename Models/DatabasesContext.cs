@@ -7,6 +7,7 @@ namespace Tweetly_MVC.Models
 {
     public class DatabasesContext:DbContext
     {
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=.\SQLEXPRESS;Initial Catalog=TweetlyDataBase;Integrated Security=True");

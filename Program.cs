@@ -14,11 +14,11 @@ namespace Tweetly_MVC
 {
     public class Programk
     {
-  
+
         public static void Main(string[] args)
         {
-            
-           Hesap.loginUserName = Test.username;
+
+            Hesap.loginUserName = Test.username;
             Hesap.loginPass = Test.pass;
             Yardimci.killProcces();
             Login.CreateDrivers().Wait();

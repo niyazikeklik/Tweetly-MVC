@@ -11,25 +11,126 @@ using Tweetly_MVC.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
+        static int ms = 75;
+        public static IWebElement getElement(this IWebElement driverr, By sorgu)
+        {
+            int count = 0;
+            while (count < 10)
+            {
+                try
+                {
+                    return driverr.FindElement(sorgu);
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(ms);
+                    count++;
+                }
+            }
+            return null;
+        }
+        public static List<IWebElement> getElements(this IWebElement driverr, By sorgu)
+        {
+            int count = 0;
+            while (count < 10)
+            {
+                try
+                {
+                    return driverr.FindElements(sorgu).ToList();
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(ms);
+                    count++;
+                }
+            }
+            return null;
+        }
+        public static IWebElement getElement(this IWebDriver driverr, By sorgu)
+        {
+            int count = 0;
+            while (count < 10)
+            {
+                try
+                {
+                    return driverr.FindElement(sorgu);
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(ms);
+                    count++;
+                }
+            }
+
+            return null;
+        }
+        public static List<IWebElement> getElements(this IWebDriver driverr, By sorgu)
+        {
+            int count = 0;
+            while (count < 10)
+            {
+                try
+                {
+                    return driverr.FindElements(sorgu).ToList();
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(ms);
+                    count++;
+                }
+            }
+            return null;
+        }
+        public static bool isPage(string url)
+        {
+            url = url.Replace("400x400", "x96").Replace("200x200", "x96").Replace("normal", "x96").Replace("mini", "x96");
+            try
+            {
+                HttpWebRequest request = HttpWebRequest.Create(url) as HttpWebRequest;
+                request.Timeout = 1000;
+                request.Method = "HEAD";
+                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                {
+                    int statusCode = (int)response.StatusCode;
+                    if (statusCode >= 100 && statusCode < 400) return true;
+                    else return false;
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Message.Contains("404"))
+                    return false;
+                return true;
+            }
+        }
         public static string Donustur(string metin)
         {
-            metin = metin.Replace(" ", "");
+            metin = metin
+                .Replace("Tweets", "")
+                .Replace("Tweet", "")
+                .Replace("Tweetler", "")
+                .Replace("Beğeniler", "")
+                .Replace("Beğeni", "")
+                .Replace("Likes", "")
+                .Replace("Like", "");
+
             metin = metin.Replace("Mn", "000000");
             if (metin.IndexOf(',') == -1 && metin.IndexOf('.') == -1)
-            {
                 metin = metin.Replace("B", "000").Replace("K", "000");
-            }
             else
-            {
                 metin = metin.Replace("B", "00").Replace("K", "00");
-            }
-            metin = metin.Replace(".", "").Replace(" ", "").Replace(",", "");
-            return metin;
+            string number = "";
+            foreach (var item in metin)
+                if (char.IsNumber(item))
+                    number += item;
+            return number;
         }
         public static double KayıtTarihi(string kayittarihi)
         {
@@ -92,45 +193,50 @@ namespace Tweetly_MVC.Init
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
         }
-        public static void Control(this IWebDriver driver, string userName, string link)
+        public static bool Control(this IWebDriver driver, string userName, string link)
         {
-            //By.cssSelector("a[href='mysite.com']");
-            //https://mobile.twitter.com/login
-            ///login
-            try
+            Hesap.Iletisim.metin = "";
+            int count = 0;
+            driver.WaitForLoad();
+            while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
             {
-                while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
-                {
-                    if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0) break;
-                    if (driver.Url.Contains("limit"))
-                    {
-                        Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
-                        Thread.Sleep(360000);
-                        Hesap.Iletisim.metin = "";
-                        driver.Navigate().GoToUrl(link);
-                        driver.Control(userName, link);
+                if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
+                    return false; //Engellemişse
 
-                    }
-                    Thread.Sleep(5);
+                if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
+                {
+
+                    Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
+                    Thread.Sleep(360000);
+                    Hesap.Iletisim.metin = "";
+                    driver.Navigate().GoToUrl(link);
+                    return driver.Control(userName, link);
+
                 }
-                if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
+                if (count == 20)
                 {
                     driver.Navigate().Refresh();
                     driver.WaitForLoad();
-                    driver.Control(userName, link);
+                    Thread.Sleep(2000);
                 }
-            }
-            catch (Exception)
-            {
-                Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
+                Thread.Sleep(250);
+                count++;
 
-                Thread.Sleep(360000);
-                Hesap.Iletisim.metin = "";
-                driver.Navigate().GoToUrl(link);
-                driver.Control(userName, link);
+
             }
+            if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
+            { 
+                driver.Navigate().Refresh();
+                return driver.Control(userName, link);
+            }
+
+            driver.WaitForLoad();
+            return true;
 
         }
+
+
+
         public static void killProcces()
         {
             Process[] runingProcess = Process.GetProcesses();
@@ -166,7 +272,7 @@ namespace Tweetly_MVC.Init
         }
 
         private static readonly HttpClient client = new HttpClient();
-    
+
         public static bool isSayfaSonu(this IWebDriver driverr)
         {
             try
