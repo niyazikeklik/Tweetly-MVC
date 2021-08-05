@@ -22,9 +22,9 @@ namespace Tweetly_MVC.Init
                 driver.getElement(By.Name("username")).SendKeys(ka + Keys.Enter);
                 driver.getElement(By.Name("password")).SendKeys(ps + Keys.Enter);
             }
-            else if(driver.Url.Contains("login"))
+            else if (driver.Url.Contains("login"))
             {
-                tekrar:
+            tekrar:
                 try
                 {
                     driver.getElement(By.Name("session[username_or_email]"))?.Clear();
@@ -35,11 +35,11 @@ namespace Tweetly_MVC.Init
                 catch (Exception)
                 {
                     goto tekrar;
-                } 
+                }
 
                 Thread.Sleep(1000);
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", Hesap.loginPass, driver);
+                    Giris("niyazikeklik@gmail.com", Hesap.Instance.loginPass, driver);
             }
             else if (driver.Url.Contains("home"))
             {
@@ -59,7 +59,7 @@ namespace Tweetly_MVC.Init
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-            chromeOptions.AddArgument("--headless");
+            //  chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 
@@ -67,25 +67,23 @@ namespace Tweetly_MVC.Init
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
             driver.Navigate().GoToUrl("https://mobile.twitter.com/login");
-            Giris(Hesap.loginUserName, Hesap.loginPass, driver);
+            Giris(Hesap.Instance.loginUserName, Hesap.Instance.loginPass, driver);
 
             return driver;
         }
 
-        public static Task CreateDrivers()
+        public static void CreateDrivers()
         {
             Task g1 = Task.Run(() => optionDriver()).ContinueWith(x =>
             {
                 Drivers.Driver = x.Result;
-                Hesap.OturumBilgileri = Drivers.Driver.getProfil(Hesap.loginUserName, false);
+                Hesap.Instance.OturumBilgileri = Drivers.Driver.getProfilSenkron(Hesap.Instance.loginUserName);
             });
-            Task g2 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver2 = x.Result);
-            Task g3 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver3 = x.Result);
-            Task g4 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver4 = x.Result);
-            Task g5 = Task.Run(() => optionDriver()).ContinueWith(x => Drivers.Driver5 = x.Result);
-
-            Task.WaitAll(new Task[] { g1, g2, g3, g4, g5 });
-            return Task.CompletedTask;
+            Task.Run(() => Drivers.Driver2 = optionDriver());
+            Task.Run(() => Drivers.Driver3 = optionDriver());
+            Task.Run(() => Drivers.Driver4 = optionDriver());
+            Task.Run(() => Drivers.Driver5 = optionDriver());
+            Task.WaitAny(g1);
         }
 
     }

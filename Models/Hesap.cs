@@ -12,20 +12,36 @@ namespace Tweetly_MVC.Models
     }
     public struct IILetisim
     {
+        public System.DateTime tarih;
+        public string sure;
         public string metin;
         public int veri;
     }
-    public static class Hesap
+    public class Hesap
     {
-       
-        public static string loginUserName { get; set; }
-        public static string loginPass { get; set; }
-        public static User OturumBilgileri { get; set; }
+        static private Hesap instance;
+        public static Hesap Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new Hesap();
+                return instance;
+            }
+        }
 
-        public static List<User> Takipciler = new List<User>();
+        Hesap()
+        {
+            this.Takipciler = new List<User>();
+            this.Iletisim = new IILetisim();
+            this.cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
+        }
+        public string loginUserName { get; set; }
+        public string loginPass { get; set; }
+        public User OturumBilgileri { get; set; }
+        public List<User> Takipciler { get; set; }
 
-        public static IILetisim Iletisim = new IILetisim();
-
-        public static List<Cinsiyetler> cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
+        public IILetisim Iletisim;
+        public List<Cinsiyetler> cins { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace Tweetly_MVC.Init
                 catch (Exception)
                 {
                     Thread.Sleep(ms);
-                    count++;
+                   count++;
                 }
             }
 
@@ -193,9 +193,9 @@ namespace Tweetly_MVC.Init
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
         }
-        public static bool Control(this IWebDriver driver, string userName, string link)
+        public static bool Control(this IWebDriver driver, string userName, string link, int ms)
         {
-            Hesap.Iletisim.metin = "";
+            Hesap.Instance.Iletisim.metin = "";
             int count = 0;
             driver.WaitForLoad();
             while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
@@ -206,11 +206,11 @@ namespace Tweetly_MVC.Init
                 if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
                 {
 
-                    Hesap.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(360000) + " | ";
-                    Thread.Sleep(360000);
-                    Hesap.Iletisim.metin = "";
+                    Hesap.Instance.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
+                    Thread.Sleep(ms);
+                    Hesap.Instance.Iletisim.metin = "";
                     driver.Navigate().GoToUrl(link);
-                    return driver.Control(userName, link);
+                    return driver.Control(userName, link, 60000);
 
                 }
                 if (count == 20)
@@ -227,10 +227,8 @@ namespace Tweetly_MVC.Init
             if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
             { 
                 driver.Navigate().Refresh();
-                return driver.Control(userName, link);
+                return driver.Control(userName, link,ms);
             }
-
-            driver.WaitForLoad();
             return true;
 
         }

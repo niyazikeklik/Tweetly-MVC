@@ -28,7 +28,7 @@ namespace Tweetly_MVC.Models
                     return item;
                 }
             }
-            Thread.Sleep(50);
+            Thread.Sleep(500);
             return MusaitOlanDriver();
         }
 

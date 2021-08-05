@@ -34,7 +34,8 @@ namespace Tweetly_MVC.Migrations
 
                     b.Property<int>("Count")
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .UseIdentityColumn().UseIdentityColumn(1,1);
+                    
 
                     b.Property<double>("Date")
                         .HasColumnType("float");

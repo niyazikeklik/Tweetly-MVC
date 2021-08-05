@@ -7,47 +7,6 @@
     }
 }
 
-var el = document.getElementById('graph'); // get canvas
-
-var options = {
-    percent: el.getAttribute('data-percent') || 25,
-    size: el.getAttribute('data-size') || 220,
-    lineWidth: el.getAttribute('data-line') || 15,
-    rotate: el.getAttribute('data-rotate') || 0
-}
-
-var canvas = document.createElement('canvas');
-var span = document.createElement('span');
-span.textContent = options.percent + '%';
-
-if (typeof (G_vmlCanvasManager) !== 'undefined') {
-    G_vmlCanvasManager.initElement(canvas);
-}
-
-var ctx = canvas.getContext('2d');
-canvas.width = canvas.height = options.size;
-
-el.appendChild(span);
-el.appendChild(canvas);
-
-ctx.translate(options.size / 2, options.size / 2); // change center
-ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
-
-//imd = ctx.getImageData(0, 0, 240, 240);
-var radius = (options.size - options.lineWidth) / 2;
-
-var drawCircle = function (color, lineWidth, percent) {
-    percent = Math.min(Math.max(0, percent || 1), 1);
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2 * percent, false);
-    ctx.strokeStyle = color;
-    ctx.lineCap = 'round'; // butt, round or square
-    ctx.lineWidth = lineWidth
-    ctx.stroke();
-};
-
-drawCircle('#efefef', options.lineWidth, 100 / 100);
-
 
 var table;
 async function tableAyarla() {
@@ -72,7 +31,7 @@ async function tableAyarla() {
         //}],
         select: {
             style: 'multi',
-            blurable: true,
+            blurable: true
             //  selector: 'td:first-child'
         },
         lengthChange: false,
@@ -83,16 +42,24 @@ async function tableAyarla() {
                 className: 'tablobutonlar'
             },
             {
+            
                 extend: 'searchBuilder',
                 text: 'Gelişmiş Arama',
-                className: 'tablobutonlar'
+                className: 'tablobutonlar',
+                enterSearch: true,
+
             },
             {
                 extend: 'colvis',
                 text: 'Sütun Gizle',
                 collectionLayout: 'two-column',
                 className: 'tablobutonlar'
-            }
+            },
+            {
+                extend: 'selectAll',
+                text: 'Tümünü seç',
+                className: 'tablobutonlar'
+            },
             /*,
             {
                 extend: 'collection',
@@ -115,7 +82,7 @@ async function tableAyarla() {
     $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="button is-light buttons-collection tablobutonlar"">Seçilenleri Takipten Çık</button>`);
     $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
     $('#DataTables_Table_0_filter').css("text-align", "left");
-    $('#DataTables_Table_0_filter').html($('#DataTables_Table_0_filter input'));
+   // $('#DataTables_Table_0_filter').html($('#DataTables_Table_0_filter input'));
 
 
     $("#TakipCik").on("click", function () {
@@ -128,7 +95,8 @@ async function tableAyarla() {
             success: function (msg) {
                 // $("tr.selected").css("background-color", "#dc3545");
                 //$("tr.selected").css("color", "white");
-                $('tr.selected button[name="Usernames"]').text("Takip et")
+                $('tr.selected button[name="Usernames"]').text("Takip et");
+                $('tr.selected').remove();
             }
         });
 
@@ -149,6 +117,7 @@ $("#takipciler").on("click", function () {
                 data = JSON.parse(data)
                 $("#progress").css("width", data.veri + "%");
                 $("#progress").text(data.metin + " " + data.veri + "%");
+                $("#gecensure").text("Geçen süre: "+ data.sure + " ")
             }
         });
     }, 5000);

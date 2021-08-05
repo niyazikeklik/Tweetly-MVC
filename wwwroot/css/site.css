@@ -38,7 +38,7 @@
     height: 100%;
     text-align: center;
     background-color: white;
-    margin-right: 1px;
+   float:right;
 }
 
     .profile .image {
@@ -131,14 +131,14 @@
             }
 
 .stats {
-    background-color: yellow;
     margin-bottom: 10px;
     margin: 0 auto;
 }
 
     .stats .box {
         box-sizing: border-box;
-        width: 150px;
+        width: 30%;
+        min-width:100px;
         background: #ffffff;
         text-align: center;
         transition: all 0.4s ease-in-out;

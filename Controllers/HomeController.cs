@@ -19,8 +19,8 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if (Hesap.Takipciler.Count != 0)
-                return View(Hesap.Takipciler);
+            if (Hesap.Instance.Takipciler.Count != 0)
+                return View(Hesap.Instance.Takipciler);
             List<User> user = new List<User>();
             return View(user);
         }
@@ -34,56 +34,61 @@ namespace Tweetly_MVC.Controllers
             var takiptenCikilicaklar = Usernames?.Split('@');
             foreach (var item in takiptenCikilicaklar)
             {
+                if (string.IsNullOrEmpty(item)) continue;
                 IWebDriver driver = Drivers.MusaitOlanDriver();
+                driver.Navigate().GoToUrl("https://mobile.twitter.com/" + item);
                 Task t1 = Task.Run(() =>
                 {
-                    driver.Navigate().GoToUrl("https://mobile.twitter.com/" + item);
                     butontext = driver.profilUserButtonClick();
                     if (butontext != null)
                     {
                         using (var context = new DatabasesContext())
                         {
+                           
                             var result = context.Users.SingleOrDefault(b => b.Username == item);
                             if (result != null) context.Users.Remove(result);
                             context.SaveChanges();
+                            Drivers.kullanıyorum.Remove(driver);
                         }
 
                     }
                 });
                 tasks.Add(t1);
-                Drivers.kullanıyorum.Remove(driver);
+             
             }
 
             Task.WaitAll(tasks.ToArray());
-            return null;
+            return butontext;
 
         }
-        [HttpGet]
 
-        public IActionResult TakipciList()
+
+        DateTime baslangic;
+        [HttpGet]
+        public IActionResult TakipciList(string username, string liste= "following")
         {
-            DateTime baslangic = DateTime.Now;
+            Hesap.Instance.Iletisim.tarih = DateTime.Now;
             ViewBag.gecensure = 0;
 
-            if (Hesap.Takipciler.Count != 0)
-                return View("Index", Hesap.Takipciler);
+            if (Hesap.Instance.Takipciler.Count != 0)
+                return View("Index", Hesap.Instance.Takipciler);
             DatabasesContext context = new DatabasesContext();
 
-            if (context.Users.Count() == Hesap.OturumBilgileri.Following)
+            if (context.Users.Count() == Hesap.Instance.OturumBilgileri.Following)
             {
-                Hesap.Takipciler.AddRange(context.Users);
-                return View("Index", Hesap.Takipciler);
+                Hesap.Instance.Takipciler.AddRange(context.Users);
+                return View("Index", Hesap.Instance.Takipciler);
             }
 
 
 
 
             IWebDriver driverr = Drivers.Driver;
-            driverr.Navigate().GoToUrl("https://mobile.twitter.com/" + Hesap.OturumBilgileri.Username + "/following");
+            driverr.Navigate().GoToUrl("https://mobile.twitter.com/" + username + "/" + liste);
             driverr.WaitForLoad();
 
             List<string> kontrolEdildi = new List<string>();
-            while (!driverr.isSayfaSonu() || Hesap.Takipciler.Count < Hesap.OturumBilgileri.Following - 10)
+            while (!driverr.isSayfaSonu() || Hesap.Instance.Takipciler.Count < Hesap.Instance.OturumBilgileri.Following - 10)
             {
                 var listelenenKullanicilar = driverr.FindElements(By.CssSelector("[data-testid=UserCell]")).Select(x =>
                 {
@@ -97,37 +102,44 @@ namespace Tweetly_MVC.Controllers
                 }).ToList();
                 var kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi).ToList();
                 kontrolEdilecekler.RemoveAll(x => x == null);
-                foreach (string username in kontrolEdilecekler)
+                foreach (string item in kontrolEdilecekler)
                 {
-                    
-                    User takipci = context.Users.FirstOrDefault(x => x.Username == username);
+
+                    User takipci = context.Users.FirstOrDefault(x => x.Username == item);
                     if (takipci == null)
                     {
                         var driver = Drivers.MusaitOlanDriver();
-                        Task.Run(() =>
+                        Thread baslat = new Thread(new ThreadStart(() =>
                         {
                             using (DatabasesContext context2 = new DatabasesContext())
                             {
-                                takipci = driver.getProfil(username, false);
+                                takipci = driver.getProfilSenkron(item);
                                 context2.Users.Add(takipci);
-                                Hesap.Takipciler.Add(takipci);
+                                Hesap.Instance.Takipciler.Add(takipci);
                                 context2.SaveChanges();
                             }
-                        });
+                        }));
+                        baslat.Start();
+                       
+                    
                     }
-                    else Hesap.Takipciler.Add(takipci);
-                    kontrolEdildi.Add(username);
+                    else Hesap.Instance.Takipciler.Add(takipci);
+                    kontrolEdildi.Add(item);
                 }
             }
+            context.Users.RemoveRange(context.Users);
+            context.Users.AddRange(Hesap.Instance.Takipciler);
             ViewBag.gecensure = (DateTime.Now - baslangic).TotalMinutes;
-            return View("Index", Hesap.Takipciler);
+            return View("Index", Hesap.Instance.Takipciler);
         }
 
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Hesap.Iletisim.veri = 100 * Hesap.Takipciler.Count / Hesap.OturumBilgileri.Following;
-            var yedek = Hesap.Iletisim;
+
+            Hesap.Instance.Iletisim.sure = Math.Round(((DateTime.Now) - Hesap.Instance.Iletisim.tarih).TotalMinutes, 0) + " Count: " + Hesap.Instance.Takipciler.Count;
+            Hesap.Instance.Iletisim.veri = 100 * Hesap.Instance.Takipciler.Count / Hesap.Instance.OturumBilgileri.Following;
+            var yedek = Hesap.Instance.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
     }

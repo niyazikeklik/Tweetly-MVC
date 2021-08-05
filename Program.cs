@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tweetly_MVC.Init;
@@ -18,10 +19,12 @@ namespace Tweetly_MVC
         public static void Main(string[] args)
         {
 
-            Hesap.loginUserName = Test.username;
-            Hesap.loginPass = Test.pass;
+
+
+            Hesap.Instance.loginUserName = Test.username;
+            Hesap.Instance.loginPass = Test.pass;
             Yardimci.killProcces();
-            Login.CreateDrivers().Wait();
+            Login.CreateDrivers();
             CreateHostBuilder(args).Build().Run();
         }
 
