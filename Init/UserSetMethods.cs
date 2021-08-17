@@ -34,6 +34,30 @@ namespace Tweetly_MVC.Init
                 }
             throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
         }
+        public static object JSCodeRun(this IWebElement element, string command)
+        {
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)element;
+            int count = 0;
+            string exMg = "";
+            while (count < 10)
+                try
+                {
+                    return jse.ExecuteScript(command);
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    exMg = ex.Message;
+                    count++;
+                }
+                catch (WebDriverException ex)
+                {
+                    Thread.Sleep(150);
+                    exMg = ex.Message;
+                    count++;
+                }
+            throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+        }
+
         /*  static void main()
           {
               IWebElement element = (IWebElement) driver.JSCodeRun("return document.getElemenyById('x')");
@@ -47,7 +71,6 @@ namespace Tweetly_MVC.Init
         {
             return (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
         }
-
         public static int getFollowing(this IWebDriver driverr, string ka)
         {
             string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/following\"] > span ').textContent;");

@@ -277,8 +277,9 @@ namespace Tweetly_MVC.Init
             {
                 IJavaScriptExecutor jse = (IJavaScriptExecutor)driverr;
                 double oncekiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                double sonrakiY = Convert.ToDouble(jse.ExecuteScript("window.scrollBy(0,1500); return window.scrollY;"));
-
+                jse.ExecuteScript("window.scrollBy(0,1750);");
+                Thread.Sleep(350);
+                double sonrakiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
                 if (oncekiY == sonrakiY) return true;
                 else return false;
             }

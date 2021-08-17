@@ -44,7 +44,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li>
-                            <h4 id="gecensure">Geçen süre:</h4> @ViewBag.gecensure
+                            <h4 id="gecensure">Geçen süre:</h4> @Math.Round(Convert.ToDecimal(ViewBag.gecensure), 0) dakika
                         </li>
                     </ul>
 

@@ -11,9 +11,9 @@ using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Init
 {
-    public class Login
+    public static class Login
     {
-        private static void Giris(string ka, string ps, IWebDriver driver)
+        public static void Giris(string ka, string ps, IWebDriver driver)
         {
             driver.WaitForLoad();
             Thread.Sleep(1000);
@@ -47,44 +47,9 @@ namespace Tweetly_MVC.Init
             }
 
         }
-        static int count = 10;
-        private static IWebDriver optionDriver()
-        {
-            ChromeOptions chromeOptions = new ChromeOptions();
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            chromeOptions.PageLoadStrategy = PageLoadStrategy.Eager;
-            chromeOptions.AddArgument("test-type");
-            chromeOptions.AddArgument("--ignore-certificate-errors");
-            chromeOptions.AddArgument("no-sandbox");
-            chromeOptions.AddArgument("disable-infobars");
-            chromeOptions.AddArgument("--window-size=400,820");
-            chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-            //  chromeOptions.AddArgument("--headless");
-            chromeOptions.EnableMobileEmulation("Pixel 2 XL");
-            service.HideCommandPromptWindow = true;
+    
 
-
-            IWebDriver driver = new ChromeDriver(service, chromeOptions);
-            driver.Manage().Window.Size = new Size(400, 820);
-            driver.Navigate().GoToUrl("https://mobile.twitter.com/login");
-            Giris(Hesap.Instance.loginUserName, Hesap.Instance.loginPass, driver);
-
-            return driver;
-        }
-
-        public static void CreateDrivers()
-        {
-            Task g1 = Task.Run(() => optionDriver()).ContinueWith(x =>
-            {
-                Drivers.Driver = x.Result;
-                Hesap.Instance.OturumBilgileri = Drivers.Driver.getProfilSenkron(Hesap.Instance.loginUserName);
-            });
-            Task.Run(() => Drivers.Driver2 = optionDriver());
-            Task.Run(() => Drivers.Driver3 = optionDriver());
-            Task.Run(() => Drivers.Driver4 = optionDriver());
-            Task.Run(() => Drivers.Driver5 = optionDriver());
-            Task.WaitAny(g1);
-        }
+     
 
     }
 }

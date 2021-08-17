@@ -33,6 +33,7 @@ namespace Tweetly_MVC.Models
         Hesap()
         {
             this.Takipciler = new List<User>();
+            this.GeriTakipEtmeyenler = new List<User>();
             this.Iletisim = new IILetisim();
             this.cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
@@ -40,6 +41,7 @@ namespace Tweetly_MVC.Models
         public string loginPass { get; set; }
         public User OturumBilgileri { get; set; }
         public List<User> Takipciler { get; set; }
+        public List<User> GeriTakipEtmeyenler { get; set; }
 
         public IILetisim Iletisim;
         public List<Cinsiyetler> cins { get; set; }
