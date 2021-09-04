@@ -17,6 +17,12 @@ namespace Tweetly_MVC.Controllers
     public class HomeController : Controller
     {
         [HttpGet]
+        public IActionResult Yenile()
+        {
+            DatabasesContext context = new DatabasesContext();
+            return View(context.Users);
+        }
+        [HttpGet]
         public IActionResult Index()
         {
             if (Hesap.Instance.Takipciler.Count != 0)
@@ -27,8 +33,6 @@ namespace Tweetly_MVC.Controllers
         [HttpPost]
         public string TakipCik(string Usernames)
         {
-
-
             List<Task> tasks = new List<Task>();
             string butontext = "";
             var takiptenCikilicaklar = Usernames?.Split('@');
@@ -44,19 +48,15 @@ namespace Tweetly_MVC.Controllers
                     {
                         using (var context = new DatabasesContext())
                         {
-
                             var result = context.Users.SingleOrDefault(b => b.Username == item);
                             if (result != null) context.Users.Remove(result);
                             context.SaveChanges();
                             Drivers.kullanıyorum.Remove(driver);
                         }
-
                     }
                 });
                 tasks.Add(t1);
-
             }
-
             Task.WaitAll(tasks.ToArray());
             return butontext;
 
@@ -78,7 +78,6 @@ namespace Tweetly_MVC.Controllers
             }
             if (Hesap.Instance.Takipciler.Count != 0)
                 return View("Index", Hesap.Instance.Takipciler);
-
             if (context.Users.Count() == Hesap.Instance.OturumBilgileri.Following)
             {
                 Hesap.Instance.Takipciler.AddRange(context.Users);
@@ -116,8 +115,8 @@ namespace Tweetly_MVC.Controllers
                             using (DatabasesContext context2 = new DatabasesContext())
                             {
                                 takipci = driver.getProfil(item);
-                                context2.Users.Add(takipci);
                                 Hesap.Instance.Takipciler.Add(takipci);
+                                context2.Users.Add(takipci);
                                 context2.SaveChanges();
                             }
                         }));

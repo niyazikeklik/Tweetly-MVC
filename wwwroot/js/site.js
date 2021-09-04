@@ -80,6 +80,7 @@ async function tableAyarla() {
     });
     table.buttons().container().appendTo($('div.column.is-one-half', table.table().container()).eq(0));
     $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="button is-light buttons-collection tablobutonlar"">Seçilenleri Takipten Çık</button>`);
+    $('.dt-buttons.field.is-grouped').append(`<button id="Yenile" asp-area="" asp-controller="Home" asp-action="Yenile" class ="button is-light buttons-collection tablobutonlar"">Yenile</button>`);
     $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
     $('#DataTables_Table_0_filter').css("text-align", "left");
    // $('#DataTables_Table_0_filter').html($('#DataTables_Table_0_filter input'));
