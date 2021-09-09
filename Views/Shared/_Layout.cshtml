@@ -38,7 +38,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a id="menu" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TakipciList"  asp-route-username="@Hesap.Instance.OturumBilgileri.Username"  asp-route-liste="following">Home</a>
+                            <a id="menu" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TakipciList" asp-route-username="@Hesap.Instance.OturumBilgileri.Username" asp-route-liste="following">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="menu" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListGetir" asp-route-listName="following">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -145,6 +148,9 @@
         </a>
         <a href="@Url.ActionLink("TakipciList","Home")" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takipçiler">
             <i class="bi bi-people-fill"></i>
+        </a>
+        <a href="@Url.ActionLink("ListGetir","Home")" class="menu__item menu__item--active" id="listGetir" data-tooltip="Liste getir">
+            <i class="bi bi-person-lines-fill"></i>
         </a>
         <a href="#" class="menu__item" data-tooltip="Geri takip etmeyenler">
             <i class="bi bi-envelope-fill"></i>

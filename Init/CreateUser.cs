@@ -13,7 +13,7 @@ namespace Tweetly_MVC.Init
         {
             User profil = new User();
 
-            string Text = element.Text;
+            string Text = element.Text.Replace("\r","");
 
             profil.Name = Text.Split('\n')[0].StartsWith('@') ? null : Text.Split('\n')[0];
             profil.Cinsiyet = UserSetMethods.CinsiyetBul(profil.Name);
@@ -22,7 +22,7 @@ namespace Tweetly_MVC.Init
             profil.Username = Text.Substring(basla, Text.IndexOf('\n', basla) - basla);
 
             profil.PhotoURL = element.FindElement(By.TagName("img")).GetAttribute("src").Replace("x96", "200x200");
-            profil.isPrivate = element.FindElements(By.CssSelector("[aria-label=Korumalı hesap]")).Count > 0;
+            profil.isPrivate = element.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
 
             if (Text.Contains("Seni takip ediyor"))
                 profil.FollowersStatus = "Seni takip ediyor";
@@ -32,7 +32,7 @@ namespace Tweetly_MVC.Init
                 profil.FollowStatus = "Takip ediliyor";
             else if (Text.Contains("Takip et")) profil.FollowStatus = "Takip et";
 
-            var bios = element.FindElements(By.XPath("/div/div[2]/div[2]/span"));
+            var bios = element.FindElements(By.XPath("/div/div[2]/div[2]"));
             if (bios.Count > 0) profil.Bio = bios[0].Text;
 
             if (detay) profil = Drivers.MusaitOlanDriver().getProfil(profil.Username, profil);

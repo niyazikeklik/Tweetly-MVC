@@ -18,17 +18,20 @@
                     <th>Count</th>
                     <th>Fotoğraf</th>
                     <th>Cinsiyet</th>
-                    <th>Konum</th>
                     <th>Bio</th>
-                    <th>Takipçi</th>
-                    <th>Takip<br />Edilen</th>
-                    <th>Kayıt<br />Tarihi</th>
-                    <th>Tweet</th>
-                    <th>Son<br />Tweet</th>
-                    <th>Ortalama<br />Tweet</th>
-                    <th>Beğeni</th>
-                    <th>Son<br />Beğeni</th>
-                    <th>Ortalama<br />Beğeni</th>
+                    @if (!ViewBag.sutunGizle)
+                    {
+                        <th>Konum</th>
+                        <th>Takipçi</th>
+                        <th>Takip<br />Edilen</th>
+                        <th>Kayıt<br />Tarihi</th>
+                        <th>Tweet</th>
+                        <th>Son<br />Tweet</th>
+                        <th>Ortalama<br />Tweet</th>
+                        <th>Beğeni</th>
+                        <th>Son<br />Beğeni</th>
+                        <th>Ortalama<br />Beğeni</th>
+                    }
                     <th>Takipçi<br />Durumu</th>
                     <th>Takip<br />Durumu</th>
                 </tr>
@@ -63,22 +66,25 @@
                             <i style="display: block; font-size: 17pt;" class="bi bi-gender-@classIsım"></i>
                             @item.Cinsiyet
                         </td>
-                        <td>@item.Location</td>
                         <td><div class="metinkaydir" style="width: 150px;">@item.Bio</div></td>
-                        <td>@item.Followers</td>
-                        <td>@item.Following</td>
-                        <td>@item.Date</td>
-                        <td>@item.TweetCount</td>
-                        <td>@item.LastTweetsDate.ToString().Replace(",", ".")</td>
-                        <td>@item.TweetSikligi</td>
-                        <td>@item.LikeCount</td>
-                        <td>@item.LastLikesDate.ToString().Replace(",", ".")</td>
-                        <td>@item.BegeniSikligi</td>
+                        @if (!ViewBag.sutunGizle)
+                        {
+                            <td>@item.Location</td>
+                            <td>@item.Followers</td>
+                            <td>@item.Following</td>
+                            <td>@item.Date</td>
+                            <td>@item.TweetCount</td>
+                            <td>@item.LastTweetsDate.ToString().Replace(",", ".")</td>
+                            <td>@item.TweetSikligi</td>
+                            <td>@item.LikeCount</td>
+                            <td>@item.LastLikesDate.ToString().Replace(",", ".")</td>
+                            <td>@item.BegeniSikligi</td>
+                        }
                         <td><div class="metinkaydir" style="width:60px">@item.FollowersStatus</div></td>
                         <td>
                             @{ string id = item.Username + "Unf";}
                             <form method="post" asp-controller="Home" asp-action="TakipCik" data-ajax="true" data-ajax-method="post"
-                                 data-ajax-update="#@id" data-ajax-mode="replace" >
+                                  data-ajax-update="#@id" data-ajax-mode="replace">
                                 <button id="@id" name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
                             </form>
                             <button asp-action="Engelle" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-danger userbutons">Engelle</button>
