@@ -19,6 +19,13 @@ namespace Tweetly_MVC.Init
     public static class Yardimci
     {
         static int ms = 75;
+
+        public static T BaseToSubClassConverter<T>(object BaseObject)
+        {
+            var serialized = JsonConvert.SerializeObject(BaseObject);
+            var child = JsonConvert.DeserializeObject<T>(serialized);
+            return child;
+        }
         public static IWebElement getElement(this IWebElement driverr, By sorgu)
         {
             int count = 0;
@@ -193,8 +200,9 @@ namespace Tweetly_MVC.Init
             WebDriverWait wait = new WebDriverWait(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
         }
-        public static bool Control(this IWebDriver driver, string userName, string link, int ms)
+        public static bool Control(this IWebDriver driver, string userName, string link, int ms = 300000)
         {
+            userName = userName.Trim('@');
             Hesap.Instance.Iletisim.metin = "";
             int count = 0;
             driver.WaitForLoad();
@@ -277,8 +285,8 @@ namespace Tweetly_MVC.Init
             {
                 IJavaScriptExecutor jse = (IJavaScriptExecutor)driverr;
                 double oncekiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                jse.ExecuteScript("window.scrollBy(0,1750);");
-                Thread.Sleep(350);
+                jse.ExecuteScript("window.scrollBy(0,1500);");
+                Thread.Sleep(300);
                 double sonrakiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
                 if (oncekiY == sonrakiY) return true;
                 else return false;

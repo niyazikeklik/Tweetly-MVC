@@ -9,7 +9,7 @@ using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Init
 {
-    public static class UserSetMethods
+    public static class UserGetMethods
     {
         public static object JSCodeRun(this IWebDriver driver, string command)
         {
@@ -142,7 +142,7 @@ namespace Tweetly_MVC.Init
                     DateTime tarih2 = new DateTime();
                     for (int j = i + 1; j < result.Count; j++)
                     {
-                        if (!DateTime.TryParse(result[j],out tarih2)) continue ;
+                        if (!DateTime.TryParse(result[j], out tarih2)) continue;
                         if ((tarih - tarih2).TotalDays < -7) break;
                     }
                     if ((tarih - tarih2).TotalDays > -7)
@@ -206,14 +206,6 @@ namespace Tweetly_MVC.Init
                 return cinsiyet;*/
                 return "Belirsiz";
             }
-        }
-        public static string profilUserButtonClick(this IWebDriver driverr)
-        {
-            driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
-            Thread.Sleep(100);
-            if((bool) driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
-            driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
-            return driverr.getfollowStatus();
         }
         public static string getName(this IWebDriver driverr)
         {

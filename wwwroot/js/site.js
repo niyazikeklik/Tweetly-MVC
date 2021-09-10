@@ -107,23 +107,26 @@ async function tableAyarla() {
 
 tableAyarla();
 
-$("#takipciler").on("click", function () {
-    $("#progressbox").css("display", "block");
-    setInterval(() => {
-        $.ajax({
-            url: '/Home/GuncelleProgress/',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                data = JSON.parse(data)
-                $("#progress").css("width", data.veri + "%");
-                $("#progress").text(data.metin + " " + data.veri + "%");
-                $("#gecensure").text("Geçen süre: "+ data.sure + " ")
-            }
-        });
-    }, 5000);
+function progresCalistir(element) {
+    $(element).on("click", function () {
+        $("#progressbox").css("display", "block");
+        setInterval(() => {
+            $.ajax({
+                url: '/Home/GuncelleProgress/',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    data = JSON.parse(data)
+                    $("#progress").css("width", data.veri + "%");
+                    $("#progress").text(data.metin + " " + data.veri + "%");
+                    $("#gecensure").text("Geçen süre: " + data.sure + " ")
+                }
+            });
+        }, 5000);
 
-});
-
+    });
+}
+progresCalistir("#takipciler");
+progresCalistir("#listGetir");
 
 

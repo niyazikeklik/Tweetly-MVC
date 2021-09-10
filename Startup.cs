@@ -45,6 +45,7 @@ namespace Tweetly_MVC
             using (var client = new DatabasesContext())
             {
                 client.Database.Migrate();
+                
             }
 
 

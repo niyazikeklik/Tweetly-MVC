@@ -16,6 +16,8 @@ namespace Tweetly_MVC.Models
         public string sure;
         public string metin;
         public int veri;
+        public int Max;
+        public int CurrentValue;
     }
     public class Hesap
     {
@@ -32,7 +34,8 @@ namespace Tweetly_MVC.Models
 
         Hesap()
         {
-            this.Takipciler = new List<User>();
+            this.Liste = new List<User>();
+            this.TakipEdilenler = new List<User>();
             this.GeriTakipEtmeyenler = new List<User>();
             this.Iletisim = new IILetisim();
             this.cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
@@ -40,10 +43,11 @@ namespace Tweetly_MVC.Models
         public string loginUserName { get; set; }
         public string loginPass { get; set; }
         public User OturumBilgileri { get; set; }
-        public List<User> Takipciler { get; set; }
+        public List<User> TakipEdilenler { get; set; }
         public List<User> GeriTakipEtmeyenler { get; set; }
 
         public IILetisim Iletisim;
         public List<Cinsiyetler> cins { get; set; }
+        public List<User>  Liste { get; set; }
     }
 }
