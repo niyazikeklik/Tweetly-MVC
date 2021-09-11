@@ -21,33 +21,36 @@ namespace Tweetly_MVC.Models
     }
     public class Hesap
     {
-        static private Hesap instance;
+        private static Hesap instance;
         public static Hesap Instance
         {
             get
             {
                 if (instance == null)
+                {
                     instance = new Hesap();
+                }
+
                 return instance;
             }
         }
 
-        Hesap()
+        private Hesap()
         {
-            this.Liste = new List<User>();
-            this.TakipEdilenler = new List<User>();
-            this.GeriTakipEtmeyenler = new List<User>();
-            this.Iletisim = new IILetisim();
-            this.cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
+            Liste = new List<User>();
+            TakipEdilenler = new List<User>();
+            GeriTakipEtmeyenler = new List<User>();
+            Iletisim = new IILetisim();
+            Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
-        public string loginUserName { get; set; }
-        public string loginPass { get; set; }
+        public string LoginUserName { get; set; }
+        public string LoginPass { get; set; }
         public User OturumBilgileri { get; set; }
         public List<User> TakipEdilenler { get; set; }
         public List<User> GeriTakipEtmeyenler { get; set; }
 
         public IILetisim Iletisim;
-        public List<Cinsiyetler> cins { get; set; }
-        public List<User>  Liste { get; set; }
+        public List<Cinsiyetler> Cins { get; set; }
+        public List<User> Liste { get; set; }
     }
 }

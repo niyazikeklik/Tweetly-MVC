@@ -19,21 +19,21 @@ namespace Tweetly_MVC.Controllers
     {
         public IActionResult Yenile()
         {
-            DatabasesContext context = new DatabasesContext();
+            DatabasesContext context = new();
             return View(context.TakipEdilenler);
         }
-        public IActionResult Index(List<User> model)
+        public IActionResult Index()
         {
             ViewBag.sutunGizle = false;
             if (Hesap.Instance.TakipEdilenler.Count != 0)
                 return View(Hesap.Instance.TakipEdilenler);
-            List<User> list = new List<User>();
+            List<User> list = new();
             return View(list);
         }
         public string TakipCik(string Usernames)
         {
 
-            List<Task> tasks = new List<Task>();
+            List<Task> tasks = new();
             string butontext = "";
             var takiptenCikilicaklar = Usernames?.Split('@');
             foreach (var item in takiptenCikilicaklar)
@@ -43,16 +43,14 @@ namespace Tweetly_MVC.Controllers
                 driver.Navigate().GoToUrl("https://mobile.twitter.com/" + item);
                 Task t1 = Task.Run(() =>
                 {
-                    butontext = driver.profilUserButonClick();
+                    butontext = driver.ProfilUserButonClick();
                     if (butontext != null)
                     {
-                        using (var context = new DatabasesContext())
-                        {
-                            var result = context.TakipEdilenler.SingleOrDefault(b => b.Username == item);
-                            if (result != null) context.TakipEdilenler.Remove(result);
-                            context.SaveChanges();
-                            Drivers.kullanıyorum.Remove(driver);
-                        }
+                        using var context = new DatabasesContext();
+                        var result = context.TakipEdilenler.SingleOrDefault(b => b.Username == item);
+                        if (result != null) context.TakipEdilenler.Remove(result);
+                        context.SaveChanges();
+                        Drivers.kullanıyorum.Remove(driver);
                     }
                 });
                 tasks.Add(t1);
@@ -63,10 +61,10 @@ namespace Tweetly_MVC.Controllers
         }
         public IActionResult TakipciList(string username, string liste = "following", bool clearDB = false, bool useDB = true)
         {
+            DatabasesContext context = new();
+            SettingsMethod.TakipEdilenleriGetir.UseDB = useDB;
+            SettingsMethod.TakipEdilenleriGetir.Context = context;
             ViewBag.sutunGizle = false;
-            Hesap.Instance.Iletisim.tarih = DateTime.Now;
-            DatabasesContext context = new DatabasesContext();
-            Hesap.Instance.Iletisim.Max = Hesap.Instance.OturumBilgileri.Following;
 
             if (clearDB)
             {
@@ -81,48 +79,8 @@ namespace Tweetly_MVC.Controllers
                 return View("Index", Hesap.Instance.TakipEdilenler);
             }
 
-
-            IWebDriver driverr = Drivers.Driver;
-            driverr.Navigate().GoToUrl("https://mobile.twitter.com/" + username + "/" + liste);
-            driverr.WaitForLoad();
-            List<string> kontrolEdildi = new List<string>();
-            while (!driverr.isSayfaSonu() || Hesap.Instance.TakipEdilenler.Count < Hesap.Instance.OturumBilgileri.Following - 10)
-            {
-                var listelenenKullanicilar = (List<string>)driverr.FindElements(By.CssSelector("[data-testid=UserCell]")).Select(x =>
-               {
-                   try
-                   {
-                       var y = x.FindElement(By.TagName("a")).GetAttribute("href");
-                       y = y.Substring(y.LastIndexOf('/') + 1);
-                       return y;
-                   }
-                   catch (Exception) { return null; }
-               }).ToList();
-                var kontrolEdilecekler = listelenenKullanicilar.Except(kontrolEdildi).ToList();
-                kontrolEdilecekler.RemoveAll(x => x == null);
-                foreach (string item in kontrolEdilecekler)
-                {
-                    User takipci = context.TakipEdilenler.FirstOrDefault(x => x.Username == item);
-                    if (takipci == null || !useDB)
-                    {
-                        var driver = Drivers.MusaitOlanDriver();
-                        Thread baslat = new Thread(new ThreadStart(() =>
-                        {
-                            using (DatabasesContext context2 = new DatabasesContext())
-                            {
-                                takipci = driver.getProfil(item);
-                                Hesap.Instance.TakipEdilenler.Add(takipci);
-                                context2.TakipEdilenler.Add((TakipEdilen)takipci);
-                                context2.SaveChanges();
-                                Hesap.Instance.Iletisim.CurrentValue = Hesap.Instance.TakipEdilenler.Count;
-                            }
-                        }));
-                        baslat.Start();
-                    }
-                    else Hesap.Instance.TakipEdilenler.Add(takipci);
-                    kontrolEdildi.Add(item);
-                }
-            }
+            Eylemler.ListeGezici(Eylemler.TakipEdilenleriGetir, "https://mobile.twitter.com/" + username + "/" + liste, Hesap.Instance.OturumBilgileri.Following);
+          
             context.TakipEdilenler.RemoveRange(context.TakipEdilenler);
             context.TakipEdilenler.AddRange(Yardimci.BaseToSubClassConverter<List<TakipEdilen>>(Hesap.Instance.TakipEdilenler));
             return View("Index", Hesap.Instance.TakipEdilenler);
@@ -136,31 +94,7 @@ namespace Tweetly_MVC.Controllers
         }
         public IActionResult UnfollowEt(bool otoTakipCik = false)
         {
-            Hesap.Instance.Iletisim.tarih = DateTime.Now;
-            IWebDriver driverr = Drivers.Driver;
-            driverr.Navigate().GoToUrl("https://mobile.twitter.com/" + Hesap.Instance.OturumBilgileri.Username + "/following");
-            driverr.WaitForLoad();
-            List<string> kontrolEdildi = new List<string>();
-            while (!driverr.isSayfaSonu())
-            {
-                var kontrolEdilecekler = driverr.FindElements(By.CssSelector("[data-testid=UserCell]")).Select(x =>
-                {
-                    foreach (var item in kontrolEdildi)
-                        if (x.Text.Contains(item))
-                            return null;
-                    return x;
-                }).ToList();
-                foreach (var item in kontrolEdilecekler)
-                {
-                    User profil = item.getProfil();
-                    if (profil.FollowersStatus.StartsWith("Seni") && profil.FollowStatus == "Takip ediliyor")
-                    {
-                        if (otoTakipCik) ;
-                        Hesap.Instance.GeriTakipEtmeyenler.Add(profil);
-                    }
-                    kontrolEdildi.Add(profil.Username);
-                }
-            }
+            Eylemler.ListeGezici(Eylemler.UnfollowEt, $"https://mobile.twitter.com/{Hesap.Instance.OturumBilgileri.Username}/following", Hesap.Instance.OturumBilgileri.Following);
             ViewBag.sutunGizle = true;
             // geri takip etmeyenleri veritabanına kaydet.
             return View("Index", Hesap.Instance.GeriTakipEtmeyenler);
@@ -168,43 +102,21 @@ namespace Tweetly_MVC.Controllers
         public IActionResult ListGetir(string listName = "followers")
         {
             ViewBag.sutunGizle = true;
-            DatabasesContext context = new DatabasesContext();
-            if (context.Takipciler.Count() > 0)
+            DatabasesContext context = new();
+
+            if (context.Takipciler.Any())
             {
                 var x = Yardimci.BaseToSubClassConverter<List<User>>(context.Takipciler);
                 x.TakipEdenlerControl();
                 return View("Index", x);
             }
-
             if (Hesap.Instance.Liste.Count != 0)
                 return View(Hesap.Instance.Liste);
+            Eylemler.ListeGezici(Eylemler.DetaysızListeGetir, $"https://twitter.com/{Hesap.Instance.OturumBilgileri.Username}/${listName}", Hesap.Instance.OturumBilgileri.Followers);
 
-            Hesap.Instance.Iletisim.Max = Hesap.Instance.OturumBilgileri.Followers;
-            IWebDriver driverr = Drivers.Driver;
-            driverr.Navigate().GoToUrl("https://mobile.twitter.com/" + Hesap.Instance.OturumBilgileri.Username + "/" + listName);
-            driverr.WaitForLoad();
-            Thread.Sleep(1000);
-            List<IWebElement> kontrolEdildi = new List<IWebElement>();
-            while (!driverr.isSayfaSonu())
-            {
-                var oncekilist = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
-                var list = oncekilist.Except(kontrolEdildi);
-                foreach (var x in list)
-                {
-                    var tak = x.getProfil();
-                    Hesap.Instance.Liste.Add(tak);
-                    kontrolEdildi.Add(x);
-                    Hesap.Instance.Iletisim.CurrentValue = Hesap.Instance.Liste.Count;
-                }
-            }
-
-            var listeee = Hesap.Instance.Liste.GroupBy(x => x.Username).Select(y => y.First()).ToList();
-            context.Takipciler.AddRange(Yardimci.BaseToSubClassConverter<List<Takipci>>(listeee));
-
+            context.Takipciler.AddRange(Yardimci.BaseToSubClassConverter<List<Takipci>>(Hesap.Instance.Liste));
             context.SaveChanges();
-            Hesap.Instance.Liste.TakipEdenlerControl();
 
-            ViewBag.sutunGizle = true;
             return View(Hesap.Instance.Liste);
         }
     }

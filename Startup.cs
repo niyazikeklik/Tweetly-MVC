@@ -24,11 +24,11 @@ namespace Tweetly_MVC
         {
             services.AddControllersWithViews().AddFormHelper();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseFormHelper();
             if (env.IsDevelopment())
@@ -42,10 +42,10 @@ namespace Tweetly_MVC
                 app.UseHsts();
             }
 
-            using (var client = new DatabasesContext())
+            using (DatabasesContext client = new())
             {
                 client.Database.Migrate();
-                
+
             }
 
 

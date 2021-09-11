@@ -19,18 +19,18 @@ namespace Tweetly_MVC.Init
             Thread.Sleep(1000);
             if (driver.Url.Contains("flow"))
             {
-                driver.getElement(By.Name("username")).SendKeys(ka + Keys.Enter);
-                driver.getElement(By.Name("password")).SendKeys(ps + Keys.Enter);
+                driver.GetElement(By.Name("username")).SendKeys(ka + Keys.Enter);
+                driver.GetElement(By.Name("password")).SendKeys(ps + Keys.Enter);
             }
             else if (driver.Url.Contains("login"))
             {
             tekrar:
                 try
                 {
-                    driver.getElement(By.Name("session[username_or_email]"))?.Clear();
-                    driver.getElement(By.Name("session[username_or_email]"))?.SendKeys(ka);
-                    driver.getElement(By.Name("session[password]"))?.Clear();
-                    driver.getElement(By.Name("session[password]"))?.SendKeys(ps + Keys.Enter);
+                    driver.GetElement(By.Name("session[username_or_email]"))?.Clear();
+                    driver.GetElement(By.Name("session[username_or_email]"))?.SendKeys(ka);
+                    driver.GetElement(By.Name("session[password]"))?.Clear();
+                    driver.GetElement(By.Name("session[password]"))?.SendKeys(ps + Keys.Enter);
                 }
                 catch (Exception)
                 {
@@ -39,7 +39,7 @@ namespace Tweetly_MVC.Init
 
                 Thread.Sleep(1000);
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", Hesap.Instance.loginPass, driver);
+                    Giris("niyazikeklik@gmail.com", Hesap.Instance.LoginPass, driver);
             }
             else if (driver.Url.Contains("home"))
             {

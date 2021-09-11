@@ -9,13 +9,13 @@ namespace Tweetly_MVC.Init
 {
     public static class ButtonsEvent
     {
-        public static string profilUserButonClick(this IWebDriver driverr)
+        public static string ProfilUserButonClick(this IWebDriver driverr)
         {
             driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
-            onayButonClick(driverr);
-            return driverr.getfollowStatus();
+            OnayButonClick(driverr);
+            return driverr.GetfollowStatus();
         }
-        public static void onayButonClick(this IWebDriver driverr)
+        public static void OnayButonClick(this IWebDriver driverr)
         {
             Thread.Sleep(200);
             if ((bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
@@ -26,11 +26,11 @@ namespace Tweetly_MVC.Init
             driverr.JSCodeRun("document.querySelector('[data-testid=userActions]').click();");
             Thread.Sleep(200);
         }
-        public static void profilEngelle(this IWebDriver driverr)
+        public static void ProfilEngelle(this IWebDriver driverr)
         {
             driverr.UserActionsButonClick();
             driverr.JSCodeRun("document.querySelector('[data-testid=block]').click();");
-            driverr.onayButonClick();
+            driverr.OnayButonClick();
         }
 
     }
