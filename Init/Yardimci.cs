@@ -16,7 +16,12 @@ namespace Tweetly_MVC.Init
     {
         private static readonly int ms = 75;
 
-        public static IWebDriver ProfileGit(string link, int waitForPageLoad_ms)
+        public static object DistinctByUserName(this List<User> list)
+        {
+            return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
+        }
+
+        public static IWebDriver ProfileGit(string link, int waitForPageLoad_ms = 1000)
         {
             IWebDriver driverr = Drivers.Driver;
             driverr.Navigate().GoToUrl(link);
@@ -24,7 +29,7 @@ namespace Tweetly_MVC.Init
             Thread.Sleep(waitForPageLoad_ms);
             return driverr;
         }
-        public static T BaseToSubClassConverter<T>(object BaseObject)
+        public static T BaseToSub<T>(object BaseObject)
         {
             string serialized = JsonConvert.SerializeObject(BaseObject);
             T child = JsonConvert.DeserializeObject<T>(serialized);
@@ -222,7 +227,7 @@ namespace Tweetly_MVC.Init
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
         }
         public static void WaitForLoad(this IWebDriver driver, int timeoutSec = 15)
-        {
+       {
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             WebDriverWait wait = new(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");

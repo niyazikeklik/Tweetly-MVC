@@ -8,4 +8,8 @@
     {
 
     }
+    public class GeriTakipEtmeyen : User
+    {
+
+    }
 }

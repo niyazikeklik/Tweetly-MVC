@@ -16,5 +16,6 @@ namespace Tweetly_MVC.Models
         }
         public DbSet<TakipEdilen> TakipEdilenler { get;set;}
         public DbSet<Takipci> Takipciler { get; set; }
+        public DbSet<GeriTakipEtmeyen> GeriTakipEtmeyenler { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Tweetly_MVC.Init
             profil.Username = Text[basla..Text.IndexOf('\n', basla)];
 
             profil.PhotoURL = element.FindElement(By.TagName("img")).GetAttribute("src").Replace("x96", "200x200");
-            profil.İsPrivate = element.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
+            profil.IsPrivate = element.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
 
             if (Text.Contains("Seni takip ediyor"))
                 profil.FollowersStatus = "Seni takip ediyor";
@@ -66,7 +66,7 @@ namespace Tweetly_MVC.Init
                 profil.FollowersStatus = driver.IsFollowers();
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
-                profil.İsPrivate = driver.İsPrivate();
+                profil.IsPrivate = driver.IsPrivate();
                 profil.Cinsiyet = UserGetMethods.CinsiyetBul(profil.Name);
                 profil.TweetSikligi = UserGetMethods.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 if(!faster) profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);

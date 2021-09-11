@@ -74,7 +74,7 @@ namespace Tweetly_MVC.Init
               dynamic elementList = driver.JSCodeRun("return document.getElementsByClassName('x')");
 
           }*/
-        public static bool İsPrivate(this IWebDriver driverr)
+        public static bool IsPrivate(this IWebDriver driverr)
         {
             return (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
         }

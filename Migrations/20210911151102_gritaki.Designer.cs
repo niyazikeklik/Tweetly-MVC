@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Migrations
 {
     [DbContext(typeof(DatabasesContext))]
-    partial class DatabasesContextModelSnapshot : ModelSnapshot
+    [Migration("20210911151102_gritaki")]
+    partial class GeriTakip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

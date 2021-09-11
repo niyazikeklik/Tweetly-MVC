@@ -46,11 +46,13 @@ namespace Tweetly_MVC.Models
         public string LoginUserName { get; set; }
         public string LoginPass { get; set; }
         public User OturumBilgileri { get; set; }
-        public List<User> TakipEdilenler { get; set; }
-        public List<User> GeriTakipEtmeyenler { get; set; }
+     
 
         public IILetisim Iletisim;
         public List<Cinsiyetler> Cins { get; set; }
         public List<User> Liste { get; set; }
+        public List<User> TakipEdilenler { get; set; }
+        public List<User> GeriTakipEtmeyenler { get; set; }
+
     }
 }
