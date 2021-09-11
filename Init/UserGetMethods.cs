@@ -18,62 +18,6 @@ namespace Tweetly_MVC.Init
             string Username = text[basla..text.IndexOf('\n', basla)];
             return Username;
         }
-        public static object JSCodeRun(this IWebDriver driver, string command)
-        {
-            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
-            int count = 0;
-            string exMg = "";
-            while (count < 10)
-                try
-                {
-                    return jse.ExecuteScript(command);
-                }
-                catch (StaleElementReferenceException ex)
-                {
-                    exMg = ex.Message;
-                    count++;
-                }
-                catch (WebDriverException ex)
-                {
-                    Thread.Sleep(150);
-                    exMg = ex.Message;
-                    count++;
-                }
-            throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
-        }
-        public static object JSCodeRun(this IWebElement element, string command)
-        {
-            IJavaScriptExecutor jse = (IJavaScriptExecutor)element;
-            int count = 0;
-            string exMg = "";
-            while (count < 10)
-                try
-                {
-                    return jse.ExecuteScript(command);
-                }
-                catch (StaleElementReferenceException ex)
-                {
-                    exMg = ex.Message;
-                    count++;
-                }
-                catch (WebDriverException ex)
-                {
-                    Thread.Sleep(150);
-                    exMg = ex.Message;
-                    count++;
-                }
-            throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
-        }
-
-        /*  static void main()
-          {
-              IWebElement element = (IWebElement) driver.JSCodeRun("return document.getElemenyById('x')");
-              string elementText = (string) driver.JSCodeRun("return document.getElementById('x').innerText;");
-              int elementsLength = (int) driver.JSCodeRun("return document.getElementsyByClassName('x').length;");
-              bool elementsExist = (bool) driver.JSCodeRun("return document.getElementsByClassName('x').length > 0;");
-              dynamic elementList = driver.JSCodeRun("return document.getElementsByClassName('x')");
-
-          }*/
         public static bool IsPrivate(this IWebDriver driverr)
         {
             return (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
@@ -161,7 +105,6 @@ namespace Tweetly_MVC.Init
             }
 
         }
-
         public static string GetfollowStatus(this IWebDriver driverr)
         {
             if ((Int64)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=placementTracking]').length;") > 0)

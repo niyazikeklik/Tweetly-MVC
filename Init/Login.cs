@@ -19,18 +19,18 @@ namespace Tweetly_MVC.Init
             Thread.Sleep(1000);
             if (driver.Url.Contains("flow"))
             {
-                driver.GetElement(By.Name("username")).SendKeys(ka + Keys.Enter);
-                driver.GetElement(By.Name("password")).SendKeys(ps + Keys.Enter);
+                driver.FindElement(By.Name("username")).SendKeys(ka + Keys.Enter);
+                driver.FindElement(By.Name("password")).SendKeys(ps + Keys.Enter);
             }
             else if (driver.Url.Contains("login"))
             {
             tekrar:
                 try
                 {
-                    driver.GetElement(By.Name("session[username_or_email]"))?.Clear();
-                    driver.GetElement(By.Name("session[username_or_email]"))?.SendKeys(ka);
-                    driver.GetElement(By.Name("session[password]"))?.Clear();
-                    driver.GetElement(By.Name("session[password]"))?.SendKeys(ps + Keys.Enter);
+                    driver.FindElement(By.Name("session[username_or_email]"))?.Clear();
+                    driver.FindElement(By.Name("session[username_or_email]"))?.SendKeys(ka);
+                    driver.FindElement(By.Name("session[password]"))?.Clear();
+                    driver.FindElement(By.Name("session[password]"))?.SendKeys(ps + Keys.Enter);
                 }
                 catch (Exception)
                 {

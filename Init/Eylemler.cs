@@ -85,12 +85,10 @@ namespace Tweetly_MVC.Init
             else Hesap.Instance.TakipEdilenler.Add(takipci);
             return element;
         }
-
-        //  public delegate  Func<IWebElement, IWebElement> Gorev(IWebElement arg);
         public static void ListeGezici(Func<IWebElement, IWebElement> func, string link, int progressMAX = 1, int sayfaLoadWait_MS = 1000)
         {
             Hesap.Instance.Iletisim.Max = progressMAX;
-            IWebDriver driverr = Yardimci.ProfileGit(link, sayfaLoadWait_MS);
+            IWebDriver driverr = Yardimci.ProfileGitWithMainDriver(link, sayfaLoadWait_MS);
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {

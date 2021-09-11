@@ -21,14 +21,14 @@ namespace Tweetly_MVC.Init
             if ((bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
                 driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
         }
-        public static void UserActionsButonClick(this IWebDriver driverr)
+        public static void ProfilUserActionsButonClick(this IWebDriver driverr)
         {
             driverr.JSCodeRun("document.querySelector('[data-testid=userActions]').click();");
             Thread.Sleep(200);
         }
         public static void ProfilEngelle(this IWebDriver driverr)
         {
-            driverr.UserActionsButonClick();
+            driverr.ProfilUserActionsButonClick();
             driverr.JSCodeRun("document.querySelector('[data-testid=block]').click();");
             driverr.OnayButonClick();
         }

@@ -14,14 +14,34 @@ namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
-        private static readonly int ms = 75;
-
+        public static object JSCodeRun(this IWebDriver driver, string command)
+        {
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
+            int count = 0;
+            string exMg = "";
+            while (count < 10)
+                try
+                {
+                    return jse.ExecuteScript(command);
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    exMg = ex.Message;
+                    count++;
+                }
+                catch (WebDriverException ex)
+                {
+                    Thread.Sleep(150);
+                    exMg = ex.Message;
+                    count++;
+                }
+            throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+        }
         public static object DistinctByUserName(this List<User> list)
         {
             return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
         }
-
-        public static IWebDriver ProfileGit(string link, int waitForPageLoad_ms = 1000)
+        public static IWebDriver ProfileGitWithMainDriver(string link, int waitForPageLoad_ms = 1000)
         {
             IWebDriver driverr = Drivers.Driver;
             driverr.Navigate().GoToUrl(link);
@@ -34,75 +54,6 @@ namespace Tweetly_MVC.Init
             string serialized = JsonConvert.SerializeObject(BaseObject);
             T child = JsonConvert.DeserializeObject<T>(serialized);
             return child;
-        }
-        public static IWebElement GetElement(this IWebElement driverr, By sorgu)
-        {
-            int count = 0;
-            while (count < 10)
-            {
-                try
-                {
-                    return driverr.FindElement(sorgu);
-                }
-                catch (Exception)
-                {
-                    Thread.Sleep(ms);
-                    count++;
-                }
-            }
-            return null;
-        }
-        public static List<IWebElement> GetElements(this IWebElement driverr, By sorgu)
-        {
-            int count = 0;
-            while (count < 10)
-            {
-                try
-                {
-                    return driverr.FindElements(sorgu).ToList();
-                }
-                catch (Exception)
-                {
-                    Thread.Sleep(ms);
-                    count++;
-                }
-            }
-            return null;
-        }
-        public static IWebElement GetElement(this IWebDriver driverr, By sorgu)
-        {
-            int count = 0;
-            while (count < 10)
-            {
-                try
-                {
-                    return driverr.FindElement(sorgu);
-                }
-                catch (Exception)
-                {
-                    Thread.Sleep(ms);
-                    count++;
-                }
-            }
-
-            return null;
-        }
-        public static List<IWebElement> GetElements(this IWebDriver driverr, By sorgu)
-        {
-            int count = 0;
-            while (count < 10)
-            {
-                try
-                {
-                    return driverr.FindElements(sorgu).ToList();
-                }
-                catch (Exception)
-                {
-                    Thread.Sleep(ms);
-                    count++;
-                }
-            }
-            return null;
         }
         public static bool İsPage(string url)
         {
@@ -274,7 +225,6 @@ namespace Tweetly_MVC.Init
             return true;
 
         }
-
         public static void KillProcces()
         {
             Process[] runingProcess = Process.GetProcesses();
@@ -292,24 +242,6 @@ namespace Tweetly_MVC.Init
 
             }
         }
-        /*private static string StringReplace(this string text)
-        {
-            text = text.Replace("İ", "I");
-            text = text.Replace("ı", "i");
-            text = text.Replace("Ğ", "G");
-            text = text.Replace("ğ", "g");
-            text = text.Replace("Ö", "O");
-            text = text.Replace("ö", "o");
-            text = text.Replace("Ü", "U");
-            text = text.Replace("ü", "u");
-            text = text.Replace("Ş", "S");
-            text = text.Replace("ş", "s");
-            text = text.Replace("Ç", "C");
-            text = text.Replace("ç", "c");
-            return text;
-        }*/
-
-
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
             try
@@ -336,3 +268,22 @@ namespace Tweetly_MVC.Init
         }
     }
 }
+
+
+/*private static string StringReplace(this string text)
+{
+    text = text.Replace("İ", "I");
+    text = text.Replace("ı", "i");
+    text = text.Replace("Ğ", "G");
+    text = text.Replace("ğ", "g");
+    text = text.Replace("Ö", "O");
+    text = text.Replace("ö", "o");
+    text = text.Replace("Ü", "U");
+    text = text.Replace("ü", "u");
+    text = text.Replace("Ş", "S");
+    text = text.Replace("ş", "s");
+    text = text.Replace("Ç", "C");
+    text = text.Replace("ç", "c");
+    return text;
+}*/
+

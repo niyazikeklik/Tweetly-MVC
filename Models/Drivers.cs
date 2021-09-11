@@ -42,8 +42,6 @@ namespace Tweetly_MVC.Models
         }
 
         public readonly static List<IWebDriver> kullanıyorum = new();
-
-
         public static IWebDriver MusaitOlanDriver()
         {
             IWebDriver[] driverss = { Driver2, Driver3, Driver4, Driver5 };

@@ -47,7 +47,7 @@ namespace Tweetly_MVC.Init
         yeniden:
             try
             {
-                link = "https://mobile.twitter.com/" + username;
+                link = $"https://mobile.twitter.com/{username}";
                 driver.Navigate().GoToUrl(link);
             }
             catch { goto yeniden; }
