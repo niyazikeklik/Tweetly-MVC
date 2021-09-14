@@ -16,14 +16,14 @@ namespace Tweetly_MVC.Init
             var profil = new TakipEdilen();
             string Text = element.Text.Replace("\r","");
 
-            profil.Name = Liste.getName(Text);
+            profil.Name = Liste.GetName(Text);
             profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
-            profil.Username = Liste.getUserName(Text);
-            profil.PhotoURL = Liste.getPhotoURL(element);
-            profil.IsPrivate = Liste.isPrivate(element);
-            profil.FollowersStatus = Liste.getFollowersStatus(Text);
-            profil.FollowStatus = Liste.getFollowStatus(Text);
-            profil.Bio = Liste.getBio(element);
+            profil.Username = Liste.GetUserName(Text);
+            profil.PhotoURL = Liste.GetPhotoURL(element);
+            profil.IsPrivate = Liste.İsPrivate(element);
+            profil.FollowersStatus = Liste.GetFollowersStatus(Text);
+            profil.FollowStatus = Liste.GetFollowStatus(Text);
+            profil.Bio = Liste.GetBio(element);
 
             if (detay) 
                 profil = (TakipEdilen) Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
