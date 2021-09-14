@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
-using Tweetly_MVC.Models;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
 {
@@ -93,27 +93,19 @@ namespace Tweetly_MVC.Init
                 .Replace("Beğeniler", "")
                 .Replace("Beğeni", "")
                 .Replace("Likes", "")
-                .Replace("Like", "");
+                .Replace("Like", "")
+                .Replace("Tepki", "");
 
-            metin = metin.Replace("Mn", "000000");
+            metin = metin.Replace(" Mn ", "000000");
             if (!metin.Contains(',') && !metin.Contains('.'))
-            {
-                metin = metin.Replace("B", "000").Replace("K", "000");
-            }
+                metin = metin.Replace(" B ", "000").Replace(" K ", "000");
             else
-            {
-                metin = metin.Replace("B", "00").Replace("K", "00");
-            }
+                metin = metin.Replace(" B ", "00").Replace(" K ", "00");
 
             string number = "";
             foreach (char item in metin)
-            {
                 if (char.IsNumber(item))
-                {
                     number += item;
-                }
-            }
-
             return number;
         }
         public static double KayıtTarihi(string kayittarihi)
@@ -178,7 +170,7 @@ namespace Tweetly_MVC.Init
             return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
         }
         public static void WaitForLoad(this IWebDriver driver, int timeoutSec = 15)
-       {
+        {
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             WebDriverWait wait = new(driver, new TimeSpan(0, 0, timeoutSec));
             wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");

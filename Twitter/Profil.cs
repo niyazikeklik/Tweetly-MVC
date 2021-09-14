@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Tweetly_MVC.Models;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
 {

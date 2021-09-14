@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Tweetly_MVC.Models;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC
 {

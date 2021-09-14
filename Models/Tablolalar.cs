@@ -1,4 +1,4 @@
-﻿namespace Tweetly_MVC.Models
+﻿namespace Tweetly_MVC.Tweetly
 {
     public class Takipci : User
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Tweetly_MVC.Models;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Migrations
 {

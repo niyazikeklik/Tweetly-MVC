@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Tweetly_MVC.Models
+namespace Tweetly_MVC.Tweetly
 {
     public class Cinsiyetler
     {

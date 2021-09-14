@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tweetly_MVC.Init;
 
-namespace Tweetly_MVC.Models
+namespace Tweetly_MVC.Tweetly
 {
     public class Drivers
     {
