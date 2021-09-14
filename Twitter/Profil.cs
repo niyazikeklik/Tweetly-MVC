@@ -9,7 +9,7 @@ using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Init
 {
-    public static class UserGetMethods
+    public static class Profil
     {
         public static string GetUserName(this IWebElement element)
         {

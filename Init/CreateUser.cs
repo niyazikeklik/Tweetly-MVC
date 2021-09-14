@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tweetly_MVC.Models;
+using Tweetly_MVC.Twitter;
 
 namespace Tweetly_MVC.Init
 {
@@ -13,31 +14,19 @@ namespace Tweetly_MVC.Init
         public static User GetProfil(this IWebElement element, bool detay = false)
         {
             var profil = new TakipEdilen();
-
             string Text = element.Text.Replace("\r","");
 
-            profil.Name = Text.Split('\n')[0].StartsWith('@') ? null : Text.Split('\n')[0];
-            profil.Cinsiyet = UserGetMethods.CinsiyetBul(profil.Name);
+            profil.Name = Liste.getName(Text);
+            profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
+            profil.Username = Liste.getUserName(Text);
+            profil.PhotoURL = Liste.getPhotoURL(element);
+            profil.IsPrivate = Liste.isPrivate(element);
+            profil.FollowersStatus = Liste.getFollowersStatus(Text);
+            profil.FollowStatus = Liste.getFollowStatus(Text);
+            profil.Bio = Liste.getBio(element);
 
-            int basla = Text.IndexOf('@');
-            profil.Username = Text[basla..Text.IndexOf('\n', basla)];
-
-            profil.PhotoURL = element.FindElement(By.TagName("img")).GetAttribute("src").Replace("x96", "200x200");
-            profil.IsPrivate = element.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
-
-            if (Text.Contains("Seni takip ediyor"))
-                profil.FollowersStatus = "Seni takip ediyor";
-            else profil.FollowersStatus = "Takip etmiyor";
-
-            if (Text.Contains("Takip ediliyor"))
-                profil.FollowStatus = "Takip ediliyor";
-            else if (Text.Contains("Takip et")) profil.FollowStatus = "Takip et";
-
-            var bios = element.FindElements(By.XPath("/div/div[2]/div[2]"));
-            if (bios.Count > 0) profil.Bio = bios[0].Text;
-
-            if (detay) profil = (TakipEdilen) Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
-            
+            if (detay) 
+                profil = (TakipEdilen) Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
 
             return profil;
         }
@@ -67,12 +56,12 @@ namespace Tweetly_MVC.Init
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
                 profil.IsPrivate = driver.IsPrivate();
-                profil.Cinsiyet = UserGetMethods.CinsiyetBul(profil.Name);
-                profil.TweetSikligi = UserGetMethods.GetGunlukSiklik(profil.TweetCount, profil.Date);
+                profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
+                profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 if(!faster) profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
                 driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
                 profil.LikeCount = driver.GetLikeCount();
-                profil.BegeniSikligi = UserGetMethods.GetGunlukSiklik(profil.LikeCount, profil.Date);
+                profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
                 if (!faster) profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
             }
 
@@ -81,7 +70,7 @@ namespace Tweetly_MVC.Init
             Drivers.kullanıyorum.Remove(driver);
             return profil;
         }
-        public static User GetProfil(this IWebDriver driver, string username, TakipEdilen profil, bool faster = false)
+        private static User GetProfil(this IWebDriver driver, string username, TakipEdilen profil, bool faster = false)
         {
             string link;
         yeniden:
@@ -98,13 +87,13 @@ namespace Tweetly_MVC.Init
                 profil.Location = driver.GetLocation();
                 profil.Following = driver.GetFollowing(username);
                 profil.Followers = driver.GetFollowers(username);
-                profil.TweetSikligi = UserGetMethods.GetGunlukSiklik(profil.TweetCount, profil.Date);
+                profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 if (!faster) profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
 
                 driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
 
                 profil.LikeCount = driver.GetLikeCount();
-                profil.BegeniSikligi = UserGetMethods.GetGunlukSiklik(profil.LikeCount, profil.Date);
+                profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
                 if (!faster) profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
             }
             Drivers.kullanıyorum.Remove(driver);

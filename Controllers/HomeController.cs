@@ -87,7 +87,7 @@ namespace Tweetly_MVC.Controllers
                 return View("Index", Hesap.Instance.TakipEdilenler);
             }
 
-            Eylemler.ListeGezici(Eylemler.TakipEdilenleriGetir, $"https://mobile.twitter.com/{username}/{liste}", Hesap.Instance.OturumBilgileri.Following);
+            Eylemler.ListeGezici(Eylemler.TakipEdilenleriGetir, $"https://mobile.twitter.com/{username}/{liste}",Hesap.Instance.OturumBilgileri.Following);
 
             context.TakipEdilenler.RemoveRange(context.TakipEdilenler);
             context.TakipEdilenler.AddRange(Yardimci.BaseToSub<List<TakipEdilen>>(Hesap.Instance.TakipEdilenler.DistinctByUserName()));

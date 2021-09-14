@@ -6,6 +6,7 @@ using Tweetly_MVC.Models;
 using Tweetly_MVC.Init;
 using OpenQA.Selenium;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tweetly_MVC.Init
 {
@@ -85,7 +86,7 @@ namespace Tweetly_MVC.Init
             else Hesap.Instance.TakipEdilenler.Add(takipci);
             return element;
         }
-        public static void ListeGezici(Func<IWebElement, IWebElement> func, string link, int progressMAX = 1, int sayfaLoadWait_MS = 1000)
+        public static void ListeGezici(Func<IWebElement, IWebElement> func, string link, int progressMAX = 1,int sayfaLoadWait_MS = 1000)
         {
             Hesap.Instance.Iletisim.Max = progressMAX;
             IWebDriver driverr = Yardimci.ProfileGitWithMainDriver(link, sayfaLoadWait_MS);
