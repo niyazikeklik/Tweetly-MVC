@@ -4,9 +4,21 @@
 @model List<User>
 
 @{
+    int countKadin = 0, countErkek = 0, countUnisex = 0, countBelirsiz = 0;
+    double toplamOrtTweet = 0;
+    double toplamOrtBegeni = 0;
+
+    double toplamSonTweet = 0;
+    double toplamSonBegeni = 0;
+    double toplamKayitTarihi = 0;
+    double genelTakipciKalitesi = 0;
+
+
 
     ViewData["Title"] = "Home Page";
 }
+
+
 
 
 <div class="col">
@@ -39,6 +51,20 @@
             <tbody>
                 @foreach (var item in Model)
                 {
+                    if (item.Cinsiyet.StartsWith("E"))
+                        countErkek++;
+                    if (item.Cinsiyet.StartsWith("K"))
+                        countKadin++;
+                    if (item.Cinsiyet.StartsWith("U"))
+                        countUnisex++;
+                    if (item.Cinsiyet.StartsWith("B"))
+                        countBelirsiz++;
+                    toplamOrtTweet += Convert.ToDouble(item.TweetSikligi);
+                    toplamOrtBegeni += Convert.ToDouble(item.BegeniSikligi);
+                    toplamSonBegeni += item.LastLikesDate;
+                    toplamSonTweet += item.LastTweetsDate;
+                    toplamKayitTarihi += item.Date;
+
                     <tr>
 
                         <td>@item.Count</td>
@@ -100,27 +126,30 @@
                         </td>
                     </tr>
                 }
+
+
+
             </tbody>
         </table>
     </div>
-</div>
-
-
-
-<script>
-    $(".gizli2").hide();
-    $(".images").on({
-        mouseenter: function () {
-            var element = $(this.getElementsByClassName("gizli"));
-            element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('x96', "400x400"));
-            element.show(500);
-        },
-        mouseleave: function () {
-            var element = $(this.getElementsByClassName("gizli"));
-            element.hide(500);
-            element.attr('src', '#');
+ 
+    <div id="dataSwit" style="display:none">
+        @{
+            toplamOrtTweet /= Model.Count;
+            toplamOrtBegeni /= Model.Count;
+            toplamSonBegeni /= Model.Count * -1;
+            toplamSonTweet /= Model.Count * -1;
+            toplamKayitTarihi /= Model.Count;
         }
-    });
-
-
-</script>
+        <input id="kadin" value="@countKadin" />
+        <input id="erkek" value="@countErkek" />
+        <input id="unisex" value="@countUnisex" />
+        <input id="belirsiz" value="@countBelirsiz" />
+        <input id="toplamOrtTweet" value="@toplamOrtTweet.ToString().Replace(",", ".")" />
+        <input id="toplamOrtBegeni" value="@toplamOrtBegeni.ToString().Replace(",", ".")" />
+        <input id="toplamSonTweet" value="@toplamSonTweet.ToString().Replace(",", ".")" />
+        <input id="toplamSonBegeni" value="@toplamSonBegeni.ToString().Replace(",", ".")" />
+        <input id="toplamKayitTarihi" value="@toplamKayitTarihi.ToString().Replace(",", ".")" />
+        <input id="genelTakipciKalitesi" value="@genelTakipciKalitesi.ToString().Replace(",", ".")" />
+    </div>
+</div>
