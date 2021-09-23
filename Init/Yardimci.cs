@@ -19,10 +19,11 @@ namespace Tweetly_MVC.Init
             IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
             int count = 0;
             string exMg = "";
-            while (count < 10)
+            while (count < 10 )
                 try
                 {
-                    return jse.ExecuteScript(command);
+                    var result = jse.ExecuteScript(command);
+                    if (result != null || !command.Contains("return")) return result;
                 }
                 catch (StaleElementReferenceException ex)
                 {
@@ -35,7 +36,9 @@ namespace Tweetly_MVC.Init
                     exMg = ex.Message;
                     count++;
                 }
-            throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+            if (command.Contains("return"))
+                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+            else return null;
         }
         public static object DistinctByUserName(this List<User> list)
         {

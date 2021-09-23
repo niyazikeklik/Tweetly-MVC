@@ -13,8 +13,8 @@ namespace Tweetly_MVC.Init
     {
         public static string GetUserName(this IWebElement element)
         {
-            string text = element.Text;
-            int basla = text.IndexOf('@');
+            string text = element.Text.Replace("\r", null);
+            int basla = text.IndexOf('@') + 1;
             string Username = text[basla..text.IndexOf('\n', basla)];
             return Username;
         }

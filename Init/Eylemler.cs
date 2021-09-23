@@ -72,7 +72,7 @@ namespace Tweetly_MVC.Init
             if (takipci == null || !SettingsMethod.TakipEdilenleriGetir.UseDB)
             {
                 var driver = Drivers.MusaitOlanDriver();
-                Thread baslat = new(new ThreadStart(() =>
+                Task.Run(() =>
                 {
                     using DatabasesContext context2 = new();
                     takipci = driver.GetProfil(username);
@@ -80,8 +80,8 @@ namespace Tweetly_MVC.Init
                     context2.TakipEdilenler.Add((TakipEdilen)takipci);
                     context2.SaveChanges();
                     Hesap.Instance.Iletisim.CurrentValue = Hesap.Instance.TakipEdilenler.Count;
-                }));
-                baslat.Start();
+                });
+                   
             }
             else Hesap.Instance.TakipEdilenler.Add(takipci);
             return element;

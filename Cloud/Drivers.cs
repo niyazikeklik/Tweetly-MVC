@@ -16,7 +16,7 @@ namespace Tweetly_MVC.Tweetly
         public static IWebDriver Driver4 { get; set; }
         public static IWebDriver Driver5 { get; set; }
 
-        private static int count = 10;
+        private static int count = 15;
         public static IWebDriver OptionDriver()
         {
             ChromeOptions chromeOptions = new();
@@ -28,7 +28,7 @@ namespace Tweetly_MVC.Tweetly
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-          //  chromeOptions.AddArgument("--headless");
+         //  chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 

@@ -65,7 +65,7 @@ namespace Tweetly_MVC.Controllers
             ViewBag.sutunGizle = false;
             if (Hesap.Instance.TakipEdilenler.Count != 0)
                 return View(Hesap.Instance.TakipEdilenler);
-            List<User> list = new();
+            List<User> list = Yardimci.BaseToSub<List<User>>(new DatabasesContext().TakipEdilenler);
             return View(list);
         }
         [HttpGet]
@@ -75,7 +75,6 @@ namespace Tweetly_MVC.Controllers
             SettingsMethod.TakipEdilenleriGetir.UseDB = useDB;
             SettingsMethod.TakipEdilenleriGetir.Context = context;
             ViewBag.sutunGizle = false;
-
             if (clearDB)
                 context.TakipEdilenler.RemoveRange(context.TakipEdilenler);
             context.SaveChanges();
