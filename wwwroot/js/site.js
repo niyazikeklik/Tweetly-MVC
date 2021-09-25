@@ -1,8 +1,22 @@
-﻿$(".gizli2").hide();
+﻿$(document).ready(() => {
+
+    const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44308/progressHub").build();
+    connection.start().catch(e => ("Bağlantı Başarısız!!!!! Hata Mesajı: " + e));
+    $("#Yenile").on("click", function () {
+        connection.invoke("ProgressBar", 11111111).catch(e => ("Gönderim Başarısız!!!!! Hata Mesajı: " + e));
+    })
+  
+    connection.on("progressCalistir", value => { console.log(value); });
+})
+function modalGetir() {
+    settingsGetir();
+    $('#exampleModal').modal('toggle');
+}
+$(".gizli2").hide();
 $(".images").on({
     mouseenter: function () {
         var element = $(this.getElementsByClassName("gizli"));
-        element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('x96', "400x400"));
+        element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('x96', "normal"));
         element.show(500);
     },
     mouseleave: function () {
@@ -24,7 +38,6 @@ function progresCalistir(element) {
                     data = JSON.parse(data)
                     $("#progress").css("width", data.veri + "%");
                     $("#progress").text(data.metin + " " + data.veri + "%");
-                    $("#gecensure").text("Geçen süre: " + data.sure + " ")
                 }
             });
         }, 5000);

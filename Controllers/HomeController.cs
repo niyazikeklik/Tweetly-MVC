@@ -17,12 +17,21 @@ namespace Tweetly_MVC.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
+        public async void Prog()
+        {
+            Hubs.ProgressBarHub hubs = new();
+            for (int i = 0; i < 100; i++)
+                await hubs.ProgressBar(i);
+            
+        }
         [HttpPost]
         public string TakipCik(string Usernames)
         {
             List<Task> tasks = new();
             string butontext = "";
             var takiptenCikilicaklar = Usernames?.Split('@');
+            if (takiptenCikilicaklar is null) return null;
             foreach (var item in takiptenCikilicaklar)
             {
                 if (string.IsNullOrEmpty(item)) continue;
@@ -68,52 +77,18 @@ namespace Tweetly_MVC.Controllers
             List<User> list = Yardimci.BaseToSub<List<User>>(new DatabasesContext().TakipEdilenler);
             return View(list);
         }
+
         [HttpGet]
-        public IActionResult TakipciList(string username, string liste = "following", bool clearDB = false, bool useDB = true)
+        public IActionResult ListGetir(string username, bool detay, bool useDB=true, bool clearDB=false, string listName = "followers")
         {
-            DatabasesContext context = new();
-            SettingsMethod.TakipEdilenleriGetir.UseDB = useDB;
-            SettingsMethod.TakipEdilenleriGetir.Context = context;
-            ViewBag.sutunGizle = false;
-            if (clearDB)
-                context.TakipEdilenler.RemoveRange(context.TakipEdilenler);
-            context.SaveChanges();
-            if (Hesap.Instance.TakipEdilenler.Any())
-                return View("Index", Hesap.Instance.TakipEdilenler);
-            if (context.TakipEdilenler.Count() == Hesap.Instance.OturumBilgileri.Following)
-            {
-                Hesap.Instance.TakipEdilenler.AddRange(context.TakipEdilenler);
-                return View("Index", Hesap.Instance.TakipEdilenler);
-            }
 
-            Eylemler.ListeGezici(Eylemler.TakipEdilenleriGetir, $"https://mobile.twitter.com/{username}/{liste}",Hesap.Instance.OturumBilgileri.Following);
-
-            context.TakipEdilenler.RemoveRange(context.TakipEdilenler);
-            context.TakipEdilenler.AddRange(Yardimci.BaseToSub<List<TakipEdilen>>(Hesap.Instance.TakipEdilenler.DistinctByUserName()));
-
-            return View("Index", Hesap.Instance.TakipEdilenler);
-        }
-        [HttpGet]
-        public IActionResult UnfollowEt(bool otoTakipCik = false)
-        {
-            Eylemler.ListeGezici(Eylemler.UnfollowEt, $"https://mobile.twitter.com/{Hesap.Instance.OturumBilgileri.Username}/following", Hesap.Instance.OturumBilgileri.Following);
-            ViewBag.sutunGizle = true;
-            DatabasesContext context = new();
-            Hesap.Instance.GeriTakipEtmeyenler.AddRange(context.GeriTakipEtmeyenler);
-            context.GeriTakipEtmeyenler.RemoveRange(context.GeriTakipEtmeyenler);
-            context.GeriTakipEtmeyenler.AddRange(Yardimci.BaseToSub<List<GeriTakipEtmeyen>>(Hesap.Instance.GeriTakipEtmeyenler.DistinctByUserName()));
-            context.SaveChanges();
-            return View("Index", Hesap.Instance.GeriTakipEtmeyenler);
-        }
-        [HttpGet]
-        public IActionResult ListGetir(string listName = "followers")
-        {
-            ViewBag.sutunGizle = true;
-            DatabasesContext context = new();
-            Eylemler.ListeGezici(Eylemler.DetaysızListeGetir, $"https://twitter.com/{Hesap.Instance.OturumBilgileri.Username}/{listName}", Hesap.Instance.OturumBilgileri.Followers);
-            context.Takipciler.AddRange(Yardimci.BaseToSub<List<Takipci>>(Hesap.Instance.Liste.DistinctByUserName()));
-            context.SaveChanges();
-
+            ViewBag.sutunGizle = !detay;
+            var Liste = Eylemler.ListeGezici(
+              Func: Eylemler.ListeGetir,
+              link: $"https://twitter.com/{username}/{listName}",
+              progressMAX: Hesap.Instance.OturumBilgileri.Followers,
+              detay: detay
+              );
             return View("Index", Hesap.Instance.Liste);
         }
     }

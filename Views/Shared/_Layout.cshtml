@@ -10,55 +10,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tweetly_MVC</title>
 
+
+    <script src="~/js/signalr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="text/javascript" src="~/DataTables/datatables.min.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.css" />
 
-    <link rel="stylesheet" type="text/css" href="~/DataTables/datatables.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
+
+
+
+
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/settings.css" />
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Tweetly_MVC</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a id="menu" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TakipciList" asp-route-username="@Hesap.Instance.OturumBilgileri.Username" asp-route-liste="following">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="menu" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListGetir" asp-route-listName="following">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li>
-                            <h4 id="gecensure">Geçen süre:</h4> @Math.Round(Convert.ToDecimal(ViewBag.gecensure), 0) dakika
-                        </li>
-                    </ul>
 
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Seçenekler</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalicerik">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <header>
+        <nav class="blend">
+            <ul>
+                <li><a href="@Url.ActionLink("Prog", "Home")">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Downloads</a></li>
+                <li><a href="#">More</a></li>
+                <li><a href="#" onclick="modalGetir()">Seçenekler</a></li>
+            </ul>
         </nav>
     </header>
 
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="margin-top: 20px">
             <div class="row" style="margin: auto">
                 <div class="container">
                     <div class="row" style="margin: auto;">
-                        <div class="col-4">
+                        <div class="col-2" style="max-width: 300px; width: 300px">
                             <div class="profile">
                                 <div class="image">
                                     <div class="circle-1"></div>
@@ -139,7 +154,7 @@
 
         <div class="row">
             <button class="button" style="margin: 15px" onclick="grafiklerToggle()"><i class="bi bi-bar-chart-line-fill"></i>   Grafikler</button>
-            <div class="container" id="grafikler">
+            <div class="container" id="grafikler" style="display:none">
                 <div class="row">
                     <div class="col-4">
                         <canvas id="myChart"></canvas>
@@ -160,49 +175,72 @@
     </div>
     <nav class="menu">
         <a href="#" class="menu__item" data-tooltip="Dashboard">
-            <i class="bi bi-house-door-fill"></i>
+            <i class="bi bi-house-door-fill" style="color: #324060"></i>
         </a>
-        <a href="@Url.ActionLink("TakipciList","Home")" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takipçiler">
-            <i class="bi bi-people-fill"></i>
+        <a href="@Url.ActionLink("ListGetir", "Home", new {
+            username = Hesap.Instance.OturumBilgileri.Username,
+            detay = true,
+            listName = "following"
+            });" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takip Edilenler">
+            <i class="bi bi-people-fill" style="color: #324060"></i>
         </a>
-        <a href="@Url.ActionLink("ListGetir","Home")" class="menu__item menu__item--active" id="listGetir" data-tooltip="Liste getir">
-            <i class="bi bi-person-lines-fill"></i>
-        </a>
-
-        <a href="@Url.ActionLink("UnfollowEt","Home")" class="menu__item" data-tooltip="Geri takip etmeyenler">
-            <i class="bi bi-person-dash-fill"></i>
+        <a href="@Url.ActionLink("ListGetir", "Home",new {
+            username = Hesap.Instance.OturumBilgileri.Username,
+            detay = true,
+            listName = "followers"
+            })" class="menu__item menu__item--active" id="listGetir" data-tooltip="Takipçiler">
+            <i class="bi bi-person-lines-fill" style="color: #324060"></i>
         </a>
         <a href="#" class="menu__item" data-tooltip="Mesajları Sil">
-            <i class="bi bi-envelope-fill"></i>
+            <i class="bi bi-envelope-fill" style="color: #324060"></i>
         </a>
         <a href="#" class="menu__item" data-tooltip="Settings">
-            <i class="bi bi-gear-fill"></i>
+            <i class="bi bi-gear-fill" style="color: #324060"></i>
         </a>
+        <form method="get" asp-action="ListGetir" asp-route-username="asdad" asp-route-detay="false"> 
+            <div class="dropdown" style="width:100%; height: 50px;">
+                <button style="height:100%; margin:auto;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
+                    <i class="bi bi-gear-fill" style="color: #324060"></i>
+                </button>
+               
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
+                    <li>
+                        <div class="input-group">
+                            <span>Detay</span>
+                            <input class="dropdown-item" type="checkbox" name="detay" value="true" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="input-group">
+                            <span class="input-group-text">Kullanıcı:</span>
+                            <input type="text" name="username" aria-label="Kullanıcı" class="form-control">
+                        </div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" type="submit" name="listName" value="followers" href="">Takipçileri</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" type="submit" name="listName" value="following" href="">Takip ettikleri</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" type="submit" name="listName" value="" href="">Ortak takipçiler</a>
+                    </li>
+                    <li><a class="dropdown-item" name="listName" href="#">Beğenenler</a></li>
+                </ul>
 
-        <div class="dropdown" style="width:100%; height: 50px;">
-            <button style="height:100%; margin:auto;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
-                <i class="bi bi-gear-fill"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
-                <li>
-                    <div class="input-group">
-                        <span class="input-group-text">Kullanıcı:</span>
-                        <input type="text" aria-label="Kullanıcı" class="form-control">
-                    </div>
-                </li>
-                <li><a class="dropdown-item" href="#">Takipçileri</a></li>
-                <li><a class="dropdown-item" href="#">Takip ettikleri</a></li>
-                <li><a class="dropdown-item" href="#">Ortak takipçiler</a></li>
-                <li><a class="dropdown-item" href="#">Beğenenler</a></li>
-            </ul>
-        </div>
+            </div>
+        </form>
     </nav>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     <script src="~/js/Datatable.js" asp-append-version="true"></script>
-
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Grafikler.js" asp-append-version="true"></script>
-
+    <script src="~/js/settings.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
 </body>
 </html>
+
+

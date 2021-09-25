@@ -19,7 +19,7 @@ namespace Tweetly_MVC.Init
             IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
             int count = 0;
             string exMg = "";
-            while (count < 10 )
+            while (count < 10)
                 try
                 {
                     var result = jse.ExecuteScript(command);
@@ -187,9 +187,8 @@ namespace Tweetly_MVC.Init
             while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
             {
                 if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
-                {
                     return false; //Engellemişse
-                }
+
 
                 if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
                 {
@@ -201,7 +200,7 @@ namespace Tweetly_MVC.Init
                     return driver.Control(userName, link, 60000);
 
                 }
-                if (count == 20)
+                if (count is 20)
                 {
                     driver.Navigate().Refresh();
                     driver.WaitForLoad();
@@ -246,14 +245,9 @@ namespace Tweetly_MVC.Init
                 jse.ExecuteScript("window.scrollBy(0,1500);");
                 Thread.Sleep(300);
                 double sonrakiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                if (oncekiY == sonrakiY)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                if (oncekiY == sonrakiY) return true;
+                else return false;
+
             }
             catch (Exception)
             {

@@ -27,7 +27,6 @@
         options: {}
     };
     var myChart = new Chart(document.getElementById('myChart'), config);
-    myChart.canvas.parentNode.style.height = '512px';
     myChart.canvas.parentNode.style.width = '512px';
 }
 
@@ -62,7 +61,6 @@ function createTakipciDurumuGrafik(begeniAktiflik, tweetAktiflik, OrtTweet, OrtB
         },
     };
     var myChart2 = new Chart(document.getElementById('myChart2'), config2);
-    myChart2.canvas.parentNode.style.height = '512px';
     myChart2.canvas.parentNode.style.width = '256px';
 }
 

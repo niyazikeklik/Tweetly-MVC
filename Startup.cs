@@ -22,9 +22,16 @@ namespace Tweetly_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddDefaultPolicy(policy =>
+            policy
+            .AllowCredentials()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(origin => true)
+            ));
             services.AddControllersWithViews().AddFormHelper();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
-
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,19 +52,19 @@ namespace Tweetly_MVC
             using (DatabasesContext client = new())
             {
                 client.Database.Migrate();
-
             }
 
-
+            app.UseCors();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                //http://localhost:6553/progressHub
+                endpoints.MapHub<Hubs.ProgressBarHub>("/progressHub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

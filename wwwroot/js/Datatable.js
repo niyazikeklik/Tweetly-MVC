@@ -1,7 +1,9 @@
 ﻿var table;
 async function tableAyarla() {
-    console.log(1);
     table = await $('.fl-table').DataTable({
+        "language": {
+            "search": ""
+        },
         paging: true,
         lengthMenu: [
             [10, 25, 50, 100, 200, 500, -1],
@@ -25,12 +27,8 @@ async function tableAyarla() {
             //  selector: 'td:first-child'
         },
         lengthChange: false,
+        dom: 'Bfrtip',
         buttons: [
-            {
-                extend: 'pageLength',
-                text: 'Satır Sayısı',
-                className: 'tablobutonlar'
-            },
             {
 
                 extend: 'searchBuilder',
@@ -38,6 +36,11 @@ async function tableAyarla() {
                 className: 'tablobutonlar',
                 enterSearch: true,
 
+            },
+            {
+                extend: 'pageLength',
+                text: 'Satır Sayısı',
+                className: 'tablobutonlar'
             },
             {
                 extend: 'colvis',
@@ -68,13 +71,17 @@ async function tableAyarla() {
         ]
 
     });
-    table.buttons().container().appendTo($('div.column.is-one-half', table.table().container()).eq(0));
+    $('#DataTables_Table_0_filter label').toggleClass("row");
+
+    table.buttons().container().appendTo($('#DataTables_Table_0_filter label', table.table().container()).eq(0));
+
     $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="button is-light buttons-collection tablobutonlar"">Seçilenleri Takipten Çık</button>`);
     $('.dt-buttons.field.is-grouped').append(`<button id="Yenile" asp-area="" asp-controller="Home" asp-action="Yenile" class ="button is-light buttons-collection tablobutonlar"">Yenile</button>`);
-    $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
-    $('#DataTables_Table_0_filter').css("text-align", "left");
-    // $('#DataTables_Table_0_filter').html($('#DataTables_Table_0_filter input'));
 
+    $('#DataTables_Table_0_filter label').css("margin", "20px 0px 0px 0px");
+    $('#DataTables_Table_0_filter label input').css("margin", "5px 20px 0px 0px");
+    $('.dt-buttons.field.is-grouped').toggleClass("row");
+    $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
 
     $("#TakipCik").on("click", function () {
 

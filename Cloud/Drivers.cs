@@ -28,7 +28,7 @@ namespace Tweetly_MVC.Tweetly
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-         //  chromeOptions.AddArgument("--headless");
+            chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 

@@ -38,7 +38,8 @@
     height: 100%;
     text-align: center;
     background-color: white;
-   float:right;
+    margin-right:20px;
+   /* float: right;*/
 }
 
     .profile .image {
@@ -138,7 +139,7 @@
     .stats .box {
         box-sizing: border-box;
         width: 30%;
-        min-width:100px;
+        min-width: 100px;
         background: #ffffff;
         text-align: center;
         transition: all 0.4s ease-in-out;
@@ -147,8 +148,9 @@
     }
 
         .stats .box:hover {
-            background: #e1cfc2;
+            background: #324960;
             cursor: pointer;
+            color:white;
         }
 
     .stats span {
@@ -296,9 +298,10 @@
         text-align: center;
     }
 }
+
 .userbutons {
     display: block;
-    margin:auto;
+    margin: auto;
     width: 92px;
     margin-bottom: 10px;
 }
@@ -343,19 +346,21 @@ p.product a {
         font-weight: 700;
     }
 
-.dt-buttons.field.is-grouped{
-    margin-bottom:5px;
+.dt-buttons.field.is-grouped {
+    margin-bottom: 5px;
 }
 
 .tablobutonlar {
-    margin-right: 10px !important;
-    background-color: #0d6efd !important;
+    margin: 5px !important;
+    background-color: #324960 !important;
     color: white !important;
 }
+
     .tablobutonlar:hover {
-        background-color: #6610f2 !important;
+        background-color: #323260 !important;
         color: white !important;
     }
+
 #DataTables_Table_0_wrapper .column {
     display: block !important;
     flex-basis: unset !important;
@@ -463,3 +468,95 @@ table td, table th {
     font-weight: 100;
     margin-left: 5px;
 }
+
+
+
+
+/*NAVBAR*/
+
+
+
+/* NAVIGATION */
+nav {
+    width: 80%;
+    margin: 0 auto;
+    background: #fff;
+    padding: 10px 0;
+    box-shadow: 0px 5px 0px #dedede;
+}
+
+    /* By Dominik Biedebach @domobch */
+    nav ul {
+        list-style: none;
+        text-align: center;
+    }
+
+        nav ul li {
+            display: inline-block;
+        }
+
+            nav ul li a {
+                display: block;
+                padding: 15px;
+                text-decoration: none;
+                color: #aaa;
+                font-weight: 800;
+                text-transform: uppercase;
+                margin: 0 10px;
+            }
+
+                nav ul li a,
+                nav ul li a:after,
+                nav ul li a:before {
+                    transition: all .5s;
+                }
+
+                    nav ul li a:hover {
+                        color: #555;
+                    }
+
+
+
+    /* By Dominik Biedebach @domobch */
+
+    /* Blend */
+    nav.blend ul li a {
+        position: relative;
+        border-radius: 5px;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+        nav.blend ul li a:hover {
+            color: #fff;
+            text-decoration:none;
+        }
+
+        nav.blend ul li a:before,
+        nav.blend ul li a:after {
+            position: absolute;
+            width: 0px;
+            height: 100%;
+            top: 0;
+            bottom: 0;
+            background: #324960;
+            transition: all .5s;
+            margin: auto;
+            content: '.';
+            color: transparent;
+            z-index: -1;
+            opacity: 0.75;
+        }
+
+        nav.blend ul li a:before {
+            left: 0;
+        }
+
+        nav.blend ul li a:after {
+            right: 0;
+        }
+
+        nav.blend ul li a:hover:after,
+        nav.blend ul li a:hover:before {
+            width: 100%;
+        }
