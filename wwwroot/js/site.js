@@ -8,9 +8,14 @@
   
     connection.on("progressCalistir", value => { console.log(value); });
 })
+var modelOlusturuldu = false;
 function modalGetir() {
-    settingsGetir();
+    if (!modelOlusturuldu) {
+        settingsCreate();
+        modelOlusturuldu = true;
+    }
     $('#exampleModal').modal('toggle');
+   
 }
 $(".gizli2").hide();
 $(".images").on({

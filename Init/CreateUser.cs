@@ -11,10 +11,32 @@ namespace Tweetly_MVC.Init
     public static class CreateUser
     {
 
+        public static bool Filter(User profil)
+        {
+            if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.Settings.checkErkek)
+                return false;
+            if (profil.Cinsiyet == "Kadın" && !Hesap.Instance.Settings.checkKadin)
+                return false;
+            if (profil.Cinsiyet == "Unisex" && !Hesap.Instance.Settings.checkUnisex)
+                return false;
+            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.Settings.checkBelirsiz)
+                return false;
+            if (profil.FollowStatus != "Takip Ediliyor" && Hesap.Instance.Settings.checkTakipEtmediklerim)
+                return false;
+            if (profil.FollowStatus == "Takip Ediliyor" && Hesap.Instance.Settings.checkTakipEttiklerim)
+                return false;
+            if (profil.FollowersStatus != "Seni Takip Ediyor" && Hesap.Instance.Settings.checkBeniTakipEtmeyenler)
+                return false;
+            if (profil.FollowersStatus == "Seni Takip Ediyor" && Hesap.Instance.Settings.checkBeniTakipEdenler)
+                return false;
+            if (profil.IsPrivate && Hesap.Instance.Settings.checkGizliHesap)
+                return false;
+            return true;
+        }
         public static User GetProfil(this IWebElement element, bool detay = false)
         {
             var profil = new TakipEdilen();
-            string Text = element.Text.Replace("\r","");
+            string Text = element.Text.Replace("\r", "");
 
             profil.Name = Liste.GetName(Text);
             profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
@@ -24,9 +46,9 @@ namespace Tweetly_MVC.Init
             profil.FollowersStatus = Liste.GetFollowersStatus(Text);
             profil.FollowStatus = Liste.GetFollowStatus(Text);
             profil.Bio = Liste.GetBio(element);
-
-            if (detay) 
-                profil = (TakipEdilen) Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
+            if (Filter(profil)) return null;
+            if (detay)
+                profil = (TakipEdilen)Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
 
             return profil;
         }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Tweetly
 {
@@ -28,17 +29,18 @@ namespace Tweetly_MVC.Tweetly
             get
             {
                 if (instance == null)
-                    instance = new Hesap();
+                    instance = new();
                 return instance;
             }
         }
 
         private Hesap()
         {
-            Liste = new List<User>();
-            TakipEdilenler = new List<User>();
-            GeriTakipEtmeyenler = new List<User>();
-            Iletisim = new IILetisim();
+            Settings = new();
+            Liste = new();
+            TakipEdilenler = new();
+            GeriTakipEtmeyenler = new();
+            Iletisim = new();
             Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
         public string LoginUserName { get; set; }
@@ -48,6 +50,8 @@ namespace Tweetly_MVC.Tweetly
         public List<User> Liste { get; set; }
         public List<User> TakipEdilenler { get; set; }
         public List<User> GeriTakipEtmeyenler { get; set; }
+
+        public Setting Settings { get; set; }
 
     }
 }

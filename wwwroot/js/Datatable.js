@@ -72,15 +72,15 @@ async function tableAyarla() {
 
     });
     $('#DataTables_Table_0_filter label').toggleClass("row");
-
     table.buttons().container().appendTo($('#DataTables_Table_0_filter label', table.table().container()).eq(0));
 
     $('.dt-buttons.field.is-grouped').append(`<button id="TakipCik" class ="button is-light buttons-collection tablobutonlar"">Seçilenleri Takipten Çık</button>`);
     $('.dt-buttons.field.is-grouped').append(`<button id="Yenile" asp-area="" asp-controller="Home" asp-action="Yenile" class ="button is-light buttons-collection tablobutonlar"">Yenile</button>`);
-
+    //: ;
     $('#DataTables_Table_0_filter label').css("margin", "20px 0px 0px 0px");
     $('#DataTables_Table_0_filter label input').css("margin", "5px 20px 0px 0px");
     $('.dt-buttons.field.is-grouped').toggleClass("row");
+    $('.dt-buttons.field.is-grouped').css("display", "unset");
     $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
 
     $("#TakipCik").on("click", function () {
