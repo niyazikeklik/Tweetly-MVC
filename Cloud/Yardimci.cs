@@ -15,6 +15,23 @@ namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
+        public static void KillProcces()
+        {
+            Process[] runingProcess = Process.GetProcesses();
+            for (int i = 0; i < runingProcess.Length; i++)
+            {
+                if (runingProcess[i].ProcessName == "chrome" || runingProcess[i].ProcessName == "chromedriver" || runingProcess[i].ProcessName == "conhost")
+                {
+                    try
+                    {
+                        double s = (DateTime.Now - runingProcess[i].StartTime).TotalSeconds;
+                        if (s >= 30) { runingProcess[i].Kill(); }
+                    }
+                    catch {; }
+                }
+
+            }
+        }
         public static string Donustur(string metin)
         {
             metin = metin
@@ -39,9 +56,9 @@ namespace Tweetly_MVC.Init
                     number += item;
             return number;
         }
-        public static double KayıtTarihi(string kayittarihi)
+        public static double UyelikSuresi(string kayittarihi)
         {
-            List<string> Months = new List<string>{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
+            List<string> Months = new (){"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
 
             string AyAdi = kayittarihi.Split(' ')[0];
             int Yil = Convert.ToInt32(kayittarihi.Split(' ')[1]);
@@ -49,6 +66,37 @@ namespace Tweetly_MVC.Init
             int Index = Months.IndexOf(AyAdi) + 1;
             int Ay = Index > 12 ? Index - 12  : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
+        }
+        public static string CinsiyetBul(string name)
+        {
+
+            if (String.IsNullOrEmpty(name)) return "Belirsiz";
+            string[] isimler = name?.Split(' ');
+            string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
+            string cinsiyet = "Belirsi...z";
+            var result = Hesap.Instance.Cins.FirstOrDefault(x => x.Ad == isim);
+            if (result != null)
+            {
+                cinsiyet = result.Cinsiyet == "e" ? "Erkek" :
+                           result.Cinsiyet == "k" ? "Kadın" :
+                           result.Cinsiyet == "u" ? "Unisex" : "Belirsi...z";
+                return cinsiyet;
+            }
+            else
+            {
+                /*
+                isim = isim.StringReplace();
+                var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
+                cinsiyet = msg.Contains("male") ? "Erke-k" : 
+                           msg.Contains("female") ? "Kadı-n" : 
+                           "Belirsiz";
+                return cinsiyet;*/
+
+
+                /*Yapay Zeka ile Tespit*/
+
+                return "Belirsiz";
+            }
         }
         public static object JSCodeRun(this IWebDriver driver, string command)
         {
@@ -86,8 +134,6 @@ namespace Tweetly_MVC.Init
             Thread.Sleep(waitForPageLoad_ms);
             return driverr;
         }
-
-
         public static bool Control(this IWebDriver driver, string userName, string link, int ms = 300000)
         {
             Hesap.Instance.Iletisim.metin = "";
@@ -125,23 +171,6 @@ namespace Tweetly_MVC.Init
             }
             return true;
 
-        }
-        public static void KillProcces()
-        {
-            Process[] runingProcess = Process.GetProcesses();
-            for (int i = 0; i < runingProcess.Length; i++)
-            {
-                if (runingProcess[i].ProcessName == "chrome" || runingProcess[i].ProcessName == "chromedriver" || runingProcess[i].ProcessName == "conhost")
-                {
-                    try
-                    {
-                        double s = (DateTime.Now - runingProcess[i].StartTime).TotalSeconds;
-                        if (s >= 30) { runingProcess[i].Kill(); }
-                    }
-                    catch {; }
-                }
-
-            }
         }
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {

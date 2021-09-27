@@ -62,7 +62,7 @@ namespace Tweetly_MVC.Init
         public static double GetDate(this IWebDriver driverr)
         {
             var secilenElement = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
-            return Yardimci.KayıtTarihi(secilenElement.ToString());
+            return Yardimci.UyelikSuresi(secilenElement.ToString());
 
 
         }
@@ -128,33 +128,6 @@ namespace Tweetly_MVC.Init
         public static string GetPhotoURL(this IWebDriver driverr, string ka)
         {
             return (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/photo\"] img').getAttribute(\"src\");");
-        }
-        public static string CinsiyetBul(string name)
-        {
-
-            if (String.IsNullOrEmpty(name)) return "Belirsiz";
-            string[] isimler = name?.Split(' ');
-            string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
-            string cinsiyet = "Belirsi...z";
-            var result = Hesap.Instance.Cins.FirstOrDefault(x => x.Ad == isim);
-            if (result != null)
-            {
-                cinsiyet = result.Cinsiyet == "e" ? "Erkek" :
-                           result.Cinsiyet == "k" ? "Kadın" :
-                           result.Cinsiyet == "u" ? "Unisex" : "Belirsi...z";
-                return cinsiyet;
-            }
-            else
-            {
-                /*
-                isim = isim.StringReplace();
-                var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
-                cinsiyet = msg.Contains("male") ? "Erke-k" : 
-                           msg.Contains("female") ? "Kadı-n" : 
-                           "Belirsiz";
-                return cinsiyet;*/
-                return "Belirsiz";
-            }
         }
         public static string GetName(this IWebDriver driverr)
         {

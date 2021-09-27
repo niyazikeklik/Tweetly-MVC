@@ -61,7 +61,7 @@ namespace Tweetly_MVC.Init
             string Text = element.Text.Replace("\r", "");
             profil.Count = Hesap.Instance.Liste.Count + 1;
             profil.Name = Liste.GetName(Text);
-            profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
+            profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name);
             profil.Username = Liste.GetUserName(Text);
             profil.PhotoURL = Liste.GetPhotoURL(element);
             profil.IsPrivate = Liste.İsPrivate(element);
@@ -117,7 +117,7 @@ namespace Tweetly_MVC.Init
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
                 profil.IsPrivate = driver.IsPrivate();
-                profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
+                profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
                 driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
