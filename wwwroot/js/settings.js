@@ -2,93 +2,38 @@
     $("#modalicerik").html(`
 <div class="container">
     <div class="my-4">
-        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Notifications</a>
-            </li>
-        </ul>
-
-        <strong class="mb-5">Performans ve Veri Kalitesi</strong>
-              ${checkItemEkle("Veritabanını kullan", "Kullanıcılar kontrol edilirken daha önceden veritabanında kayıt varsa oradan çekilir. Bu işlem tutarsız verilere sebep olabilir. Hız açısından avantajlıdır.", "checkUseDB")}
-              ${checkItemEkle("Veritabanını temizle", "Veritabanında eski kayıtlar tamamen silinir, güncel veri için önerilir, hız açısından dezavantajlıdır.", "checkClearDB")}
-              ${checkItemEkle("Detay Getir", "Etkinleştirilirse detay bilgiler toplanır, hız önemli ölçüde azalır. Etkinleştirilmez ise temel bilgiler toplanır, hız önemli ölçüde artar.", "checkDetayGetir")}
-        <strong class="mb-5">Cinsiyet Tercihi</strong>
-               ${checkItemEkle("Erkek Kullanıcıları Getir", "Erkek kullanıcılar aramaya dahil edilir.", "checkErkek")}
-               ${checkItemEkle("Kadın Kullanıcıları Getir", "Kadın kullanıcılar aramaya dahil edilir.", "checkKadin")}
-               ${checkItemEkle("Unisex Kullanıcıları Getir", "Unisex kullanıcılar aramaya dahil edilir.", "checkUnisex")}
-               ${checkItemEkle("Belirsiz Kullanıcıları Getir", "Belirsiz kullanıcılar aramaya dahil edilir.", "checkBelirsiz")}
-        <strong class="mb-5">Takip Durumu</strong>
-               ${checkItemEkle("Takip etmediğim kayıtları getirme", "", "checkTakipEtmediklerim")}
-               ${checkItemEkle("Takip ettiğim kayıtları getirme", "", "checkTakipEttiklerim")}
-               ${checkItemEkle("Beni takip eden kayıtları getirme", "","checkBeniTakipEdenler")}
-               ${checkItemEkle("Beni takip etmeyen kayıtları getirme", "", "checkBeniTakipEtmeyenler")}
-               ${checkItemEkle("Gizli hesapları getirme", "", "checkGizliHesap")}
+        <div style ="margin-top: 30px; margin-top: 15px;"><strong class="mb-5" >Performans ve Veri Kalitesi</strong></div>
+              ${checkItemEkle("Veritabanını kullan", "Kullanıcılar kontrol edilirken daha önceden veritabanında kayıt varsa oradan çekilir. Bu işlem tutarsız verilere sebep olabilir. Hız açısından avantajlıdır.", "CheckUseDB")}
+              ${checkItemEkle("Veritabanını temizle", "Veritabanında eski kayıtlar tamamen silinir, güncel veri için önerilir, hız açısından dezavantajlıdır.", "CheckClearDB")}
+              ${checkItemEkle("Detay Getir", "Etkinleştirilirse detay bilgiler toplanır, hız önemli ölçüde azalır. Etkinleştirilmez ise temel bilgiler toplanır, hız önemli ölçüde artar.", "CheckDetayGetir")}
+       <div style ="margin-top: 50px; margin-bottom: 15px;"><strong class="mb-5" >Cinsiyet Tercihi</strong></div>
+               ${checkItemEkle("Erkek Kullanıcıları Getir", "Erkek kullanıcılar aramaya dahil edilir.", "CheckErkek")}
+               ${checkItemEkle("Kadın Kullanıcıları Getir", "Kadın kullanıcılar aramaya dahil edilir.", "CheckKadin")}
+               ${checkItemEkle("Unisex Kullanıcıları Getir", "Unisex kullanıcılar aramaya dahil edilir.", "CheckUnisex")}
+               ${checkItemEkle("Belirsiz Kullanıcıları Getir", "Belirsiz kullanıcılar aramaya dahil edilir.", "CheckBelirsiz")}
+      <div style ="margin-top: 50px; margin-bottom: 15px;"><strong class="mb-5" >Takip Durumu</strong></div>
+               ${checkItemEkle("Takip etmediğim kayıtları getirme", "", "CheckTakipEtmediklerim")}
+               ${checkItemEkle("Takip ettiğim kayıtları getirme", "", "CheckTakipEttiklerim")}
+               ${checkItemEkle("Beni takip eden kayıtları getirme", "","CheckBeniTakipEdenler")}
+               ${checkItemEkle("Beni takip etmeyen kayıtları getirme", "", "CheckBeniTakipEtmeyenler")}
+               ${checkItemEkle("Gizli hesapları getirme", "", "CheckGizliHesap")}
     </div>
 </div>
-
-
 `);
-    $("#checkKadin").trigger("click");
-    $("#checkUnisex").trigger("click");
-    $("#checkBelirsiz").trigger("click");
-    $("#checkErkek").trigger("click");
-    $("#checkTakipEttiklerim").trigger("click");
-    $("#checkBeniTakipEtmeyenler").trigger("click");
-    $("#checkUseDB").trigger("click");
-
-    $("#checkErkek").change(function () {
-        if (!this.checked && !$("#checkKadin").is(":checked") && !$("#checkUnisex").is(":checked") && !$("#checkBelirsiz").is(":checked") ) {
-            $('#checkKadin').trigger('click');
-        }
-    });
-    $("#checkKadin").change(function () {
-        if (!this.checked && !$("#checkErkek").is(":checked") &&!$("#checkUnisex").is(":checked") && !$("#checkBelirsiz").is(":checked")) {
-            $('#checkErkek').trigger('click');
-        }
-    });
-    $("#checkUnisex").change(function () {
-        if (!this.checked && !$("#checkErkek").is(":checked") && !$("#checkKadin").is(":checked") && !$("#checkBelirsiz").is(":checked")) {
-            $('#checkErkek').trigger('click');
-        }
-    });
-    $("#checkBelirsiz").change(function () {
-        if (!this.checked && !$("#checkErkek").is(":checked") && !$("#checkKadin").is(":checked") && !$("#checkUnisex").is(":checked")) {
-            $('#checkErkek').trigger('click');
-        }
-    });
-    $("#checkTakipEtmediklerim").change(function () {
-        if (this.checked && $("#checkTakipEttiklerim").is(":checked")) {
-            $('#checkTakipEttiklerim').trigger('click');
-        }
-    });
-    $("#checkTakipEttiklerim").change(function () {
-        if (this.checked && $("#checkTakipEtmediklerim").is(":checked")) {
-            $('#checkTakipEtmediklerim').trigger('click');
-        }
-    });
-    $("#checkBeniTakipEdenler").change(function () {
-        if (this.checked && $("#checkBeniTakipEtmeyenler").is(":checked")) {
-            $('#checkBeniTakipEtmeyenler').trigger('click');
-        }
-    });
-    $("#checkBeniTakipEtmeyenler").change(function () {
-        if (this.checked && $("#checkBeniTakipEdenler").is(":checked")) {
-            $('#checkBeniTakipEdenler').trigger('click');
-        }
-    });
-    $("#checkClearDB").change(function () {
-        if (this.checked && $("#checkUseDB").is(":checked")) {
-            $('#checkUseDB').trigger('click');
-        }
-    });
-    $("#checkUseDB").change(function () {
-        if (this.checked && $("#checkClearDB").is(":checked")) {
-            $('#checkClearDB').trigger('click');
-        }
+    VarsayılanAyarlar();
+    Kurallar();
+    $("#AyarlarıKaydet").on("click", function () {
+        $.ajax({
+            type: "POST",
+            url: '/Home/SettingSave',
+            data: { Model: JSON.stringify(getValues()) },
+            dataType: "text",
+            success: function (msg) {
+                alert("Başarıyla kaydedildi: " + msg)
+            }
+        });
     });
 }
-
-
 function checkItemEkle(baslik, aciklama, id) {
     return `<div class="list-group mb-2 shadow" style="margin: 10px">
                 <div class="list-group-item">
@@ -98,11 +43,96 @@ function checkItemEkle(baslik, aciklama, id) {
                             <p class="text-muted mb-0">${aciklama}</p>
                         </div>
                         <div class="col-auto">
-<div class="form-check form-switch">
+<div class="checkboxDiv form-check form-switch">
   <input class="form-check-input" type="checkbox" style="width: 3.5em; height: 1.75em;" id="${id}">
 </div>
                         </div>
                     </div>
                 </div>
             </div>`
+}
+function VarsayılanAyarlar() {
+    $("#CheckUseDB").trigger("click");
+    $("#CheckKadin").trigger("click");
+    $("#CheckUnisex").trigger("click");
+    $("#CheckBelirsiz").trigger("click");
+    $("#CheckErkek").trigger("click");
+
+  
+}
+function Kurallar() {
+    $("#CheckErkek").change(function () {
+        if (!this.checked && !$("#CheckKadin").is(":checked") && !$("#CheckUnisex").is(":checked") && !$("#CheckBelirsiz").is(":checked")) {
+            $('#CheckKadin').trigger('click');
+        }
+    });
+    $("#CheckKadin").change(function () {
+        if (!this.checked && !$("#CheckErkek").is(":checked") && !$("#CheckUnisex").is(":checked") && !$("#CheckBelirsiz").is(":checked")) {
+            $('#CheckErkek').trigger('click');
+        }
+    });
+    $("#CheckUnisex").change(function () {
+        if (!this.checked && !$("#CheckErkek").is(":checked") && !$("#CheckKadin").is(":checked") && !$("#CheckBelirsiz").is(":checked")) {
+            $('#CheckErkek').trigger('click');
+        }
+    });
+    $("#CheckBelirsiz").change(function () {
+        if (!this.checked && !$("#CheckErkek").is(":checked") && !$("#CheckKadin").is(":checked") && !$("#CheckUnisex").is(":checked")) {
+            $('#CheckErkek').trigger('click');
+        }
+    });
+    $("#CheckTakipEtmediklerim").change(function () {
+        if (this.checked && $("#CheckTakipEttiklerim").is(":checked")) {
+            $('#CheckTakipEttiklerim').trigger('click');
+        }
+    });
+    $("#CheckTakipEttiklerim").change(function () {
+        if (this.checked && $("#CheckTakipEtmediklerim").is(":checked")) {
+            $('#CheckTakipEtmediklerim').trigger('click');
+        }
+    });
+    $("#CheckBeniTakipEdenler").change(function () {
+        if (this.checked && $("#CheckBeniTakipEtmeyenler").is(":checked")) {
+            $('#CheckBeniTakipEtmeyenler').trigger('click');
+        }
+    });
+    $("#CheckBeniTakipEtmeyenler").change(function () {
+        if (this.checked && $("#CheckBeniTakipEdenler").is(":checked")) {
+            $('#CheckBeniTakipEdenler').trigger('click');
+        }
+    });
+    $("#CheckClearDB").change(function () {
+        if (this.checked && $("#CheckUseDB").is(":checked")) {
+            $('#CheckUseDB').trigger('click');
+        }
+    });
+    $("#CheckUseDB").change(function () {
+        if (this.checked && $("#CheckClearDB").is(":checked")) {
+            $('#CheckClearDB').trigger('click');
+        }
+    });
+    $("#CheckDetayGetir").change(function () {
+            if (this.checked) {
+                $("#CheckUseDB").removeAttr("disabled");
+            } else {
+                $("#CheckUseDB").attr("disabled", true);
+            }
+    });
+    $(".checkboxDiv input").change();
+}
+function getValues(){
+    var obj = new Object();
+    obj.checkGizliHesap = $("#CheckGizliHesap").is(":checked");;
+    obj.checkBeniTakipEtmeyenler = $("#CheckBeniTakipEtmeyenler").is(":checked");;
+    obj.checkBeniTakipEdenler = $("#CheckBeniTakipEdenler").is(":checked");
+    obj.checkTakipEtmediklerim = $("#CheckTakipEtmediklerim").is(":checked");;
+    obj.checkTakipEttiklerim = $("#CheckTakipEttiklerim").is(":checked");;
+    obj.checkBelirsiz = $("#CheckBelirsiz").is(":checked");;
+    obj.checkUnisex = $("#CheckUnisex").is(":checked");;
+    obj.checkKadin = $("#CheckKadin").is(":checked");;
+    obj.checkErkek = $("#CheckErkek").is(":checked");;
+    obj.checkDetayGetir = $("#CheckDetayGetir").is(":checked");;
+    obj.checkClearDB = $("#CheckClearDB").is(":checked");;
+    obj.checkUseDB = $("#CheckUseDB").is(":checked");
+    return obj;
 }

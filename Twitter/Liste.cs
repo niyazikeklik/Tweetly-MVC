@@ -10,7 +10,7 @@ namespace Tweetly_MVC.Twitter
     {
         public static string GetUserName(string elementText)
         {
-            int basla = elementText.IndexOf('@');
+            int basla = elementText.IndexOf('@') + 1;
             return elementText[basla..elementText.IndexOf('\n', basla)];
         }
         public static string GetName(string elementText)
@@ -41,7 +41,7 @@ namespace Tweetly_MVC.Twitter
         }
         public static string GetBio(IWebElement element)
         {
-            var bios = element.FindElements(By.XPath("/div/div[2]/div[2]/span"));
+            var bios = element.FindElements(By.CssSelector("div > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)"));
             if (bios.Count > 0) return bios[0].Text;
             return null;
         }

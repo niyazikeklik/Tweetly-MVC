@@ -26,25 +26,22 @@ namespace Tweetly_MVC.Init
 
             Drivers.kullanıyorum.Remove(driver);
         }
-        public static User ListeGetir(IWebElement element, bool detay = false)
+
+        public static object ListeGezici(string link,  int sayfaLoadWait_MS = 1000)
         {
-            var tak = element.GetProfil(detay);
-            Hesap.Instance.Iletisim.CurrentValue = Hesap.Instance.Liste.Count;
-            return tak;
-        }
-        public static object ListeGezici(Func<IWebElement, bool, User> Func, string link, int progressMAX = 1, bool detay = false, int sayfaLoadWait_MS = 1000)
-        {
-            Hesap.Instance.Iletisim.Max = progressMAX;
-            IWebDriver driverr = Yardimci.ProfileGitWithMainDriver(link, sayfaLoadWait_MS);
+            Hesap.Instance.Liste.Clear();
+            IWebDriver driverr = Drivers.Driver.LinkeGit(link, sayfaLoadWait_MS);
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {
-                var oncekilist = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
-                var list = oncekilist.Except(kontrolEdildi);
-                foreach (var element in list)
+                var elementler = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
+                var kontrolEdilecekler = elementler.Except(kontrolEdildi);
+                foreach (var element in kontrolEdilecekler)
                 {
-                    User profil = Func(element, detay);
-                    Hesap.Instance.Liste.Add(profil);
+                    User profil = element.GetProfil();
+                    if (profil != null)
+                        Hesap.Instance.Liste.Add(profil);
+
                     kontrolEdildi.Add(element);
                 }
             }

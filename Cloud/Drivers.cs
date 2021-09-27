@@ -12,9 +12,11 @@ namespace Tweetly_MVC.Tweetly
     {
         public static IWebDriver Driver { get; set; }
         public static IWebDriver Driver2 { get; set; }
-        public static IWebDriver Driver3 { get; set; }
-        public static IWebDriver Driver4 { get; set; }
-        public static IWebDriver Driver5 { get; set; }
+
+        //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR
+        /*public static IWebDriver Driver3 { get; set; }
+          public static IWebDriver Driver4 { get; set; }
+          public static IWebDriver Driver5 { get; set; }*/
 
         private static int count = 15;
         public static IWebDriver OptionDriver()
@@ -44,7 +46,9 @@ namespace Tweetly_MVC.Tweetly
         public readonly static List<IWebDriver> kullanıyorum = new();
         public static IWebDriver MusaitOlanDriver()
         {
-            IWebDriver[] driverss = { Driver2, Driver3, Driver4, Driver5 };
+            //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR
+            //IWebDriver[] driverss = { Driver2, Driver3, Driver4, Driver5 };
+            IWebDriver[] driverss = {Driver2};
             foreach (IWebDriver item in driverss)
             {
                 if (!kullanıyorum.Contains(item))
@@ -56,7 +60,6 @@ namespace Tweetly_MVC.Tweetly
             Thread.Sleep(500);
             return MusaitOlanDriver();
         }
-
         public static void CreateDrivers()
         {
             Task g1 = Task.Run(() => OptionDriver()).ContinueWith(x =>
@@ -65,9 +68,10 @@ namespace Tweetly_MVC.Tweetly
                 Hesap.Instance.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Instance.LoginUserName);
             });
             Task.Run(() => Drivers.Driver2 = Drivers.OptionDriver());
-            Task.Run(() => Drivers.Driver3 = Drivers.OptionDriver());
-            Task.Run(() => Drivers.Driver4 = Drivers.OptionDriver());
-            Task.Run(() => Drivers.Driver5 = Drivers.OptionDriver());
+            //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR
+            /*  Task.Run(() => Drivers.Driver3 = Drivers.OptionDriver());
+                Task.Run(() => Drivers.Driver4 = Drivers.OptionDriver());
+                Task.Run(() => Drivers.Driver5 = Drivers.OptionDriver());*/
             Task.WaitAny(g1);
         }
 

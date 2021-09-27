@@ -2,20 +2,22 @@
 
     const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44308/progressHub").build();
     connection.start().catch(e => ("Bağlantı Başarısız!!!!! Hata Mesajı: " + e));
-    $("#Yenile").on("click", function () {
-        connection.invoke("ProgressBar", 11111111).catch(e => ("Gönderim Başarısız!!!!! Hata Mesajı: " + e));
-    })
-  
+
+    connection.invoke("ProgressBar", 11111111).catch(e => ("Gönderim Başarısız!!!!! Hata Mesajı: " + e));
+
+
     connection.on("progressCalistir", value => { console.log(value); });
 })
-var modelOlusturuldu = false;
+
+
+
+
+
+
+settingsCreate();
+
 function modalGetir() {
-    if (!modelOlusturuldu) {
-        settingsCreate();
-        modelOlusturuldu = true;
-    }
     $('#exampleModal').modal('toggle');
-   
 }
 $(".gizli2").hide();
 $(".images").on({
@@ -41,8 +43,8 @@ function progresCalistir(element) {
                 dataType: 'json',
                 success: function (data) {
                     data = JSON.parse(data)
-                    $("#progress").css("width", data.veri + "%");
-                    $("#progress").text(data.metin + " " + data.veri + "%");
+                    $("#progress").css("width", "100%");
+                    $("#progress").text(data.metin + " " + data.veri);
                 }
             });
         }, 5000);

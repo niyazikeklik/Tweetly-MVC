@@ -7,17 +7,17 @@ namespace Tweetly_MVC.Models
 {
     public class Setting
     {
-        public bool checkUseDB;
-        public bool checkClearDB;
-        public bool checkDetayGetir;
-        public bool checkErkek;
-        public bool checkKadin;
-        public bool checkUnisex;
-        public bool checkBelirsiz;
-        public bool checkTakipEtmediklerim;
-        public bool checkTakipEttiklerim;
-        public bool checkBeniTakipEtmeyenler;
-        public bool checkGizliHesap;
-        public bool checkBeniTakipEdenler;
+        public bool CheckUseDB { get; set; }
+        public bool CheckClearDB { get; set; }
+        public bool CheckDetayGetir { get; set; }
+        public bool CheckErkek { get; set; }
+        public bool CheckKadin { get; set; }
+        public bool CheckUnisex { get; set; }
+        public bool CheckBelirsiz { get; set; }
+        public bool CheckTakipEtmediklerim { get; set; }
+        public bool CheckTakipEttiklerim { get; set; }
+        public bool CheckBeniTakipEtmeyenler { get; set; }
+        public bool CheckGizliHesap { get; set; }
+        public bool CheckBeniTakipEdenler { get; set; }
     }
 }

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Migrations
 {
     [DbContext(typeof(DatabasesContext))]
-    partial class DatabasesContextModelSnapshot : ModelSnapshot
+    [Migration("20210926130532_tablochange")]
+    partial class tablochange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,7 +81,7 @@ namespace Tweetly_MVC.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("Records");
+                    b.ToTable("User");
                 });
 #pragma warning restore 612, 618
         }

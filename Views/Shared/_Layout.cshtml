@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tweetly_MVC</title>
@@ -40,16 +41,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Seçenekler</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <div class="modal-body" id="modalicerik">
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="AyarlarıKaydet" class="btn btn-primary">Değişiklikleri Kaydet</button>
                 </div>
             </div>
         </div>
@@ -139,7 +136,7 @@
                     <div class="row">
                         <div class="container" id="row">
                             <div class="progress" id="progressbox" style="display: none; height: 30px; margin-bottom: 15px;">
-                                <div class="progress-bar progress-bar-striped  progress-bar-animated active" role="progressbar" id="progress" style="width: 40%; height: 30px; ">
+                                <div class="progress-bar progress-bar-striped  progress-bar-animated active" role="progressbar" id="progress" style="width: 100%; height: 30px; ">
                                     40%
                                 </div>
                             </div>
@@ -153,7 +150,7 @@
         </div>
 
         <div class="row">
-            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()"><i class="bi bi-bar-chart-line-fill" ></i>   Grafikler</button>
+            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()"><i class="bi bi-bar-chart-line-fill"></i>   Grafikler</button>
             <div class="container" id="grafikler" style="display:none">
                 <div class="row">
                     <div class="col-4">
@@ -174,19 +171,17 @@
 
     </div>
     <nav class="menu">
-        <a href="#" class="menu__item" data-tooltip="Dashboard">
+        <a href="@Url.ActionLink("Index", "Home")" class="menu__item" data-tooltip="Dashboard">
             <i class="bi bi-house-door-fill" style="color: #324060"></i>
         </a>
         <a href="@Url.ActionLink("ListGetir", "Home", new {
             username = Hesap.Instance.OturumBilgileri.Username,
-            detay = true,
             listName = "following"
-            });" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takip Edilenler">
+            })" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takip Edilenler">
             <i class="bi bi-people-fill" style="color: #324060"></i>
         </a>
         <a href="@Url.ActionLink("ListGetir", "Home",new {
             username = Hesap.Instance.OturumBilgileri.Username,
-            detay = true,
             listName = "followers"
             })" class="menu__item menu__item--active" id="listGetir" data-tooltip="Takipçiler">
             <i class="bi bi-person-lines-fill" style="color: #324060"></i>
@@ -197,12 +192,12 @@
         <a href="#" class="menu__item" data-tooltip="Settings">
             <i class="bi bi-gear-fill" style="color: #324060"></i>
         </a>
-        <form method="get" asp-action="ListGetir" asp-route-username="asdad" asp-route-detay="false"> 
+        <form method="get" asp-action="ListGetir" asp-route-username="asdad" asp-route-detay="false">
             <div class="dropdown" style="width:100%; height: 50px;">
                 <button style="height:100%; margin:auto;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
                     <i class="bi bi-gear-fill" style="color: #324060"></i>
                 </button>
-               
+
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
                     <li>
                         <div class="input-group">
@@ -234,9 +229,9 @@
 
 
     <script src="~/js/Datatable.js" asp-append-version="true"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Grafikler.js" asp-append-version="true"></script>
     <script src="~/js/settings.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 

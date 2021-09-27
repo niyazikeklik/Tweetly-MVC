@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
@@ -40,13 +41,13 @@ namespace Tweetly_MVC.Init
                 throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
             else return null;
         }
-        public static object DistinctByUserName(this List<User> list)
+
+        public static List<User> DistinctByUserName(this List<User> list)
         {
             return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
         }
-        public static IWebDriver ProfileGitWithMainDriver(string link, int waitForPageLoad_ms = 1000)
+        public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
         {
-            IWebDriver driverr = Drivers.Driver;
             driverr.Navigate().GoToUrl(link);
             driverr.WaitForLoad();
             Thread.Sleep(waitForPageLoad_ms);
@@ -58,35 +59,7 @@ namespace Tweetly_MVC.Init
             T child = JsonConvert.DeserializeObject<T>(serialized);
             return child;
         }
-        public static bool İsPage(string url)
-        {
-            url = url.Replace("400x400", "x96").Replace("200x200", "x96").Replace("normal", "x96").Replace("mini", "x96");
-            try
-            {
-                HttpWebRequest request = HttpWebRequest.Create(url) as HttpWebRequest;
-                request.Timeout = 1000;
-                request.Method = "HEAD";
-                using HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                int statusCode = (int)response.StatusCode;
-                if (statusCode >= 100 && statusCode < 400)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (WebException ex)
-            {
-                if (ex.Message.Contains("404"))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        }
+       
         public static string Donustur(string metin)
         {
             metin = metin
@@ -238,26 +211,38 @@ namespace Tweetly_MVC.Init
         }
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
-            try
+            Int64 sonrakiY, count = 0;
+            Int64 oncekiY = (Int64) driverr.JSCodeRun("return window.scrollY;");
+            driverr.JSCodeRun("window.scrollBy(0, 2000);");
+            do
             {
-                IJavaScriptExecutor jse = (IJavaScriptExecutor)driverr;
-                double oncekiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                jse.ExecuteScript("window.scrollBy(0,1500);");
-                Thread.Sleep(300);
-                double sonrakiY = Convert.ToDouble(jse.ExecuteScript("return window.scrollY;"));
-                if (oncekiY == sonrakiY) return true;
-                else return false;
-
-            }
-            catch (Exception)
-            {
-                return IsSayfaSonu(driverr);
-            }
-
+                Thread.Sleep(200);
+                sonrakiY = (Int64) driverr.JSCodeRun("return window.scrollY;");
+            } while (oncekiY == sonrakiY && count++ < 20);
+            if (oncekiY == sonrakiY)
+                return true;
+            else return false;
         }
     }
 }
-
+/*private static bool İsPage(string url)
+       {
+           url = url.Replace("400x400", "normal").Replace("200x200", "normal").Replace("x96", "normal");
+           try
+           {
+               HttpWebRequest request = HttpWebRequest.Create(url) as HttpWebRequest;
+               request.Timeout = 1500;
+               request.Method = "HEAD";
+               using HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+               return true;
+           }
+           catch (WebException ex)
+           {
+               if (ex.Message.Contains("404"))
+                   return false;
+               return true;
+           }
+       }*/
 
 /*private static string StringReplace(this string text)
 {

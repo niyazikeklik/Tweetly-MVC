@@ -13,12 +13,8 @@ namespace Tweetly_MVC.Tweetly
     }
     public struct IILetisim
     {
-        public System.DateTime tarih;
-        public string sure;
         public string metin;
-        public int veri;
-        public int Max;
-        public int CurrentValue;
+        public string veri;
     }
     public class Hesap
     {
@@ -36,22 +32,24 @@ namespace Tweetly_MVC.Tweetly
 
         private Hesap()
         {
-            Settings = new();
+            OturumBilgileri = new();
             Liste = new();
+            Takipciler = new();
             TakipEdilenler = new();
-            GeriTakipEtmeyenler = new();
+            GeriTakipYapmayanlar = new();
+            Settings = new();
             Iletisim = new();
             Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
-        public string LoginUserName { get; set; }
-        public string LoginPass { get; set; }
-        public User OturumBilgileri { get; set; }
-        public List<Cinsiyetler> Cins { get; set; }
-        public List<User> Liste { get; set; }
-        public List<User> TakipEdilenler { get; set; }
-        public List<User> GeriTakipEtmeyenler { get; set; }
-
-        public Setting Settings { get; set; }
+        public string LoginUserName;
+        public string LoginPass;
+        public User OturumBilgileri;
+        public List<Cinsiyetler> Cins;
+        public List<User> Liste;
+        public List<User> Takipciler;
+        public List<User> TakipEdilenler;
+        public List<User> GeriTakipYapmayanlar;
+        public Setting Settings;
 
     }
 }

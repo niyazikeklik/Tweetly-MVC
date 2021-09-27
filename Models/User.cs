@@ -6,12 +6,12 @@ namespace Tweetly_MVC.Tweetly
 {
     public class User
     {
+        [Key]
+        public string Username { get; set; }
         public bool IsPrivate { get; set; }
         public int Count { get; set; }
         public string PhotoURL { get; set; }
         public string Name { get; set; }
-        [Key]
-        public string Username { get; set; }
         public string Cinsiyet { get; set; }
         public string Location { get; set; }
         public string Bio { get; set; }

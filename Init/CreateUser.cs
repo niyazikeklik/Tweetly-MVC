@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,34 +11,35 @@ namespace Tweetly_MVC.Init
 {
     public static class CreateUser
     {
-
-        public static bool Filter(User profil)
+        public static bool Filter(this User profil)
         {
-            if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.Settings.checkErkek)
+            if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.Settings.CheckErkek)
                 return false;
-            if (profil.Cinsiyet == "Kadın" && !Hesap.Instance.Settings.checkKadin)
+            if (profil.Cinsiyet == "Kadın" && !Hesap.Instance.Settings.CheckKadin)
                 return false;
-            if (profil.Cinsiyet == "Unisex" && !Hesap.Instance.Settings.checkUnisex)
+            if (profil.Cinsiyet == "Unisex" && !Hesap.Instance.Settings.CheckUnisex)
                 return false;
-            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.Settings.checkBelirsiz)
+            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.Settings.CheckBelirsiz)
                 return false;
-            if (profil.FollowStatus != "Takip Ediliyor" && Hesap.Instance.Settings.checkTakipEtmediklerim)
+
+
+            if (profil.FollowStatus == "Takip et" && Hesap.Instance.Settings.CheckTakipEtmediklerim)
                 return false;
-            if (profil.FollowStatus == "Takip Ediliyor" && Hesap.Instance.Settings.checkTakipEttiklerim)
+            if (profil.FollowStatus == "Takip ediliyor" && Hesap.Instance.Settings.CheckTakipEttiklerim)
                 return false;
-            if (profil.FollowersStatus != "Seni Takip Ediyor" && Hesap.Instance.Settings.checkBeniTakipEtmeyenler)
+            if (profil.FollowersStatus == "Takip etmiyor" && Hesap.Instance.Settings.CheckBeniTakipEtmeyenler)
                 return false;
-            if (profil.FollowersStatus == "Seni Takip Ediyor" && Hesap.Instance.Settings.checkBeniTakipEdenler)
+            if (profil.FollowersStatus == "Seni takip ediyor" && Hesap.Instance.Settings.CheckBeniTakipEdenler)
                 return false;
-            if (profil.IsPrivate && Hesap.Instance.Settings.checkGizliHesap)
+            if (profil.IsPrivate && Hesap.Instance.Settings.CheckGizliHesap)
                 return false;
             return true;
         }
-        public static User GetProfil(this IWebElement element, bool detay = false)
+        public static User GetProfil(this IWebElement element)
         {
-            var profil = new TakipEdilen();
+            var profil = new User();
             string Text = element.Text.Replace("\r", "");
-
+            profil.Count = Hesap.Instance.Liste.Count + 1;
             profil.Name = Liste.GetName(Text);
             profil.Cinsiyet = Profil.CinsiyetBul(profil.Name);
             profil.Username = Liste.GetUserName(Text);
@@ -46,26 +48,43 @@ namespace Tweetly_MVC.Init
             profil.FollowersStatus = Liste.GetFollowersStatus(Text);
             profil.FollowStatus = Liste.GetFollowStatus(Text);
             profil.Bio = Liste.GetBio(element);
-            if (Filter(profil)) return null;
-            if (detay)
-                profil = (TakipEdilen)Drivers.MusaitOlanDriver().GetProfil(profil.Username, profil);
 
+            if (!profil.Filter()) return null;
+
+            if (Hesap.Instance.Settings.CheckDetayGetir)
+            {
+                if (Hesap.Instance.Settings.CheckUseDB)
+                {
+                    User DBprofil = new DatabasesContext().Records.FirstOrDefault(x => x.Username == profil.Username);
+                    if (DBprofil != null)
+                    {
+                        profil.TweetCount = DBprofil.TweetCount;
+                        profil.Date = DBprofil.Date;
+                        profil.Location = DBprofil.Location;
+                        profil.Following = DBprofil.Following;
+                        profil.Followers = DBprofil.Followers;
+                        profil.TweetSikligi = DBprofil.TweetSikligi;
+                        profil.LastTweetsDate = DBprofil.LastTweetsDate;
+                        profil.LikeCount = DBprofil.LikeCount;
+                        profil.BegeniSikligi = DBprofil.BegeniSikligi;
+                        profil.LastLikesDate = DBprofil.LastLikesDate;
+                        return profil;
+                    }
+                }
+                profil = Drivers.MusaitOlanDriver().GetProfil(profil);
+            }
             return profil;
+
+
         }
         public static User GetProfil(this IWebDriver driver, string username)
         {
-            string link;
-        yeniden:
-            try
-            {
-                link = $"https://mobile.twitter.com/{username}";
-                driver.Navigate().GoToUrl(link);
-            }
-            catch { goto yeniden; }
-            var profil = new TakipEdilen();
+            string link = $"https://mobile.twitter.com/{username}";
+            driver.Navigate().GoToUrl(link);
+            var profil = new User();
             if (Yardimci.Control(driver, username, link, 300000))
             {
-                profil.Count = Hesap.Instance.TakipEdilenler.Count + 1;
+                profil.Count = Hesap.Instance.Liste.Count + 1;
                 profil.Username = username;
                 profil.TweetCount = driver.GetTweetCount();
                 profil.Name = driver.GetName();
@@ -87,28 +106,21 @@ namespace Tweetly_MVC.Init
                 profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
             }
 
-
-
             Drivers.kullanıyorum.Remove(driver);
             return profil;
         }
-        private static User GetProfil(this IWebDriver driver, string username, TakipEdilen profil)
+        private static User GetProfil(this IWebDriver driver , User profil)
         {
-            string link;
-        yeniden:
-            try
-            {
-                link = "https://mobile.twitter.com/" + username;
-                driver.Navigate().GoToUrl(link);
-            }
-            catch { goto yeniden; }
-            if (Yardimci.Control(driver, username, link, 300000))
+            string link = "https://mobile.twitter.com/" + profil.Username; 
+            driver.Navigate().GoToUrl(link);
+
+            if (Yardimci.Control(driver, profil.Username, link, 300000))
             {
                 profil.TweetCount = driver.GetTweetCount();
                 profil.Date = driver.GetDate();
                 profil.Location = driver.GetLocation();
-                profil.Following = driver.GetFollowing(username);
-                profil.Followers = driver.GetFollowers(username);
+                profil.Following = driver.GetFollowing(profil.Username);
+                profil.Followers = driver.GetFollowers(profil.Username);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
 

@@ -352,7 +352,7 @@ p.product a {
 
 .tablobutonlar {
     width: auto;
-    margin: 5px !important;
+margin-top: 10px;
     background-color: #324960 !important;
     color: white !important;
 }
