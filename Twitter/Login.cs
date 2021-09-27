@@ -15,7 +15,6 @@ namespace Tweetly_MVC.Init
     {
         public static void Giris(string ka, string ps, IWebDriver driver)
         {
-            driver.WaitForLoad();
             Thread.Sleep(1000);
             if (driver.Url.Contains("flow"))
             {
@@ -26,15 +25,7 @@ namespace Tweetly_MVC.Init
                 if (driver.Url.Contains("redirect_after_login"))
                     Giris("niyazikeklik@gmail.com", Hesap.Instance.LoginPass, driver);
             }
-            else if (driver.Url.Contains("home"))
-            {
-                ;
-            }
 
         }
-    
-
-     
-
     }
 }

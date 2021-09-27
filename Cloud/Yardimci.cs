@@ -15,51 +15,6 @@ namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
-        public static object JSCodeRun(this IWebDriver driver, string command)
-        {
-            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
-            int count = 0;
-            string exMg = "";
-            while (count < 10)
-                try
-                {
-                    var result = jse.ExecuteScript(command);
-                    if (result != null || !command.Contains("return")) return result;
-                }
-                catch (StaleElementReferenceException ex)
-                {
-                    exMg = ex.Message;
-                    count++;
-                }
-                catch (WebDriverException ex)
-                {
-                    Thread.Sleep(150);
-                    exMg = ex.Message;
-                    count++;
-                }
-            if (command.Contains("return"))
-                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
-            else return null;
-        }
-
-        public static List<User> DistinctByUserName(this List<User> list)
-        {
-            return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
-        }
-        public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
-        {
-            driverr.Navigate().GoToUrl(link);
-            driverr.WaitForLoad();
-            Thread.Sleep(waitForPageLoad_ms);
-            return driverr;
-        }
-        public static T BaseToSub<T>(object BaseObject)
-        {
-            string serialized = JsonConvert.SerializeObject(BaseObject);
-            T child = JsonConvert.DeserializeObject<T>(serialized);
-            return child;
-        }
-       
         public static string Donustur(string metin)
         {
             metin = metin
@@ -86,77 +41,57 @@ namespace Tweetly_MVC.Init
         }
         public static double KayıtTarihi(string kayittarihi)
         {
-            string[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
-            kayittarihi = kayittarihi.Replace("tarihinde katıldı", "").Replace("joined", "");
-            string ayadi = "";
-            foreach (string item in months)
-            {
-                if (kayittarihi.Contains(item))
-                {
-                    ayadi = item;
-                }
-            }
+            List<string> Months = new List<string>{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
 
-            kayittarihi = kayittarihi.Replace(" ", "").Replace(ayadi, "");
-            int yil = Convert.ToInt32(kayittarihi);
-            int kacinciay = 01;
-            switch (ayadi)
-            {
-                case "January": kacinciay = 01; break;
-                case "Ocak": kacinciay = 01; break;
+            string AyAdi = kayittarihi.Split(' ')[0];
+            int Yil = Convert.ToInt32(kayittarihi.Split(' ')[1]);
 
-                case "February": kacinciay = 02; break;
-                case "Şubat": kacinciay = 02; break;
-
-                case "March": kacinciay = 03; break;
-                case "Mart": kacinciay = 03; break;
-
-                case "April": kacinciay = 04; break;
-                case "Nisan": kacinciay = 04; break;
-
-                case "May": kacinciay = 05; break;
-                case "Mayıs": kacinciay = 05; break;
-
-                case "June": kacinciay = 06; break;
-                case "Haziran": kacinciay = 06; break;
-
-                case "July": kacinciay = 07; break;
-                case "Temmuz": kacinciay = 07; break;
-
-                case "August": kacinciay = 08; break;
-                case "Ağustos": kacinciay = 08; break;
-
-                case "September": kacinciay = 09; break;
-                case "Eylül": kacinciay = 09; break;
-
-                case "October": kacinciay = 10; break;
-                case "Ekim": kacinciay = 10; break;
-
-                case "November": kacinciay = 11; break;
-                case "Kasım": kacinciay = 11; break;
-
-                case "December": kacinciay = 12; break;
-                case "Aralık": kacinciay = 12; break;
-
-                default: break;
-            }
-            DateTime baslamaTarihi = new(yil, kacinciay, 01);
-            DateTime bitisTarihi = DateTime.Today;
-            TimeSpan kalangun = bitisTarihi - baslamaTarihi;//Sonucu zaman olarak döndürür
-            return kalangun.TotalDays;// kalanGun den TotalDays ile sadece toplam gun değerini çekiyoruz.
+            int Index = Months.IndexOf(AyAdi) + 1;
+            int Ay = Index > 12 ? Index - 12  : Index;
+            return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
-        public static void WaitForLoad(this IWebDriver driver, int timeoutSec = 15)
+        public static object JSCodeRun(this IWebDriver driver, string command)
         {
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            WebDriverWait wait = new(driver, new TimeSpan(0, 0, timeoutSec));
-            wait.Until(wd => js.ExecuteScript("return document.readyState").ToString() == "complete");
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
+            int count = 0;
+            string exMg = "";
+            while (count < 10)
+                try
+                {
+                    var result = jse.ExecuteScript(command);
+                    if (result != null || !command.Contains("return")) return result;
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    exMg = ex.Message;
+                    count++;
+                }
+                catch (WebDriverException ex)
+                {
+                    Thread.Sleep(150);
+                    exMg = ex.Message;
+                    count++;
+                }
+            if (command.Contains("return"))
+                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+            else return null;
         }
+        public static List<User> DistinctByUserName(this List<User> list)
+        {
+            return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
+        }
+        public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
+        {
+            driverr.Navigate().GoToUrl(link);
+            Thread.Sleep(waitForPageLoad_ms);
+            return driverr;
+        }
+
+
         public static bool Control(this IWebDriver driver, string userName, string link, int ms = 300000)
         {
-            userName = userName.Trim('@');
             Hesap.Instance.Iletisim.metin = "";
             int count = 0;
-            driver.WaitForLoad();
             while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
             {
                 if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
@@ -176,7 +111,6 @@ namespace Tweetly_MVC.Init
                 if (count is 20)
                 {
                     driver.Navigate().Refresh();
-                    driver.WaitForLoad();
                     Thread.Sleep(2000);
                 }
                 Thread.Sleep(250);
@@ -212,12 +146,12 @@ namespace Tweetly_MVC.Init
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
             Int64 sonrakiY, count = 0;
-            Int64 oncekiY = (Int64) driverr.JSCodeRun("return window.scrollY;");
+            Int64 oncekiY = (Int64)driverr.JSCodeRun("return window.scrollY;");
             driverr.JSCodeRun("window.scrollBy(0, 2000);");
             do
             {
                 Thread.Sleep(200);
-                sonrakiY = (Int64) driverr.JSCodeRun("return window.scrollY;");
+                sonrakiY = (Int64)driverr.JSCodeRun("return window.scrollY;");
             } while (oncekiY == sonrakiY && count++ < 20);
             if (oncekiY == sonrakiY)
                 return true;
@@ -243,7 +177,6 @@ namespace Tweetly_MVC.Init
                return true;
            }
        }*/
-
 /*private static string StringReplace(this string text)
 {
     text = text.Replace("İ", "I");
@@ -260,4 +193,10 @@ namespace Tweetly_MVC.Init
     text = text.Replace("ç", "c");
     return text;
 }*/
+/*  public static T BaseToSub<T>(object BaseObject)
+     {
+         string serialized = JsonConvert.SerializeObject(BaseObject);
+         T child = JsonConvert.DeserializeObject<T>(serialized);
+         return child;
+     }*/
 

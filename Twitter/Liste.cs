@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tweetly_MVC.Init;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Twitter
 {

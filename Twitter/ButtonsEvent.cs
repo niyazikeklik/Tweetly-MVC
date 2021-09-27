@@ -1,9 +1,6 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
 {
@@ -14,12 +11,6 @@ namespace Tweetly_MVC.Init
             driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
             OnayButonClick(driverr);
             return driverr.GetfollowStatus();
-        }
-        public static void OnayButonClick(this IWebDriver driverr)
-        {
-            Thread.Sleep(200);
-            if ((bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
-                driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
         }
         public static void ProfilUserActionsButonClick(this IWebDriver driverr)
         {
@@ -32,6 +23,25 @@ namespace Tweetly_MVC.Init
             driverr.JSCodeRun("document.querySelector('[data-testid=block]').click();");
             driverr.OnayButonClick();
         }
+        public static void OnayButonClick(this IWebDriver driverr)
+        {
+            Thread.Sleep(200);
+            if ((bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
+                driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
+        }
+        public static void TakipcilerdenCikar(this IWebDriver driver, User profil)
+        {
+            string link = "https://twitter.com/" + profil.Username;
+            driver.Navigate().GoToUrl(link);
+            driver.Control(profil.Username, link);
 
+
+            driver.ProfilEngelle();
+            if (driver.GetfollowStatus().StartsWith("Engel"))
+                driver.ProfilUserButonClick();
+            // Engeli kaldır.
+
+            Drivers.kullanıyorum.Remove(driver);
+        }
     }
 }
