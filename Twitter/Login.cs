@@ -1,12 +1,5 @@
-﻿
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using OpenQA.Selenium;
 using System.Threading;
-using System.Threading.Tasks;
 using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
@@ -25,7 +18,6 @@ namespace Tweetly_MVC.Init
                 if (driver.Url.Contains("redirect_after_login"))
                     Giris("niyazikeklik@gmail.com", Hesap.Instance.SettingsUser.Pass, driver);
             }
-
         }
     }
 }

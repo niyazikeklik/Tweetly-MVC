@@ -5,22 +5,23 @@ using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Tweetly
 {
-
     public class Cinsiyetler
     {
         public string Ad { get; set; }
         public string Cinsiyet { get; set; }
-
     }
+
     public struct IILetisim
     {
         public string metin;
         public string veri;
     }
+
     public class Hesap
     {
         private static Hesap instance;
         public IILetisim Iletisim;
+
         public static Hesap Instance
         {
             get

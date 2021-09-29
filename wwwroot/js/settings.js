@@ -14,7 +14,7 @@
       <div style ="margin-top: 50px; margin-bottom: 15px;"><strong class="mb-5" >Takip Durumu</strong></div>
                ${checkItemEkle("Takip etmediğim kayıtları getirme", "", "CheckTakipEtmediklerim")}
                ${checkItemEkle("Takip ettiğim kayıtları getirme", "", "CheckTakipEttiklerim")}
-               ${checkItemEkle("Beni takip eden kayıtları getirme", "","CheckBeniTakipEdenler")}
+               ${checkItemEkle("Beni takip eden kayıtları getirme", "", "CheckBeniTakipEdenler")}
                ${checkItemEkle("Beni takip etmeyen kayıtları getirme", "", "CheckBeniTakipEtmeyenler")}
                ${checkItemEkle("Gizli hesapları getirme", "", "CheckGizliHesap")}
     </div>
@@ -57,8 +57,6 @@ function VarsayılanAyarlar() {
     $("#CheckUnisex").trigger("click");
     $("#CheckBelirsiz").trigger("click");
     $("#CheckErkek").trigger("click");
-
-  
 }
 function Kurallar() {
     $("#CheckErkek").change(function () {
@@ -112,15 +110,15 @@ function Kurallar() {
         }
     });
     $("#CheckDetayGetir").change(function () {
-            if (this.checked) {
-                $("#CheckUseDB").removeAttr("disabled");
-            } else {
-                $("#CheckUseDB").attr("disabled", true);
-            }
+        if (this.checked) {
+            $("#CheckUseDB").removeAttr("disabled");
+        } else {
+            $("#CheckUseDB").attr("disabled", true);
+        }
     });
     $(".checkboxDiv input").change();
 }
-function getValues(){
+function getValues() {
     var obj = new Object();
     obj.checkGizliHesap = $("#CheckGizliHesap").is(":checked");;
     obj.checkBeniTakipEtmeyenler = $("#CheckBeniTakipEtmeyenler").is(":checked");;

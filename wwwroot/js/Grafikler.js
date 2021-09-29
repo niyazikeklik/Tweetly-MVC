@@ -1,4 +1,4 @@
-﻿function createCinsiyetGrafik(erkekSayisi,kadinSayisi,unisex,belirsiz) {
+﻿function createCinsiyetGrafik(erkekSayisi, kadinSayisi, unisex, belirsiz) {
     const data = {
         labels: [
             'Kız',
@@ -66,7 +66,6 @@ function createTakipciDurumuGrafik(begeniAktiflik, tweetAktiflik, OrtTweet, OrtB
 function grafiklerToggle() {
     $("#grafikler").toggle();
 }
-
 
 createCinsiyetGrafik($("#kadin").val(), $("#erkek").val(), $("#unisex").val(), $("#belirsiz").val());
 createTakipciDurumuGrafik($("#toplamSonBegeni").val(), $("#toplamSonTweet").val(), $("#toplamOrtTweet").val(), $("#toplamOrtBegeni").val(), $("#genelTakipciKalitesi").val());

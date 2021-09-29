@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Tweetly_MVC.Models
+﻿namespace Tweetly_MVC.Models
 {
     public class FinderSettings
     {
@@ -20,5 +15,4 @@ namespace Tweetly_MVC.Models
         public bool CheckGizliHesap { get; set; }
         public bool CheckBeniTakipEdenler { get; set; }
     }
-   
 }

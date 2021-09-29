@@ -1,18 +1,11 @@
 ﻿$(document).ready(() => {
-
     const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44308/progressHub").build();
     connection.start().catch(e => ("Bağlantı Başarısız!!!!! Hata Mesajı: " + e));
 
     connection.invoke("ProgressBar", 11111111).catch(e => ("Gönderim Başarısız!!!!! Hata Mesajı: " + e));
 
-
     connection.on("progressCalistir", value => { console.log(value); });
 })
-
-
-
-
-
 
 settingsCreate();
 
@@ -48,10 +41,7 @@ function progresCalistir(element) {
                 }
             });
         }, 5000);
-
     });
 }
 progresCalistir("#takipciler");
 progresCalistir("#listGetir");
-
-

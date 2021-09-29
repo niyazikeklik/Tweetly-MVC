@@ -24,12 +24,10 @@ async function tableAyarla() {
         },
         buttons: [
             {
-
                 extend: 'searchBuilder',
                 text: 'Gelişmiş Arama',
                 className: 'tablobutonlar',
                 enterSearch: true,
-
             },
             {
                 extend: 'pageLength',
@@ -49,9 +47,7 @@ async function tableAyarla() {
             },
 
         ]
-
     });
-
 
     $('#DataTables_Table_0_filter label').toggleClass("row");
     table.buttons().container().appendTo($('#DataTables_Table_0_filter label', table.table().container()).eq(0));
@@ -61,7 +57,6 @@ async function tableAyarla() {
     $('.dt-buttons.field.is-grouped').toggleClass("row");
     $('.dt-buttons.field.is-grouped').css("display", "unset");
     $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
-
 
     $("#TakipCik").on("click", function () {
         $.ajax({
@@ -79,12 +74,10 @@ async function tableAyarla() {
 
 tableAyarla();
 
-
 /* $('.dt-buttons.field.is-grouped').append(`<button id="Yenile" asp-area="" asp-controller="Home" asp-action="Yenile" class ="button is-light buttons-collection tablobutonlar"">Yenile</button>`);*/
 
 // $("tr.selected").css("background-color", "#dc3545");
 //$("tr.selected").css("color", "white");
-
 
 /*,
 {

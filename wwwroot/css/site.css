@@ -15,7 +15,6 @@
         border: none;
     }
 
-
 /*PROFİLE KARTI*/
 
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:600,300);
@@ -38,8 +37,8 @@
     height: 100%;
     text-align: center;
     background-color: white;
-    margin-right:20px;
-   /* float: right;*/
+    margin-right: 20px;
+    /* float: right;*/
 }
 
     .profile .image {
@@ -150,7 +149,7 @@
         .stats .box:hover {
             background: #324960;
             cursor: pointer;
-            color:white;
+            color: white;
         }
 
     .stats span {
@@ -167,11 +166,7 @@
         font-weight: 400;
     }
 
-
 /*PROFİLE KARTI*/
-
-
-
 
 /* Table Styles */
 
@@ -215,7 +210,6 @@
     .fl-table tr:nth-child(even) {
         background: #F8F8F8;
     }
-
 
 /* Responsive */
 
@@ -327,8 +321,6 @@ p.product a {
     position: relative;
 }
 
-
-
     p.product a .gizli {
         max-width: 400px;
         width: 400px;
@@ -352,7 +344,7 @@ p.product a {
 
 .tablobutonlar {
     width: auto;
-margin-top: 10px;
+    margin-top: 10px;
     background-color: #324960 !important;
     color: white !important;
 }
@@ -443,7 +435,6 @@ table td, table th {
     vertical-align: middle !important;
 }
 
-
 #graph div {
     position: relative;
     margin: 80px;
@@ -470,12 +461,7 @@ table td, table th {
     margin-left: 5px;
 }
 
-
-
-
 /*NAVBAR*/
-
-
 
 /* NAVIGATION */
 nav {
@@ -516,8 +502,6 @@ nav {
                         color: #555;
                     }
 
-
-
     /* By Dominik Biedebach @domobch */
 
     /* Blend */
@@ -530,7 +514,7 @@ nav {
 
         nav.blend ul li a:hover {
             color: #fff;
-            text-decoration:none;
+            text-decoration: none;
         }
 
         nav.blend ul li a:before,

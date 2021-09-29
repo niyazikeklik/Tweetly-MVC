@@ -1,11 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
 {
@@ -18,24 +13,26 @@ namespace Tweetly_MVC.Init
             string Username = text[basla..text.IndexOf('\n', basla)];
             return Username;
         }
+
         public static bool IsPrivate(this IWebDriver driverr)
         {
             return (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
         }
+
         public static int GetFollowing(this IWebDriver driverr, string ka)
         {
             string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/following\"] > span ').textContent;");
             secilenElement = Yardimci.Donustur(secilenElement);
             return Convert.ToInt32(secilenElement);
         }
+
         public static int GetFollowers(this IWebDriver driverr, string ka)
         {
-
             string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/followers\"] > span ').textContent;");
             secilenElement = Yardimci.Donustur(secilenElement);
             return Convert.ToInt32(secilenElement);
-
         }
+
         public static int GetLikeCount(this IWebDriver driverr)
         {
             string lc = ((string)driverr.JSCodeRun("return document.querySelector('header').innerText;"));
@@ -45,6 +42,7 @@ namespace Tweetly_MVC.Init
             likecount = likecount > 1 ? likecount : likecount + 1;
             return likecount;
         }
+
         public static int GetTweetCount(this IWebDriver driverr)
         {
             string TweetCount = driverr.JSCodeRun("return document.querySelector('header').innerText;").ToString().Replace("\r", "");
@@ -59,16 +57,15 @@ namespace Tweetly_MVC.Init
             else
                 return countt;
         }
+
         public static double GetDate(this IWebDriver driverr)
         {
             var secilenElement = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
             return Yardimci.UyelikSuresi(secilenElement.ToString());
-
-
         }
+
         public static double GetLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)
         {
-
             if (tweetorlikecount < 21) return (Math.Round((date / tweetorlikecount), 2));
             else
             {
@@ -103,36 +100,39 @@ namespace Tweetly_MVC.Init
 
                 return Math.Round((toplamGunSayisi / kuralaUygunTarihler), 1);
             }
-
         }
+
         public static string GetfollowStatus(this IWebDriver driverr)
         {
             if ((Int64)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=placementTracking]').length;") > 0)
                 return (string)driverr.JSCodeRun("return document.querySelector('[data-testid=placementTracking]').textContent;");
             else return null;
         }
+
         public static string IsFollowers(this IWebDriver driverr)
         {
             if ((bool)driverr.JSCodeRun("var x = false; document.querySelectorAll(\"div[data-testid='primaryColumn'] div[dir='auto'] > span\").forEach(element => {if (element.textContent.indexOf('Seni takip ediyor') != -1) x = true;}); return x; "))
                 return "Seni takip ediyor";
             else return "Takip etmiyor";
-
         }
+
         public static string GetBio(this IWebDriver driverr)
         {
-
             var x = (Int64)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserDescription]').length;") > 0;
             if (x) return (string)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserDescription]')[0].textContent;");
             else return null;
         }
+
         public static string GetPhotoURL(this IWebDriver driverr, string ka)
         {
             return (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/photo\"] img').getAttribute(\"src\");");
         }
+
         public static string GetName(this IWebDriver driverr)
         {
             return driverr.JSCodeRun("return document.querySelector('header h2').textContent;").ToString();
         }
+
         public static string GetGunlukSiklik(int count, double date)
         {
             double gunluktweet = (count / date);
@@ -141,6 +141,7 @@ namespace Tweetly_MVC.Init
             else result = (-1 * Math.Round((1 / gunluktweet), 0)).ToString();
             return result;
         }
+
         public static string GetLocation(this IWebDriver driverr)
         {
             var res = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span').textContent;")?.ToString().ToLower();
@@ -148,7 +149,5 @@ namespace Tweetly_MVC.Init
                 return res;
             else return null;
         }
-
     }
 }
-

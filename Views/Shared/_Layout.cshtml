@@ -1,16 +1,14 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tweetly_MVC</title>
-
 
     <script src="../NewFolder/js/signalr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -25,14 +23,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-
-
-
-
-
     <link rel="stylesheet" href="css/site.css" />
     <link rel="stylesheet" href="css/settings.css" />
-
 </head>
 <body>
 
@@ -64,7 +56,6 @@
         </nav>
     </header>
 
-
     <div class="container-fluid">
         <div class="row" style="margin-top: 20px">
             <div class="row" style="margin: auto">
@@ -80,10 +71,6 @@
 
                                 <div class="name">@Hesap.Instance.OturumBilgileri.Name</div>
                                 <div class="job">   <a id="username" href="https://twitter.com/@Hesap.Instance.OturumBilgileri.Username" target="_blank"><i class="bi bi-link-45deg">@Hesap.Instance.OturumBilgileri.Username</i></a></div>
-
-
-
-
                             </div>
                         </div>
                         <div class="col" style=" display: flex; justify-content: center; align-items: center;">
@@ -105,7 +92,6 @@
                                     <span class="value">@Hesap.Instance.OturumBilgileri.LastTweetsDate</span>
                                     <span class="parameter">Son Tweet</span>
                                 </div>
-
 
                                 <div class="box">
                                     <span class="value">@Hesap.Instance.OturumBilgileri.BegeniSikligi</span>
@@ -143,9 +129,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
 
@@ -160,15 +143,9 @@
                         <canvas id="myChart2"></canvas>
                     </div>
                 </div>
-
             </div>
-
-
         </div>
         <div class="row">   @RenderBody()</div>
-
-
-
     </div>
     <nav class="menu">
         <a href="@Url.ActionLink("Index", "Home")" class="menu__item" data-tooltip="Dashboard">
@@ -216,20 +193,14 @@
                     </li>
                     <li><a class="dropdown-item" name="listName" href="#">Beğenenler</a></li>
                 </ul>
-
             </div>
         </form>
     </nav>
-
 
     <script src="js/Datatable.js" asp-append-version="true"></script>
     <script src="js/Grafikler.js" asp-append-version="true"></script>
     <script src="js/settings.js" asp-append-version="true"></script>
     <script src="js/site.js" asp-append-version="true"></script>
-   //await RenderSectionAsync("Scripts", required: false)
-
-
+    //await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-

@@ -1,10 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Models
 {
@@ -13,12 +7,12 @@ namespace Tweetly_MVC.Models
         public string Username { get; set; }
         public string Pass { get; set; }
         public string SQLServerName { get; set; }
-
-
     }
+
     public static class AppSettings
     {
         public static IConfiguration Configuration { get; set; }
+
         public static UserSettings Get()
         {
             IConfiguration configuration = new ConfigurationBuilder()

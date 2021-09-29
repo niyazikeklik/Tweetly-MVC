@@ -1,10 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Threading.Tasks;
 using Tweetly_MVC.Init;
 
 namespace Tweetly_MVC.Tweetly
@@ -16,8 +12,10 @@ namespace Tweetly_MVC.Tweetly
             optionsBuilder.UseSqlServer(@$"Data Source={Hesap.Instance.SettingsUser.SQLServerName};Initial Catalog=TweetlyDataBase_{Hesap.Instance.OturumBilgileri.Username};Integrated Security=True");
             //Migrate komutu çalıştırırken cümleden usernameyi sil.
         }//212 331 02 00
+
         public DbSet<User> Records { get; set; }
     }
+
     public static class DataBase
     {
         public static void RecordsAllDelete(this DatabasesContext context)
@@ -25,11 +23,13 @@ namespace Tweetly_MVC.Tweetly
             context.Records.RemoveRange(context.Records);
             context.SaveChanges();
         }
+
         public static void RecordsUpdateOrAdd(this DatabasesContext context, List<User> GuncellenecekKayitlar)
         {
             context.Records.RecordsDeleteExist(GuncellenecekKayitlar);
             context.RecordsAdd(GuncellenecekKayitlar);
         }
+
         private static void RecordsDeleteExist(this DbSet<User> DBtablo, List<User> guncelTablo)
         {
             foreach (var item in guncelTablo)
@@ -38,13 +38,14 @@ namespace Tweetly_MVC.Tweetly
                 if (silinecek != null)
                     DBtablo.Remove(silinecek);
             }
-
         }
+
         private static void RecordsAdd(this DatabasesContext context, List<User> EklenecekKayitlar)
         {
             context.Records.AddRange(EklenecekKayitlar.DistinctByUserName());
             context.SaveChanges();
         }
+
         public static void KayitlarıListelereBol()
         {
             DatabasesContext context = new();

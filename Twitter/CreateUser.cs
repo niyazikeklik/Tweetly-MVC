@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium;
-using System;
+﻿using OpenQA.Selenium;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Tweetly_MVC.Tweetly;
 using Tweetly_MVC.Twitter;
 
@@ -18,7 +15,7 @@ namespace Tweetly_MVC.Init
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {
-                var elementler = 
+                var elementler =
                     (IReadOnlyCollection<IWebElement>)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserCell]');");
                 var kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
                 foreach (var element in kontrolEdilecekler)
@@ -31,6 +28,7 @@ namespace Tweetly_MVC.Init
             }
             return Hesap.Instance.Liste;
         }
+
         public static bool Filter(this User profil)
         {
             if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.SettingsFinder.CheckErkek)
@@ -41,7 +39,6 @@ namespace Tweetly_MVC.Init
                 return false;
             if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.SettingsFinder.CheckBelirsiz)
                 return false;
-
 
             if (profil.FollowStatus == "Takip et" && Hesap.Instance.SettingsFinder.CheckTakipEtmediklerim)
                 return false;
@@ -55,6 +52,7 @@ namespace Tweetly_MVC.Init
                 return false;
             return true;
         }
+
         public static User GetProfil(this IWebElement element)
         {
             var profil = new User();
@@ -95,9 +93,8 @@ namespace Tweetly_MVC.Init
                 profil = Drivers.MusaitOlanDriver().GetProfil(profil);
             }
             return profil;
-
-
         }
+
         public static User GetProfil(this IWebDriver driver, string username)
         {
             string link = $"https://mobile.twitter.com/{username}";
@@ -130,9 +127,10 @@ namespace Tweetly_MVC.Init
             Drivers.kullanıyorum.Remove(driver);
             return profil;
         }
-        private static User GetProfil(this IWebDriver driver , User profil)
+
+        private static User GetProfil(this IWebDriver driver, User profil)
         {
-            string link = "https://mobile.twitter.com/" + profil.Username; 
+            string link = "https://mobile.twitter.com/" + profil.Username;
             driver.Navigate().GoToUrl(link);
 
             if (Yardimci.Control(driver, profil.Username, link, 300000))
@@ -154,6 +152,5 @@ namespace Tweetly_MVC.Init
             Drivers.kullanıyorum.Remove(driver);
             return profil;
         }
-
     }
 }

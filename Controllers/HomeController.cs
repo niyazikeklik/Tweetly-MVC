@@ -1,14 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Tweetly_MVC.Init;
 using Tweetly_MVC.Models;
@@ -18,7 +11,6 @@ namespace Tweetly_MVC.Controllers
 {
     public class HomeController : Controller
     {
-
         [HttpPost]
         public string TakipCik(string Usernames)
         {
@@ -38,6 +30,7 @@ namespace Tweetly_MVC.Controllers
             }
             return butontext;
         }
+
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
@@ -45,6 +38,7 @@ namespace Tweetly_MVC.Controllers
             var yedek = Hesap.Instance.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -53,6 +47,7 @@ namespace Tweetly_MVC.Controllers
             x.AddRange(new DatabasesContext().Records);
             return View(x);
         }
+
         [HttpGet]
         public IActionResult ListGetir(string username, string listName)
         {
@@ -67,9 +62,9 @@ namespace Tweetly_MVC.Controllers
             if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Hesap.Instance.Liste);
 
-
             return View("Index", Hesap.Instance.Liste);
         }
+
         [HttpPost]
         public ActionResult SettingSave(string Model)
         {
@@ -79,6 +74,7 @@ namespace Tweetly_MVC.Controllers
         }
     }
 }
+
 /*  || !Yardimci.isPage(takipci.PhotoURL)
              if (takipci != null)
              { context.Users.Remove(takipci); context.SaveChanges(); }*/

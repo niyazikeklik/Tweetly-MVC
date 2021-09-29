@@ -1,13 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+﻿using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using Tweetly_MVC.Tweetly;
 
@@ -41,6 +36,7 @@ namespace Tweetly_MVC.Init
                 throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
             else return null;
         }
+
         public static void KillProcces()
         {
             foreach (var item in Process.GetProcesses())
@@ -51,8 +47,8 @@ namespace Tweetly_MVC.Init
                         if (s >= 30) { item.Kill(); }
                     }
                     catch {; }
-
         }
+
         public static string Donustur(string metin)
         {
             metin = metin
@@ -77,6 +73,7 @@ namespace Tweetly_MVC.Init
                     number += item;
             return number;
         }
+
         public static double UyelikSuresi(string kayittarihi)
         {
             List<string> Months = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
@@ -88,9 +85,9 @@ namespace Tweetly_MVC.Init
             int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
+
         public static string CinsiyetBul(string name)
         {
-
             if (String.IsNullOrEmpty(name)) return "Belirsiz";
             string[] isimler = name?.Split(' ');
             string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
@@ -108,27 +105,29 @@ namespace Tweetly_MVC.Init
                 /*
                 isim = isim.StringReplace();
                 var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
-                cinsiyet = msg.Contains("male") ? "Erke-k" : 
-                           msg.Contains("female") ? "Kadı-n" : 
+                cinsiyet = msg.Contains("male") ? "Erke-k" :
+                           msg.Contains("female") ? "Kadı-n" :
                            "Belirsiz";
                 return cinsiyet;*/
-
 
                 /*Yapay Zeka ile Tespit*/
 
                 return "Belirsiz";
             }
         }
+
         public static List<User> DistinctByUserName(this List<User> list)
         {
             return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
         }
+
         public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
         {
             driverr.Navigate().GoToUrl(link);
             Thread.Sleep(waitForPageLoad_ms);
             return driverr;
         }
+
         public static bool Control(this IWebDriver driver, string userName, string link, int ms = 300000)
         {
             Hesap.Instance.Iletisim.metin = "";
@@ -138,16 +137,13 @@ namespace Tweetly_MVC.Init
                 if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
                     return false; //Engellemişse
 
-
                 if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
                 {
-
                     Hesap.Instance.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
                     Thread.Sleep(ms);
                     Hesap.Instance.Iletisim.metin = "";
                     driver.Navigate().GoToUrl(link);
                     return driver.Control(userName, link, 60000);
-
                 }
                 if (count is 20)
                 {
@@ -156,8 +152,6 @@ namespace Tweetly_MVC.Init
                 }
                 Thread.Sleep(250);
                 count++;
-
-
             }
             if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
             {
@@ -165,8 +159,8 @@ namespace Tweetly_MVC.Init
                 return driver.Control(userName, link, ms);
             }
             return true;
-
         }
+
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
             Int64 sonrakiY, count = 0;
@@ -183,6 +177,7 @@ namespace Tweetly_MVC.Init
         }
     }
 }
+
 /*private static bool İsPage(string url)
        {
            url = url.Replace("400x400", "normal").Replace("200x200", "normal").Replace("x96", "normal");
@@ -223,4 +218,3 @@ namespace Tweetly_MVC.Init
          T child = JsonConvert.DeserializeObject<T>(serialized);
          return child;
      }*/
-

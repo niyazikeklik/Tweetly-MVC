@@ -1,6 +1,4 @@
-﻿using ServiceStack.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Tweetly_MVC.Tweetly
 {
@@ -8,6 +6,7 @@ namespace Tweetly_MVC.Tweetly
     {
         [Key]
         public string Username { get; set; }
+
         public bool IsPrivate { get; set; }
         public int Count { get; set; }
         public string PhotoURL { get; set; }
