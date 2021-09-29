@@ -57,15 +57,15 @@ namespace Tweetly_MVC.Controllers
         public IActionResult ListGetir(string username, string listName)
         {
             DatabasesContext context = new();
-            ViewBag.sutunGizle = !Hesap.Instance.Settings.CheckDetayGetir;
-
-            if (Hesap.Instance.Settings.CheckClearDB)
+            ViewBag.sutunGizle = !Hesap.Instance.SettingsFinder.CheckDetayGetir;
+            if (Hesap.Instance.Liste.Count > 0) return View("Index", Hesap.Instance.Liste);
+            if (Hesap.Instance.SettingsFinder.CheckClearDB)
                 context.RecordsAllDelete();
 
             CreateUser.ListeGezici($"https://twitter.com/{username}/{listName}");
 
-            if (Hesap.Instance.Settings.CheckDetayGetir)
-                context.RecordsUpdate(Hesap.Instance.Liste);
+            if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
+                context.RecordsUpdateOrAdd(Hesap.Instance.Liste);
 
 
             return View("Index", Hesap.Instance.Liste);
@@ -73,8 +73,8 @@ namespace Tweetly_MVC.Controllers
         [HttpPost]
         public ActionResult SettingSave(string Model)
         {
-            Setting ayarlar = JsonConvert.DeserializeObject<Setting>(Model);
-            Hesap.Instance.Settings = ayarlar;
+            FinderSettings ayarlar = JsonConvert.DeserializeObject<FinderSettings>(Model);
+            Hesap.Instance.SettingsFinder = ayarlar;
             return Content("Başarılı!");
         }
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Tweetly_MVC.Models
 {
-    public class Setting
+    public class FinderSettings
     {
         public bool CheckUseDB { get; set; }
         public bool CheckClearDB { get; set; }
@@ -20,4 +20,5 @@ namespace Tweetly_MVC.Models
         public bool CheckGizliHesap { get; set; }
         public bool CheckBeniTakipEdenler { get; set; }
     }
+   
 }

@@ -12,7 +12,7 @@
     <title>@ViewData["Title"] - Tweetly_MVC</title>
 
 
-    <script src="~/js/signalr.min.js"></script>
+    <script src="../NewFolder/js/signalr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -30,8 +30,8 @@
 
 
 
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/settings.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/settings.css" />
 
 </head>
 <body>
@@ -59,7 +59,7 @@
                 <li><a href="#">About</a></li>
                 <li><a href="#">Downloads</a></li>
                 <li><a href="#">More</a></li>
-                <li><a href="#" onclick="modalGetir()">Seçenekler</a></li>
+                <li><a href="#">Seçenekler</a></li>
             </ul>
         </nav>
     </header>
@@ -189,22 +189,16 @@
         <a href="#" class="menu__item" data-tooltip="Mesajları Sil">
             <i class="bi bi-envelope-fill" style="color: #324060"></i>
         </a>
-        <a href="#" class="menu__item" data-tooltip="Settings">
+        <a role="button" onclick="modalGetir()" class="menu__item" data-tooltip="Settings">
             <i class="bi bi-gear-fill" style="color: #324060"></i>
         </a>
         <form method="get" asp-action="ListGetir" asp-route-username="asdad" asp-route-detay="false">
             <div class="dropdown" style="width:100%; height: 50px;">
                 <button style="height:100%; margin:auto;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
-                    <i class="bi bi-gear-fill" style="color: #324060"></i>
+                    <i class="bi bi-gear-fill" style="color: #324060; width: 48px;"></i>
                 </button>
 
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
-                    <li>
-                        <div class="input-group">
-                            <span>Detay</span>
-                            <input class="dropdown-item" type="checkbox" name="detay" value="true" />
-                        </div>
-                    </li>
                     <li>
                         <div class="input-group">
                             <span class="input-group-text">Kullanıcı:</span>
@@ -228,11 +222,11 @@
     </nav>
 
 
-    <script src="~/js/Datatable.js" asp-append-version="true"></script>
-    <script src="~/js/Grafikler.js" asp-append-version="true"></script>
-    <script src="~/js/settings.js" asp-append-version="true"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="js/Datatable.js" asp-append-version="true"></script>
+    <script src="js/Grafikler.js" asp-append-version="true"></script>
+    <script src="js/settings.js" asp-append-version="true"></script>
+    <script src="js/site.js" asp-append-version="true"></script>
+   //await RenderSectionAsync("Scripts", required: false)
 
 
 </body>

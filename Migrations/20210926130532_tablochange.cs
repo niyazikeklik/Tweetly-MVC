@@ -2,7 +2,7 @@
 
 namespace Tweetly_MVC.Migrations
 {
-    public partial class tablochange : Migration
+    public partial class TabloChange : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

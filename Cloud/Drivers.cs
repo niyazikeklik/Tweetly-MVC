@@ -30,7 +30,7 @@ namespace Tweetly_MVC.Tweetly
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-            chromeOptions.AddArgument("--headless");
+       //     chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 
@@ -38,7 +38,7 @@ namespace Tweetly_MVC.Tweetly
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
             driver.Navigate().GoToUrl("https://mobile.twitter.com/login");
-            Login.Giris(Hesap.Instance.LoginUserName, Hesap.Instance.LoginPass, driver);
+            Login.Giris(Hesap.Instance.SettingsUser.Username, Hesap.Instance.SettingsUser.Pass, driver);
 
             return driver;
         }
@@ -65,7 +65,7 @@ namespace Tweetly_MVC.Tweetly
             Task g1 = Task.Run(() => OptionDriver()).ContinueWith(x =>
             {
                 Drivers.Driver = x.Result;
-                Hesap.Instance.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Instance.LoginUserName);
+                Hesap.Instance.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Instance.SettingsUser.Username);
             });
             Task.Run(() => Drivers.Driver2 = Drivers.OptionDriver());
             //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR

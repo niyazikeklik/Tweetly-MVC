@@ -5,6 +5,7 @@ using Tweetly_MVC.Models;
 
 namespace Tweetly_MVC.Tweetly
 {
+
     public class Cinsiyetler
     {
         public string Ad { get; set; }
@@ -32,24 +33,24 @@ namespace Tweetly_MVC.Tweetly
 
         private Hesap()
         {
+            SettingsUser = AppSettings.Get();
             OturumBilgileri = new();
             Liste = new();
             Takipciler = new();
             TakipEdilenler = new();
             GeriTakipYapmayanlar = new();
-            Settings = new();
+            SettingsFinder = new();
             Iletisim = new();
             Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
-        public string LoginUserName;
-        public string LoginPass;
+
         public User OturumBilgileri;
         public List<Cinsiyetler> Cins;
         public List<User> Liste;
         public List<User> Takipciler;
         public List<User> TakipEdilenler;
         public List<User> GeriTakipYapmayanlar;
-        public Setting Settings;
-
+        public FinderSettings SettingsFinder;
+        public UserSettings SettingsUser;
     }
 }

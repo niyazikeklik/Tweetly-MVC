@@ -18,40 +18,40 @@ namespace Tweetly_MVC.Init
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {
-                var elementler = driverr.FindElements(By.CssSelector("[data-testid=UserCell]"));
-                var kontrolEdilecekler = elementler.Except(kontrolEdildi);
+                var elementler = 
+                    (IReadOnlyCollection<IWebElement>)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserCell]');");
+                var kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
                 foreach (var element in kontrolEdilecekler)
                 {
                     User profil = element.GetProfil();
                     if (profil != null)
                         Hesap.Instance.Liste.Add(profil);
-
-                    kontrolEdildi.Add(element);
                 }
+                kontrolEdildi.AddRange(kontrolEdilecekler);
             }
             return Hesap.Instance.Liste;
         }
         public static bool Filter(this User profil)
         {
-            if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.Settings.CheckErkek)
+            if (profil.Cinsiyet == "Erkek" && !Hesap.Instance.SettingsFinder.CheckErkek)
                 return false;
-            if (profil.Cinsiyet == "Kadın" && !Hesap.Instance.Settings.CheckKadin)
+            if (profil.Cinsiyet == "Kadın" && !Hesap.Instance.SettingsFinder.CheckKadin)
                 return false;
-            if (profil.Cinsiyet == "Unisex" && !Hesap.Instance.Settings.CheckUnisex)
+            if (profil.Cinsiyet == "Unisex" && !Hesap.Instance.SettingsFinder.CheckUnisex)
                 return false;
-            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.Settings.CheckBelirsiz)
+            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Instance.SettingsFinder.CheckBelirsiz)
                 return false;
 
 
-            if (profil.FollowStatus == "Takip et" && Hesap.Instance.Settings.CheckTakipEtmediklerim)
+            if (profil.FollowStatus == "Takip et" && Hesap.Instance.SettingsFinder.CheckTakipEtmediklerim)
                 return false;
-            if (profil.FollowStatus == "Takip ediliyor" && Hesap.Instance.Settings.CheckTakipEttiklerim)
+            if (profil.FollowStatus == "Takip ediliyor" && Hesap.Instance.SettingsFinder.CheckTakipEttiklerim)
                 return false;
-            if (profil.FollowersStatus == "Takip etmiyor" && Hesap.Instance.Settings.CheckBeniTakipEtmeyenler)
+            if (profil.FollowersStatus == "Takip etmiyor" && Hesap.Instance.SettingsFinder.CheckBeniTakipEtmeyenler)
                 return false;
-            if (profil.FollowersStatus == "Seni takip ediyor" && Hesap.Instance.Settings.CheckBeniTakipEdenler)
+            if (profil.FollowersStatus == "Seni takip ediyor" && Hesap.Instance.SettingsFinder.CheckBeniTakipEdenler)
                 return false;
-            if (profil.IsPrivate && Hesap.Instance.Settings.CheckGizliHesap)
+            if (profil.IsPrivate && Hesap.Instance.SettingsFinder.CheckGizliHesap)
                 return false;
             return true;
         }
@@ -59,6 +59,7 @@ namespace Tweetly_MVC.Init
         {
             var profil = new User();
             string Text = element.Text.Replace("\r", "");
+
             profil.Count = Hesap.Instance.Liste.Count + 1;
             profil.Name = Liste.GetName(Text);
             profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name);
@@ -71,9 +72,9 @@ namespace Tweetly_MVC.Init
 
             if (!profil.Filter()) return null;
 
-            if (Hesap.Instance.Settings.CheckDetayGetir)
+            if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
             {
-                if (Hesap.Instance.Settings.CheckUseDB)
+                if (Hesap.Instance.SettingsFinder.CheckUseDB)
                 {
                     User DBprofil = new DatabasesContext().Records.FirstOrDefault(x => x.Username == profil.Username);
                     if (DBprofil != null)

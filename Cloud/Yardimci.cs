@@ -15,22 +15,43 @@ namespace Tweetly_MVC.Init
 {
     public static class Yardimci
     {
+        public static object JSCodeRun(this IWebDriver driver, string command)
+        {
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
+            int count = 0;
+            string exMg = "";
+            while (count < 10)
+                try
+                {
+                    var result = jse.ExecuteScript(command);
+                    if (result != null || !command.Contains("return")) return result;
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    exMg = ex.Message;
+                    count++;
+                }
+                catch (WebDriverException ex)
+                {
+                    Thread.Sleep(150);
+                    exMg = ex.Message;
+                    count++;
+                }
+            if (command.Contains("return"))
+                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+            else return null;
+        }
         public static void KillProcces()
         {
-            Process[] runingProcess = Process.GetProcesses();
-            for (int i = 0; i < runingProcess.Length; i++)
-            {
-                if (runingProcess[i].ProcessName == "chrome" || runingProcess[i].ProcessName == "chromedriver" || runingProcess[i].ProcessName == "conhost")
-                {
+            foreach (var item in Process.GetProcesses())
+                if (item.ProcessName == "chrome" || item.ProcessName == "chromedriver" || item.ProcessName == "conhost")
                     try
                     {
-                        double s = (DateTime.Now - runingProcess[i].StartTime).TotalSeconds;
-                        if (s >= 30) { runingProcess[i].Kill(); }
+                        double s = (DateTime.Now - item.StartTime).TotalSeconds;
+                        if (s >= 30) { item.Kill(); }
                     }
                     catch {; }
-                }
 
-            }
         }
         public static string Donustur(string metin)
         {
@@ -58,13 +79,13 @@ namespace Tweetly_MVC.Init
         }
         public static double UyelikSuresi(string kayittarihi)
         {
-            List<string> Months = new (){"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
+            List<string> Months = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
 
             string AyAdi = kayittarihi.Split(' ')[0];
             int Yil = Convert.ToInt32(kayittarihi.Split(' ')[1]);
 
             int Index = Months.IndexOf(AyAdi) + 1;
-            int Ay = Index > 12 ? Index - 12  : Index;
+            int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
         public static string CinsiyetBul(string name)
@@ -97,32 +118,6 @@ namespace Tweetly_MVC.Init
 
                 return "Belirsiz";
             }
-        }
-        public static object JSCodeRun(this IWebDriver driver, string command)
-        {
-            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
-            int count = 0;
-            string exMg = "";
-            while (count < 10)
-                try
-                {
-                    var result = jse.ExecuteScript(command);
-                    if (result != null || !command.Contains("return")) return result;
-                }
-                catch (StaleElementReferenceException ex)
-                {
-                    exMg = ex.Message;
-                    count++;
-                }
-                catch (WebDriverException ex)
-                {
-                    Thread.Sleep(150);
-                    exMg = ex.Message;
-                    count++;
-                }
-            if (command.Contains("return"))
-                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
-            else return null;
         }
         public static List<User> DistinctByUserName(this List<User> list)
         {

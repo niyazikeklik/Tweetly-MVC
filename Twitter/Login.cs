@@ -1,4 +1,4 @@
-﻿using Microsoft.Edge.SeleniumTools;
+﻿
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -23,7 +23,7 @@ namespace Tweetly_MVC.Init
                 IWebElement inputPass = (IWebElement)driver.JSCodeRun("return document.querySelector('[name=password]');");
                 inputPass.SendKeys(ps + Keys.Enter);
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", Hesap.Instance.LoginPass, driver);
+                    Giris("niyazikeklik@gmail.com", Hesap.Instance.SettingsUser.Pass, driver);
             }
 
         }

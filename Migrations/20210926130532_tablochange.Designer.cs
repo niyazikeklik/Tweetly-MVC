@@ -10,7 +10,7 @@ namespace Tweetly_MVC.Migrations
 {
     [DbContext(typeof(DatabasesContext))]
     [Migration("20210926130532_tablochange")]
-    partial class tablochange
+    partial class TabloChange
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

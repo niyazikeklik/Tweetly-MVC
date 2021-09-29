@@ -1,6 +1,4 @@
 ﻿@using Tweetly_MVC.Tweetly;
-@using FormHelper
-@addTagHelper *, FormHelper
 @model List<User>
 
 @{
@@ -81,7 +79,7 @@
                                 </a>
                             </p>
                             <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
-                            <a id="username" href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@@@item.Username</i></a>
+                            <a id="username" href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@item.Username</i></a>
                         </td>
                         <td>
                             @{ string classIsım = "";

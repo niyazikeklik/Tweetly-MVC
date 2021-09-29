@@ -29,7 +29,6 @@
     var myChart = new Chart(document.getElementById('myChart'), config);
     myChart.canvas.parentNode.style.width = '512px';
 }
-
 function createTakipciDurumuGrafik(begeniAktiflik, tweetAktiflik, OrtTweet, OrtBegeni, GTK) {
     const data2 = {
         labels: ["Beğeni Aktifliği", "Tweet Aktifliği", "Ortalama Tweet (Günde)", "Ortalama Beğeni (Günde)", "Genl Takipçi Kalitesi"],
