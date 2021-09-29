@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Extensions.Options;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,7 +19,7 @@ namespace Tweetly_MVC.Tweetly
           public static IWebDriver Driver4 { get; set; }
           public static IWebDriver Driver5 { get; set; }*/
 
-        private static int count = 15;
+        private static int count = 20;
 
         public static IWebDriver OptionDriver()
         {
@@ -30,14 +31,15 @@ namespace Tweetly_MVC.Tweetly
             chromeOptions.AddArgument("no-sandbox");
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
+            //chromeOptions.AddArgument("--lang=en");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-            //     chromeOptions.AddArgument("--headless");
+                //chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
 
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
-            driver.Navigate().GoToUrl("https://mobile.twitter.com/login");
+            driver.LinkeGit("https://mobile.twitter.com/login", 1500);
             Login.Giris(Hesap.Instance.SettingsUser.Username, Hesap.Instance.SettingsUser.Pass, driver);
 
             return driver;

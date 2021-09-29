@@ -57,7 +57,7 @@ namespace Tweetly_MVC.Controllers
             if (Hesap.Instance.SettingsFinder.CheckClearDB)
                 context.RecordsAllDelete();
 
-            CreateUser.ListeGezici($"https://twitter.com/{username}/{listName}");
+           Hesap.Instance.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
 
             if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Hesap.Instance.Liste);

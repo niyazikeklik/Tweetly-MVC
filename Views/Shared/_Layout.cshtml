@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Tweetly_MVC</title>
 
-    <script src="../NewFolder/js/signalr.min.js"></script>
+    <script src="~/js/signalr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript"
         src="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
@@ -32,14 +32,14 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-    <link rel="stylesheet" href="css/site.css" />
-    <link rel="stylesheet" href="css/settings.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/settings.css" />
 </head>
 
 <body>
 
     <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -78,14 +78,16 @@
                                     <div class="circle-1"></div>
                                     <div class="circle-2"></div>
                                     <img src="@Hesap.Instance.OturumBilgileri.PhotoURL" width="70" height="70"
-                                        alt="@Hesap.Instance.OturumBilgileri.Username">
+                                         alt="@Hesap.Instance.OturumBilgileri.Username">
                                 </div>
 
                                 <div class="name">@Hesap.Instance.OturumBilgileri.Name</div>
-                                <div class="job"> <a id="username"
-                                        href="https://twitter.com/@Hesap.Instance.OturumBilgileri.Username"
-                                        target="_blank"><i
-                                            class="bi bi-link-45deg">@Hesap.Instance.OturumBilgileri.Username</i></a>
+                                <div class="job">
+                                    <a id="username"
+                                       href="https://twitter.com/@Hesap.Instance.OturumBilgileri.Username"
+                                       target="_blank">
+                                        <i class="bi bi-link-45deg">@Hesap.Instance.OturumBilgileri.Username</i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -138,9 +140,9 @@
                     <div class="row">
                         <div class="container" id="row">
                             <div class="progress" id="progressbox"
-                                style="display: none; height: 30px; margin-bottom: 15px;">
+                                 style="display: none; height: 30px; margin-bottom: 15px;">
                                 <div class="progress-bar progress-bar-striped  progress-bar-animated active"
-                                    role="progressbar" id="progress" style="width: 100%; height: 30px; ">
+                                     role="progressbar" id="progress" style="width: 100%; height: 30px; ">
                                     40%
                                 </div>
                             </div>
@@ -151,8 +153,9 @@
         </div>
 
         <div class="row">
-            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()"><i
-                    class="bi bi-bar-chart-line-fill"></i> Grafikler</button>
+            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()">
+                <i class="bi bi-bar-chart-line-fill"></i> Grafikler
+            </button>
             <div class="container" id="grafikler" style="display:none">
                 <div class="row">
                     <div class="col-4">
@@ -173,7 +176,7 @@
         <a href="@Url.ActionLink("ListGetir", "Home", new {
             username = Hesap.Instance.OturumBilgileri.Username,
             listName = "following"
-            })" class="menu__item id=" takipciler" data-tooltip="Takip Edilenler">
+            })" class="menu__item" id="takipciler" data-tooltip="Takip Edilenler">
             <i class="bi bi-people-fill" style="color: #324060"></i>
         </a>
         <a href="@Url.ActionLink("ListGetir", "Home",new {
@@ -193,8 +196,8 @@
                 <i class="bi bi-person-fill" style="color: #324060;"></i>
 
                 <button class="btn dropdown row"
-                    style="position: absolute; width: 100%; height: 100%; bottom: 0px color: #324060;" type="button"
-                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
+                        style="position: absolute; width: 100%; height: 100%; bottom: 0px; color: #324060;" type="button"
+                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
                 </button>
 
 
@@ -202,21 +205,23 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
                     <li style="width: 100%;">
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-people-fill"
-                                    style="color: #324060"></i>Kullanıcı:</span>
+                            <span class="input-group-text">
+                                <i class="bi bi-people-fill"
+                                   style="color: #324060"></i>Kullanıcı:
+                            </span>
                             <input type="text" name="username" aria-label="Kullanıcı" class="form-control">
                         </div>
                     </li>
                     <li style="width: 100%;">
                         <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
-                            value="followers">
+                                value="followers">
                             <i class="bi bi-person-lines-fill" style="color: #324060"></i>
                             Takipçileri
-                            </buttona>
+                        </button>
                     </li>
                     <li style="width: 100%;">
                         <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
-                            value="following">
+                                value="following">
                             <i class="bi bi-people-fill" style="color: #324060"></i>
                             Takip ettikleri
                         </button>
@@ -224,7 +229,7 @@
                     </li>
                     <li style="width: 100%;">
                         <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
-                            value="followers_you_follow">
+                                value="followers_you_follow">
                             <i class="bi bi-people-fill" style="color: #324060"></i>
                             Ortak takipçiler
                         </button>
@@ -242,29 +247,31 @@
             <div class="menu__item dropdown" data-tooltip="Tweet'i analiz et">
                 <i class="bi bi-person-fill" style="color: #324060;"></i>
                 <button class="btn dropdown row"
-                    style="position: absolute; width: 100%; height: 100%; bottom: 0px color: #324060;" type="button"
-                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
+                        style="position: absolute; width: 100%; height: 100%; bottom: 0px; color: #324060;" type="button"
+                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
                 </button>
 
 
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
                     <li style="width: 100%;">
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-people-fill"
-                                    style="color: #324060"></i>Tweet:</span>
+                            <span class="input-group-text">
+                                <i class="bi bi-people-fill"
+                                   style="color: #324060"></i>Tweet:
+                            </span>
                             <input type="text" name="username" aria-label="Kullanıcı" class="form-control">
                         </div>
                     </li>
                     <li style="width: 100%;">
                         <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
-                            value="followers">
+                                value="followers">
                             <i class="bi bi-person-lines-fill" style="color: #324060"></i>
                             Tweet'i beğenenler
-                            </buttona>
+                        </button>
                     </li>
                     <li style="width: 100%;">
                         <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
-                            value="following">
+                                value="following">
                             <i class="bi bi-people-fill" style="color: #324060"></i>
                             Tweet'i rettweet edenler
                         </button>
@@ -275,11 +282,11 @@
         </form>
     </nav>
 
-    <script src="js/Datatable.js" asp-append-version="true"></script>
-    <script src="js/Grafikler.js" asp-append-version="true"></script>
-    <script src="js/settings.js" asp-append-version="true"></script>
-    <script src="js/site.js" asp-append-version="true"></script>
-    //await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/Datatable.js" asp-append-version="true"></script>
+    <script src="~/js/Grafikler.js" asp-append-version="true"></script>
+    <script src="~/js/settings.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

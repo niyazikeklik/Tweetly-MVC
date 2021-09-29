@@ -1,16 +1,18 @@
 ﻿using OpenQA.Selenium;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Tweetly_MVC.Tweetly;
 using Tweetly_MVC.Twitter;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Tweetly_MVC.Init
 {
     public static class CreateUser
     {
-        public static object ListeGezici(string link, int sayfaLoadWait_MS = 1000)
+        public static List<User> ListeGezici(string link, int sayfaLoadWait_MS = 1000)
         {
-            Hesap.Instance.Liste.Clear();
+            List<User> yerelList = new();
             IWebDriver driverr = Drivers.Driver.LinkeGit(link, sayfaLoadWait_MS);
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
@@ -21,13 +23,64 @@ namespace Tweetly_MVC.Init
                 foreach (IWebElement element in kontrolEdilecekler)
                 {
                     User profil = element.GetProfil();
-                    if (profil is not null)
-                        Hesap.Instance.Liste.Add(profil);
+                    if (!Filter(profil)) continue;
+                    User DBprofil = null;
+                    if (Hesap.Instance.SettingsFinder.CheckUseDB)
+                        DBprofil = new DatabasesContext().Records.FirstOrDefault(x => x.Username == profil.Username);
+                    if (Hesap.Instance.SettingsFinder.CheckDetayGetir && DBprofil != null)
+                    {
+                        profil.TweetCount = DBprofil.TweetCount;
+                        profil.Date = DBprofil.Date;
+                        profil.Location = DBprofil.Location;
+                        profil.Following = DBprofil.Following;
+                        profil.Followers = DBprofil.Followers;
+                        profil.TweetSikligi = DBprofil.TweetSikligi;
+                        profil.LastTweetsDate = DBprofil.LastTweetsDate;
+                        profil.LikeCount = DBprofil.LikeCount;
+                        profil.BegeniSikligi = DBprofil.BegeniSikligi;
+                        profil.LastLikesDate = DBprofil.LastLikesDate;
+                    }
+                    else if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
+                        profil = Drivers.MusaitOlanDriver().GetProfil(profil);
+                    yerelList.Add(profil);
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
             }
-            return Hesap.Instance.Liste;
+            return yerelList;
         }
+        public static List<string> GetUrlsOfTweet(string username, int tweetCount)
+        {
+            List<string> TweetIds = new();
+            Drivers.Driver.LinkeGit($"www.twitter.com/{username}", 200);
+            while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
+            {
+                var result = Drivers.Driver.JSCodeRun("return document.querySelectorAll(\"a[id^='id__']\");");
+                foreach (IWebElement item in (IReadOnlyCollection<IWebElement>)result)
+                {
+                    string url = item.GetAttribute("href");
+                    if (url.Contains($"/{username}/status/") && TweetIds.Contains(url))
+                        TweetIds.Add(url);
+                }
+            }
+            return TweetIds;
+        }
+        public static void BegenenleriGetir(string username, int tweetCount)
+        {
+            var Tweets = GetUrlsOfTweet(username, tweetCount);
+            foreach (var item in Tweets)
+            {
+                CreateUser.ListeGezici(item + "/likes");
+            }
+
+        }
+
+
+
+
+
+
+
+
 
         public static bool Filter(this User profil)
         {
@@ -68,30 +121,6 @@ namespace Tweetly_MVC.Init
             profil.FollowStatus = Liste.GetFollowStatus(Text);
             profil.Bio = Liste.GetBio(element);
 
-            if (!profil.Filter()) return null;
-
-            if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
-            {
-                if (Hesap.Instance.SettingsFinder.CheckUseDB)
-                {
-                    User DBprofil = new DatabasesContext().Records.FirstOrDefault(x => x.Username == profil.Username);
-                    if (DBprofil != null)
-                    {
-                        profil.TweetCount = DBprofil.TweetCount;
-                        profil.Date = DBprofil.Date;
-                        profil.Location = DBprofil.Location;
-                        profil.Following = DBprofil.Following;
-                        profil.Followers = DBprofil.Followers;
-                        profil.TweetSikligi = DBprofil.TweetSikligi;
-                        profil.LastTweetsDate = DBprofil.LastTweetsDate;
-                        profil.LikeCount = DBprofil.LikeCount;
-                        profil.BegeniSikligi = DBprofil.BegeniSikligi;
-                        profil.LastLikesDate = DBprofil.LastLikesDate;
-                        return profil;
-                    }
-                }
-                profil = Drivers.MusaitOlanDriver().GetProfil(profil);
-            }
             return profil;
         }
 

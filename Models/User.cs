@@ -11,6 +11,9 @@ namespace Tweetly_MVC.Tweetly
         public int Count { get; set; }
         public string PhotoURL { get; set; }
         public string Name { get; set; }
+       /* public int BegeniSayisi { get; set; }
+        public double BegeniOrani { get; set; }
+       */
         public string Cinsiyet { get; set; }
         public string Location { get; set; }
         public string Bio { get; set; }

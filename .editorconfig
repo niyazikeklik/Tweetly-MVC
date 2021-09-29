@@ -2,3 +2,6 @@
 
 # IDE0046: Koşullu ifadeye dönüştürme
 dotnet_diagnostic.IDE0046.severity = none
+
+# IDE0011: Küme ayracı ekle
+dotnet_diagnostic.IDE0011.severity = none
