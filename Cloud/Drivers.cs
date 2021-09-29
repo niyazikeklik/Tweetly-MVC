@@ -43,7 +43,7 @@ namespace Tweetly_MVC.Tweetly
             return driver;
         }
 
-        public readonly static List<IWebDriver> kullanıyorum = new();
+        public static readonly List<IWebDriver> kullanıyorum = new();
 
         public static IWebDriver MusaitOlanDriver()
         {

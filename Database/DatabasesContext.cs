@@ -7,11 +7,7 @@ namespace Tweetly_MVC.Tweetly
 {
     public class DatabasesContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@$"Data Source={Hesap.Instance.SettingsUser.SQLServerName};Initial Catalog=TweetlyDataBase_{Hesap.Instance.OturumBilgileri.Username};Integrated Security=True");
-            //Migrate komutu çalıştırırken cümleden usernameyi sil.
-        }//212 331 02 00
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@$"Data Source={Hesap.Instance.SettingsUser.SQLServerName};Initial Catalog=TweetlyDataBase_{Hesap.Instance.OturumBilgileri.Username};Integrated Security=True");//Migrate komutu çalıştırırken cümleden usernameyi sil.//212 331 02 00
 
         public DbSet<User> Records { get; set; }
     }
@@ -32,9 +28,9 @@ namespace Tweetly_MVC.Tweetly
 
         private static void RecordsDeleteExist(this DbSet<User> DBtablo, List<User> guncelTablo)
         {
-            foreach (var item in guncelTablo)
+            foreach (User item in guncelTablo)
             {
-                var silinecek = DBtablo.FirstOrDefault(x => x.Username == item.Username);
+                User silinecek = DBtablo.FirstOrDefault(x => x.Username == item.Username);
                 if (silinecek != null)
                     DBtablo.Remove(silinecek);
             }

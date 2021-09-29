@@ -15,13 +15,13 @@ namespace Tweetly_MVC.Init
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {
-                var elementler =
+                IReadOnlyCollection<IWebElement> elementler =
                     (IReadOnlyCollection<IWebElement>)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=UserCell]');");
-                var kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
-                foreach (var element in kontrolEdilecekler)
+                List<IWebElement> kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
+                foreach (IWebElement element in kontrolEdilecekler)
                 {
                     User profil = element.GetProfil();
-                    if (profil != null)
+                    if (profil is not null)
                         Hesap.Instance.Liste.Add(profil);
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
@@ -55,7 +55,7 @@ namespace Tweetly_MVC.Init
 
         public static User GetProfil(this IWebElement element)
         {
-            var profil = new User();
+            User profil = new();
             string Text = element.Text.Replace("\r", "");
 
             profil.Count = Hesap.Instance.Liste.Count + 1;
@@ -99,7 +99,7 @@ namespace Tweetly_MVC.Init
         {
             string link = $"https://mobile.twitter.com/{username}";
             driver.Navigate().GoToUrl(link);
-            var profil = new User();
+            User profil = new();
             if (Yardimci.Control(driver, username, link, 300000))
             {
                 profil.Count = Hesap.Instance.Liste.Count + 1;

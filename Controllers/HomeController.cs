@@ -15,9 +15,9 @@ namespace Tweetly_MVC.Controllers
         public string TakipCik(string Usernames)
         {
             string butontext = "";
-            var takiptenCikilicaklar = Usernames?.Split('@');
+            string[] takiptenCikilicaklar = Usernames?.Split('@');
             if (takiptenCikilicaklar is null) return null;
-            foreach (var item in takiptenCikilicaklar)
+            foreach (string item in takiptenCikilicaklar)
             {
                 if (string.IsNullOrEmpty(item)) continue;
                 IWebDriver driver = Drivers.MusaitOlanDriver();
@@ -35,7 +35,7 @@ namespace Tweetly_MVC.Controllers
         public JsonResult GuncelleProgress()
         {
             Hesap.Instance.Iletisim.veri = "Bulunan Kullanıcı Sayısı: " + Hesap.Instance.Liste.Count;
-            var yedek = Hesap.Instance.Iletisim;
+            IILetisim yedek = Hesap.Instance.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
 

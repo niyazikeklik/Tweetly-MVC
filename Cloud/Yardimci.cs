@@ -16,9 +16,10 @@ namespace Tweetly_MVC.Init
             int count = 0;
             string exMg = "";
             while (count < 10)
+            {
                 try
                 {
-                    var result = jse.ExecuteScript(command);
+                    object result = jse.ExecuteScript(command);
                     if (result != null || !command.Contains("return")) return result;
                 }
                 catch (StaleElementReferenceException ex)
@@ -32,21 +33,27 @@ namespace Tweetly_MVC.Init
                     exMg = ex.Message;
                     count++;
                 }
+            }
+
             if (command.Contains("return"))
-                throw new ApplicationException((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+                throw new ApplicationException(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
             else return null;
         }
 
         public static void KillProcces()
         {
-            foreach (var item in Process.GetProcesses())
-                if (item.ProcessName == "chrome" || item.ProcessName == "chromedriver" || item.ProcessName == "conhost")
+            foreach (Process item in Process.GetProcesses())
+            {
+                if (item.ProcessName is "chrome" or "chromedriver" or "conhost")
+                {
                     try
                     {
                         double s = (DateTime.Now - item.StartTime).TotalSeconds;
                         if (s >= 30) { item.Kill(); }
                     }
                     catch {; }
+                }
+            }
         }
 
         public static string Donustur(string metin)
@@ -62,15 +69,17 @@ namespace Tweetly_MVC.Init
                 .Replace("Tepki", "");
 
             metin = metin.Replace(" Mn ", "000000");
-            if (!metin.Contains(',') && !metin.Contains('.'))
-                metin = metin.Replace(" B ", "000").Replace(" K ", "000");
-            else
-                metin = metin.Replace(" B ", "00").Replace(" K ", "00");
+            metin = !metin.Contains(',') && !metin.Contains('.')
+                ? metin.Replace(" B ", "000").Replace(" K ", "000")
+                : metin.Replace(" B ", "00").Replace(" K ", "00");
 
             string number = "";
             foreach (char item in metin)
+            {
                 if (char.IsNumber(item))
                     number += item;
+            }
+
             return number;
         }
 
@@ -88,11 +97,11 @@ namespace Tweetly_MVC.Init
 
         public static string CinsiyetBul(string name)
         {
-            if (String.IsNullOrEmpty(name)) return "Belirsiz";
+            if (string.IsNullOrEmpty(name)) return "Belirsiz";
             string[] isimler = name?.Split(' ');
             string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
             string cinsiyet = "Belirsi...z";
-            var result = Hesap.Instance.Cins.FirstOrDefault(x => x.Ad == isim);
+            Cinsiyetler result = Hesap.Instance.Cins.FirstOrDefault(x => x.Ad == isim);
             if (result != null)
             {
                 cinsiyet = result.Cinsiyet == "e" ? "Erkek" :
@@ -116,10 +125,7 @@ namespace Tweetly_MVC.Init
             }
         }
 
-        public static List<User> DistinctByUserName(this List<User> list)
-        {
-            return list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
-        }
+        public static List<User> DistinctByUserName(this List<User> list) => list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
 
         public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
         {
@@ -163,13 +169,13 @@ namespace Tweetly_MVC.Init
 
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
-            Int64 sonrakiY, count = 0;
-            Int64 oncekiY = (Int64)driverr.JSCodeRun("return window.scrollY;");
+            long sonrakiY, count = 0;
+            long oncekiY = (long)driverr.JSCodeRun("return window.scrollY;");
             driverr.JSCodeRun("window.scrollBy(0, 2000);");
             do
             {
                 Thread.Sleep(200);
-                sonrakiY = (Int64)driverr.JSCodeRun("return window.scrollY;");
+                sonrakiY = (long)driverr.JSCodeRun("return window.scrollY;");
             } while (oncekiY == sonrakiY && count++ < 20);
             if (oncekiY == sonrakiY)
                 return true;
