@@ -14,8 +14,9 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="col">
 
+</button>
+<div class="col">
     <div class="table-wrapper">
         <table class="fl-table" style="font-size:12px; font-weight:600;">
             <thead>
@@ -109,6 +110,7 @@
                             </form>
                             <button asp-action="Engelle" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-danger userbutons">Engelle</button>
                             <button asp-action="SessizeAl" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-warning userbutons">Sessize Al</button>
+
                             @*<form action="@Url.Action("TakipCik")" method="post">
                                     <button name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
                                 </form>*@

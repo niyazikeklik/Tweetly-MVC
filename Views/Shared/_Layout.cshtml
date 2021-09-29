@@ -4,6 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="utf-8" />
@@ -12,23 +13,33 @@
 
     <script src="../NewFolder/js/signalr.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"
+        integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bm/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/cr-1.5.4/fh-3.2.0/r-2.2.9/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.css" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="css/site.css" />
     <link rel="stylesheet" href="css/settings.css" />
 </head>
+
 <body>
 
-    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -66,11 +77,16 @@
                                 <div class="image">
                                     <div class="circle-1"></div>
                                     <div class="circle-2"></div>
-                                    <img src="@Hesap.Instance.OturumBilgileri.PhotoURL" width="70" height="70" alt="@Hesap.Instance.OturumBilgileri.Username">
+                                    <img src="@Hesap.Instance.OturumBilgileri.PhotoURL" width="70" height="70"
+                                        alt="@Hesap.Instance.OturumBilgileri.Username">
                                 </div>
 
                                 <div class="name">@Hesap.Instance.OturumBilgileri.Name</div>
-                                <div class="job">   <a id="username" href="https://twitter.com/@Hesap.Instance.OturumBilgileri.Username" target="_blank"><i class="bi bi-link-45deg">@Hesap.Instance.OturumBilgileri.Username</i></a></div>
+                                <div class="job"> <a id="username"
+                                        href="https://twitter.com/@Hesap.Instance.OturumBilgileri.Username"
+                                        target="_blank"><i
+                                            class="bi bi-link-45deg">@Hesap.Instance.OturumBilgileri.Username</i></a>
+                                </div>
                             </div>
                         </div>
                         <div class="col" style=" display: flex; justify-content: center; align-items: center;">
@@ -121,8 +137,10 @@
                     </div>
                     <div class="row">
                         <div class="container" id="row">
-                            <div class="progress" id="progressbox" style="display: none; height: 30px; margin-bottom: 15px;">
-                                <div class="progress-bar progress-bar-striped  progress-bar-animated active" role="progressbar" id="progress" style="width: 100%; height: 30px; ">
+                            <div class="progress" id="progressbox"
+                                style="display: none; height: 30px; margin-bottom: 15px;">
+                                <div class="progress-bar progress-bar-striped  progress-bar-animated active"
+                                    role="progressbar" id="progress" style="width: 100%; height: 30px; ">
                                     40%
                                 </div>
                             </div>
@@ -133,7 +151,8 @@
         </div>
 
         <div class="row">
-            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()"><i class="bi bi-bar-chart-line-fill"></i>   Grafikler</button>
+            <button class="button" style="margin: 15px; width: auto;" onclick="grafiklerToggle()"><i
+                    class="bi bi-bar-chart-line-fill"></i> Grafikler</button>
             <div class="container" id="grafikler" style="display:none">
                 <div class="row">
                     <div class="col-4">
@@ -145,7 +164,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">   @RenderBody()</div>
+        <div class="row"> @RenderBody()</div>
     </div>
     <nav class="menu">
         <a href="@Url.ActionLink("Index", "Home")" class="menu__item" data-tooltip="Dashboard">
@@ -154,13 +173,13 @@
         <a href="@Url.ActionLink("ListGetir", "Home", new {
             username = Hesap.Instance.OturumBilgileri.Username,
             listName = "following"
-            })" class="menu__item menu__item--active" id="takipciler" data-tooltip="Takip Edilenler">
+            })" class="menu__item id=" takipciler" data-tooltip="Takip Edilenler">
             <i class="bi bi-people-fill" style="color: #324060"></i>
         </a>
         <a href="@Url.ActionLink("ListGetir", "Home",new {
             username = Hesap.Instance.OturumBilgileri.Username,
             listName = "followers"
-            })" class="menu__item menu__item--active" id="listGetir" data-tooltip="Takipçiler">
+            })" class="menu__item" id="listGetir" data-tooltip="Takipçiler">
             <i class="bi bi-person-lines-fill" style="color: #324060"></i>
         </a>
         <a href="#" class="menu__item" data-tooltip="Mesajları Sil">
@@ -169,29 +188,88 @@
         <a role="button" onclick="modalGetir()" class="menu__item" data-tooltip="Settings">
             <i class="bi bi-gear-fill" style="color: #324060"></i>
         </a>
-        <form method="get" asp-action="ListGetir" asp-route-username="asdad" asp-route-detay="false">
-            <div class="dropdown" style="width:100%; height: 50px;">
-                <button style="height:100%; margin:auto;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
-                    <i class="bi bi-gear-fill" style="color: #324060; width: 48px;"></i>
+        <form action="/Home/ListGetir" method="GET">
+            <div class="menu__item dropdown" data-tooltip="Diğer kullanıcıları analiz et">
+                <i class="bi bi-person-fill" style="color: #324060;"></i>
+
+                <button class="btn dropdown row"
+                    style="position: absolute; width: 100%; height: 100%; bottom: 0px color: #324060;" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
                 </button>
 
+
+
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
-                    <li>
+                    <li style="width: 100%;">
                         <div class="input-group">
-                            <span class="input-group-text">Kullanıcı:</span>
+                            <span class="input-group-text"><i class="bi bi-people-fill"
+                                    style="color: #324060"></i>Kullanıcı:</span>
                             <input type="text" name="username" aria-label="Kullanıcı" class="form-control">
                         </div>
                     </li>
-                    <li>
-                        <a class="dropdown-item" type="submit" name="listName" value="followers" href="">Takipçileri</a>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
+                            value="followers">
+                            <i class="bi bi-person-lines-fill" style="color: #324060"></i>
+                            Takipçileri
+                            </buttona>
                     </li>
-                    <li>
-                        <a class="dropdown-item" type="submit" name="listName" value="following" href="">Takip ettikleri</a>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
+                            value="following">
+                            <i class="bi bi-people-fill" style="color: #324060"></i>
+                            Takip ettikleri
+                        </button>
+
                     </li>
-                    <li>
-                        <a class="dropdown-item" type="submit" name="listName" value="" href="">Ortak takipçiler</a>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
+                            value="followers_you_follow">
+                            <i class="bi bi-people-fill" style="color: #324060"></i>
+                            Ortak takipçiler
+                        </button>
                     </li>
-                    <li><a class="dropdown-item" name="listName" href="#">Beğenenler</a></li>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName" value="">
+                            <i class="bi bi-people-fill" style="color: #324060"></i>
+                            Beğenenleri
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </form>
+        <form action="/Home/ListGetir" method="GET">
+            <div class="menu__item dropdown" data-tooltip="Tweet'i analiz et">
+                <i class="bi bi-person-fill" style="color: #324060;"></i>
+                <button class="btn dropdown row"
+                    style="position: absolute; width: 100%; height: 100%; bottom: 0px color: #324060;" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" data-tooltip="Settings">
+                </button>
+
+
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width:250px;">
+                    <li style="width: 100%;">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-people-fill"
+                                    style="color: #324060"></i>Tweet:</span>
+                            <input type="text" name="username" aria-label="Kullanıcı" class="form-control">
+                        </div>
+                    </li>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
+                            value="followers">
+                            <i class="bi bi-person-lines-fill" style="color: #324060"></i>
+                            Tweet'i beğenenler
+                            </buttona>
+                    </li>
+                    <li style="width: 100%;">
+                        <button class="dropdown-item btn btn-outline-danger" type="submit" name="listName"
+                            value="following">
+                            <i class="bi bi-people-fill" style="color: #324060"></i>
+                            Tweet'i rettweet edenler
+                        </button>
+
+                    </li>
                 </ul>
             </div>
         </form>
@@ -203,4 +281,5 @@
     <script src="js/site.js" asp-append-version="true"></script>
     //await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

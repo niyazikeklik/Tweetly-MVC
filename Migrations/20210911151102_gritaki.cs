@@ -40,10 +40,7 @@ namespace Tweetly_MVC.Migrations
                     FollowersStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FollowStatus = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GeriTakipEtmeyenler", x => x.Username);
-                });
+                constraints: table => table.PrimaryKey("PK_GeriTakipEtmeyenler", x => x.Username));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
