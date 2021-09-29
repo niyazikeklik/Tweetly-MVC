@@ -10,7 +10,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-appsettings.Development.json
+*.Development.json
 Test.cs
 
 # User-specific files (MonoDevelop/Xamarin Studio)
