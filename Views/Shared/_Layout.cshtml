@@ -185,6 +185,11 @@
             })" class="menu__item" id="listGetir" data-tooltip="Takipçiler">
             <i class="bi bi-person-lines-fill" style="color: #324060"></i>
         </a>
+        <a href="@Url.ActionLink("BegenenenleriGetir", "Home",new {
+            username = Hesap.Instance.OturumBilgileri.Username
+            })" class="menu__item" id="begeniGetir" data-tooltip="Beğenenleri Getir">
+            <i class="bi bi-person-lines-fill" style="color: #324060"></i>
+        </a>
         <a href="#" class="menu__item" data-tooltip="Mesajları Sil">
             <i class="bi bi-envelope-fill" style="color: #324060"></i>
         </a>

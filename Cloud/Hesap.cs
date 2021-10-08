@@ -13,8 +13,9 @@ namespace Tweetly_MVC.Tweetly
 
     public struct IILetisim
     {
-        public string metin;
-        public string veri;
+        public string HataMetni;
+        public int currentValue;
+        public string BilgiMetni;
     }
 
     public class Hesap

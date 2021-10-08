@@ -14,5 +14,6 @@
         public bool CheckBeniTakipEtmeyenler { get; set; }
         public bool CheckGizliHesap { get; set; }
         public bool CheckBeniTakipEdenler { get; set; }
+        public bool CheckUseAllDriver { get; set; }
     }
 }

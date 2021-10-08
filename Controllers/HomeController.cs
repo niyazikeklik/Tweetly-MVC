@@ -34,7 +34,7 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Hesap.Instance.Iletisim.veri = "Bulunan Kullanıcı Sayısı: " + Hesap.Instance.Liste.Count;
+            Hesap.Instance.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Hesap.Instance.Iletisim.currentValue;
             IILetisim yedek = Hesap.Instance.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
@@ -47,6 +47,12 @@ namespace Tweetly_MVC.Controllers
             x.AddRange(new DatabasesContext().Records);
             return View(x);
         }
+        [HttpGet]
+        public IActionResult BegenenleriGetir(string username, int kontrolEdilecekTweetSayisi)
+        {
+            var r = CreateUser.BegenenleriGetir(username, kontrolEdilecekTweetSayisi);
+            return View("Index", r);
+        }
 
         [HttpGet]
         public IActionResult ListGetir(string username, string listName)
@@ -57,7 +63,7 @@ namespace Tweetly_MVC.Controllers
             if (Hesap.Instance.SettingsFinder.CheckClearDB)
                 context.RecordsAllDelete();
 
-           Hesap.Instance.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
+            Hesap.Instance.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
 
             if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Hesap.Instance.Liste);

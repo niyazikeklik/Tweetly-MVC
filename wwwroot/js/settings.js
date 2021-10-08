@@ -6,6 +6,8 @@
               ${checkItemEkle("Veritabanını kullan", "Kullanıcılar kontrol edilirken daha önceden veritabanında kayıt varsa oradan çekilir. Bu işlem tutarsız verilere sebep olabilir. Hız açısından avantajlıdır.", "CheckUseDB")}
               ${checkItemEkle("Veritabanını temizle", "Veritabanında eski kayıtlar tamamen silinir, güncel veri için önerilir, hız açısından dezavantajlıdır.", "CheckClearDB")}
               ${checkItemEkle("Detay Getir", "Etkinleştirilirse detay bilgiler toplanır, hız önemli ölçüde azalır. Etkinleştirilmez ise temel bilgiler toplanır, hız önemli ölçüde artar.", "CheckDetayGetir")}
+              ${checkItemEkle("Tüm driverları kullan", "Kazıma yapılırken tam güç kullanılır, bu sizin daha kısa sürede daha çok profile ulaşmanızı sağlarken Twitter tarafından limit yeme şansınızı arttıracağı için performansı düşürebilir, az sayıda kullanıcı kontrolü için önerilir. ", "CheckUseAllDriver")}
+
        <div style ="margin-top: 50px; margin-bottom: 15px;"><strong class="mb-5" >Cinsiyet Tercihi</strong></div>
                ${checkItemEkle("Erkek Kullanıcıları Getir", "Erkek kullanıcılar aramaya dahil edilir.", "CheckErkek")}
                ${checkItemEkle("Kadın Kullanıcıları Getir", "Kadın kullanıcılar aramaya dahil edilir.", "CheckKadin")}
@@ -22,16 +24,20 @@
 `);
     VarsayılanAyarlar();
     Kurallar();
+    saveSettings(false);
     $("#AyarlarıKaydet").on("click", function () {
-        $.ajax({
-            type: "POST",
-            url: '/Home/SettingSave',
-            data: { Model: JSON.stringify(getValues()) },
-            dataType: "text",
-            success: function (msg) {
-                alert("Başarıyla kaydedildi: " + msg)
-            }
-        });
+        saveSettings(true);
+    });
+}
+function saveSettings(msgShow) {
+    $.ajax({
+        type: "POST",
+        url: '/Home/SettingSave',
+        data: { Model: JSON.stringify(getValues()) },
+        dataType: "text",
+        success: function (msg) {
+            if (msgShow) alert("Başarıyla kaydedildi: " + msg)
+        }
     });
 }
 function checkItemEkle(baslik, aciklama, id) {
@@ -132,5 +138,6 @@ function getValues() {
     obj.checkDetayGetir = $("#CheckDetayGetir").is(":checked");;
     obj.checkClearDB = $("#CheckClearDB").is(":checked");;
     obj.checkUseDB = $("#CheckUseDB").is(":checked");
+    obj.CheckUseAllDriver = $("#CheckUseAllDriver").is(":checked");
     return obj;
 }

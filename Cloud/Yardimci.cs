@@ -136,7 +136,7 @@ namespace Tweetly_MVC.Init
 
         public static bool Control(this IWebDriver driver, string userName, string link, int ms = 300000)
         {
-            Hesap.Instance.Iletisim.metin = "";
+            Hesap.Instance.Iletisim.HataMetni = "";
             int count = 0;
             while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
             {
@@ -145,9 +145,9 @@ namespace Tweetly_MVC.Init
 
                 if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
                 {
-                    Hesap.Instance.Iletisim.metin = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
+                    Hesap.Instance.Iletisim.HataMetni = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
                     Thread.Sleep(ms);
-                    Hesap.Instance.Iletisim.metin = "";
+                    Hesap.Instance.Iletisim.HataMetni = "";
                     driver.Navigate().GoToUrl(link);
                     return driver.Control(userName, link, 60000);
                 }

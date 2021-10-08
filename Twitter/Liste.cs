@@ -1,9 +1,16 @@
 ﻿using OpenQA.Selenium;
+using System.Collections.Generic;
+using Tweetly_MVC.Init;
+using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Twitter
 {
     public static class Liste
     {
+        public static IReadOnlyCollection<IWebElement> GetListelenenler(this IWebDriver driverr)
+        {
+           return (IReadOnlyCollection<IWebElement>)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=\"UserCell\"]');");
+        }
         public static string GetUserName(string elementText)
         {
             int basla = elementText.IndexOf('@') + 1;

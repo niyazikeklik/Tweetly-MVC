@@ -554,3 +554,20 @@ nav.blend ul li a:hover:after,
 nav.blend ul li a:hover:before {
     width: 100%;
 }
+
+.kucuk {
+    width: 50px !important;
+    max-width: 50px !important;
+}
+.orta {
+    width: 75px !important;
+    max-width: 75px !important;
+}
+.buyuk {
+    width: 75px;
+    max-width: 75px;
+}
+.doldur {
+    max-width: 100%;
+    width: 100%;
+}

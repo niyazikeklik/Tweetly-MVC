@@ -37,7 +37,7 @@ function progresCalistir(element) {
                 success: function (data) {
                     data = JSON.parse(data)
                     $("#progress").css("width", "100%");
-                    $("#progress").text(data.metin + " " + data.veri);
+                    $("#progress").text(data.HataMetni + " " + data.BilgiMetni);
                 }
             });
         }, 5000);
