@@ -41,6 +41,7 @@ namespace Tweetly_MVC.Tweetly
             TakipEdilenler = new();
             GeriTakipYapmayanlar = new();
             UserPrefs = new();
+            Begenenler = new();
             Iletisim = new();
             Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
@@ -48,6 +49,7 @@ namespace Tweetly_MVC.Tweetly
         public User OturumBilgileri;
         public List<Cinsiyetler> Cins;
         public List<User> Liste;
+        public List<User> Begenenler;
         public List<User> Takipciler;
         public List<User> TakipEdilenler;
         public List<User> GeriTakipYapmayanlar;

@@ -32,7 +32,7 @@ namespace Tweetly_MVC.Init
                 return false;
             return true;
         }
-        public static List<User> BegenenleriGetir(string username, int tweetCount)
+        public static List<User> BegenenleriGetir(string username, int tweetCount = 200)
         {
             List<User> Begenenler = new();
             List<string> Tweets = GetUrlsOfTweet(username, tweetCount);
@@ -43,9 +43,7 @@ namespace Tweetly_MVC.Init
                 List<User> TweetiBegenenler = ListeGezici(link: item + "/likes", detay: false);
                 foreach (User profil in TweetiBegenenler)
                 {
-
                     User x = Begenenler.FirstOrDefault(x => x.Username == profil.Username);
-
                     if (x != null)
                     {
                         Begenenler.Remove(x);
@@ -54,16 +52,8 @@ namespace Tweetly_MVC.Init
                         Begenenler.Add(x);
                     }
                     else
-                    {
-                        IWebDriver driver = Drivers.MusaitOlanDriver();
-                        Task.Run(() => profil.DetayGetir(driver)).ContinueWith(x => {
-                            if (x.Result != null) Begenenler.Add(x.Result);
-                        });
-
-                    }
+                        Begenenler.Add(profil.DetayGetir(Drivers.MusaitOlanDriver()));
                 }
-
-
                 Hesap.Ins.Iletisim.currentValue++;
             }
             return Begenenler;
@@ -76,24 +66,15 @@ namespace Tweetly_MVC.Init
             List<IWebElement> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu())
             {
-
                 IReadOnlyCollection<IWebElement> elementler = Drivers.Driver.GetListelenenler();
                 List<IWebElement> kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
-
                 foreach (IWebElement element in kontrolEdilecekler)
                 {
+                    Hesap.Ins.Iletisim.currentValue = yerelList.Count;
                     User profil = element.GetProfil();
-                    if (!detay)
-                    {
-                        yerelList.Add(profil);
-                        continue;
-                    }
-                    IWebDriver driver = Drivers.MusaitOlanDriver();
-                    Task.Run(() => profil.DetayGetir(driver)).ContinueWith(x => {
-                        if (x.Result != null) yerelList.Add(x.Result);
-                        Hesap.Ins.Iletisim.currentValue = yerelList.Count;
-                    });
-
+                    if (profil == null) continue;
+                    if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                    yerelList.Add(profil);
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
             }
@@ -116,20 +97,23 @@ namespace Tweetly_MVC.Init
             profil.BegeniSayisi = 0;
             profil.BegeniOrani = 0;
 
-            if (!Filter(profil)) return null;
-
-
-
+            profil = Filter(profil) ? profil : null;
             return profil;
         }
         public static User DetayGetir(this User profil, IWebDriver musaitDriver)
         {
-            if (profil == null) return null;
-
+            if (profil == null)
+            {
+                Drivers.kullanıyorum.Remove(musaitDriver);
+                return null;
+            }
             if (Hesap.Ins.UserPrefs.CheckDetayGetir)
                 return musaitDriver.GetProfil(profil);
             else
+            {
+                Drivers.kullanıyorum.Remove(musaitDriver);
                 return profil;
+            }
         }
         public static User GetProfil(this IWebDriver driver, string username)
         {
@@ -210,15 +194,20 @@ namespace Tweetly_MVC.Init
         {
 
             List<string> TweetIds = new();
-            Drivers.Driver.LinkeGit($"www.twitter.com/{username}", 200);
+            Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}", 2000);
             while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
             {
                 object result = Drivers.Driver.JSCodeRun("return document.querySelectorAll(\"a[id^='id__']\");");
                 foreach (IWebElement item in (IReadOnlyCollection<IWebElement>)result)
                 {
-                    string url = item.GetAttribute("href");
-                    if (url.Contains($"/{username}/status/") && TweetIds.Contains(url))
-                        TweetIds.Add(url);
+                    try
+                    {
+                        string url = item.GetAttribute("href");
+                        if (url.Contains($"/{username}/status/") && !TweetIds.Contains(url))
+                            TweetIds.Add(url);
+                    }
+                    catch (System.Exception) { continue; }
+
                 }
             }
             return TweetIds;

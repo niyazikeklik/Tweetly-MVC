@@ -24,6 +24,8 @@
                     <th>Fotoğraf</th>
                     <th class="orta">Cinsiyet</th>
                     <th>Bio</th>
+                    <th>Beğeni<br />Sayısı</th>
+                    <th>Beğeni<br />Oranı</th>
                     @if (!ViewBag.sutunGizle)
                     {
                         <th class="orta">Konum</th>
@@ -32,10 +34,10 @@
                         <th class="kucuk">Kayıt<br />Tarihi</th>
                         <th class="kucuk">Tweet</th>
                         <th class="kucuk">Son<br />Tweet</th>
-                        <th class="kucuk">Ortalama<br />Tweet</th>
+                        <th class="kucuk">Ort.<br />Tweet</th>
                         <th class="kucuk">Beğeni</th>
                         <th class="kucuk">Son<br />Beğeni</th>
-                        <th class="kucuk"> Ortalama<br />Beğeni</th>
+                        <th class="kucuk">Ort.<br />Beğeni</th>
                     }
                     <th class="orta">Takipçi<br />Durumu</th>
                     <th class="orta">Takip<br />Durumu</th>
@@ -57,64 +59,66 @@
                     toplamSonBegeni += item.LastLikesDate;
                     toplamSonTweet += item.LastTweetsDate;
 
-                    <tr>
+                <tr>
 
-                        <td>@item.Count</td>
-                        <td class="phototd">
+                    <td>@item.Count</td>
+                    <td class="phototd">
 
-                            <p class="product">
-                                <a class="images" href="@item.PhotoURL.Replace("200x200", "400x400")" target="_blank">
-                                    @if (item.IsPrivate)
-                                    {
-                                        <img style="position:absolute; left: -10px" src="https://cdn0.iconfinder.com/data/icons/security-8/500/lock2-32.png">
-                                    }
-                                    <img class="photo" src="@item.PhotoURL" alt="" style="border-radius: 50%;"
-                                         onerror="console.log('Profil Fotoğrafını Değiştirmiş: ' + @item.Username)" />
-                                    <img class="gizli" src="#" alt="" />
-                                </a>
-                            </p>
-                            <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
-                            <a id="username" href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@item.Username</i></a>
-                        </td>
-                        <td>
-                            @{ string classIsım = "";
-                                classIsım = item.Cinsiyet.StartsWith('K') ? "female" :
-                                            item.Cinsiyet.StartsWith('E') ? "male" :
-                                            item.Cinsiyet.StartsWith('U') ? "ambiguous" : "trans";
+                        <p class="product">
+                            <a class="images" href="@item.PhotoURL.Replace("200x200", "400x400")" target="_blank">
+                                @if (item.IsPrivate)
+                                {
+                                    <img style="position:absolute; left: -10px" src="https://cdn0.iconfinder.com/data/icons/security-8/500/lock2-32.png">
+                                }
+                                <img class="photo" src="@item.PhotoURL" alt="" style="border-radius: 50%;"
+                                     onerror="console.log('Profil Fotoğrafını Değiştirmiş: ' + @item.Username)" />
+                                <img class="gizli" src="#" alt="" />
+                            </a>
+                        </p>
+                        <div class="metinkaydir" style="display:block; font-weight: 600;">@item.Name</div>
+                        <a id="username" href="https://twitter.com/@item.Username" target="_blank"><i class="bi bi-link-45deg">@item.Username</i></a>
+                    </td>
+                    <td>
+                        @{ string classIsım = "";
+                            classIsım = item.Cinsiyet.StartsWith('K') ? "female" :
+                                        item.Cinsiyet.StartsWith('E') ? "male" :
+                                        item.Cinsiyet.StartsWith('U') ? "ambiguous" : "trans";
 
-                            }
-                            <i style="display: block; font-size: 17pt;" class="bi bi-gender-@classIsım"></i>
-                            @item.Cinsiyet
-                        </td>
-                        <td><div class="metinkaydir" style="width: 150px;">@item.Bio</div></td>
-                        @if (!ViewBag.sutunGizle)
-                        {
-                            <td>@item.Location</td>
-                            <td>@item.Followers</td>
-                            <td>@item.Following</td>
-                            <td>@item.Date</td>
-                            <td>@item.TweetCount</td>
-                            <td>@item.LastTweetsDate.ToString().Replace(",", ".")</td>
-                            <td>@item.TweetSikligi</td>
-                            <td>@item.LikeCount</td>
-                            <td>@item.LastLikesDate.ToString().Replace(",", ".")</td>
-                            <td>@item.BegeniSikligi</td>
                         }
-                        <td><div class="metinkaydir" style="width:60px">@item.FollowersStatus</div></td>
-                        <td>
-                            @{ string id = item.Username + "Unf";}
-                            <form method="post" asp-controller="Home" asp-action="TakipCik" data-ajax="true" data-ajax-method="post"
-                                  data-ajax-update="#@id" data-ajax-mode="replace">
-                                <button id="@id" name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
-                            </form>
-                            <button asp-action="Engelle" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-danger userbutons">Engelle</button>
-                            <button asp-action="SessizeAl" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-warning userbutons">Sessize Al</button>
+                        <i style="display: block; font-size: 17pt;" class="bi bi-gender-@classIsım"></i>
+                        @item.Cinsiyet
+                    </td>
+                    <td><div class="metinkaydir" style="width: 150px;">@item.Bio</div></td>
+                    <td>@item.BegeniSayisi</td>
+                    <td>@item.BegeniOrani.ToString().Replace(",", ".")</td>
+                    @if (!ViewBag.sutunGizle)
+                    {
+                        <td>@item.Location</td>
+                        <td>@item.Followers</td>
+                        <td>@item.Following</td>
+                        <td>@item.Date</td>
+                        <td>@item.TweetCount</td>
+                        <td>@item.LastTweetsDate.ToString().Replace(",", ".")</td>
+                        <td>@item.TweetSikligi</td>
+                        <td>@item.LikeCount</td>
+                        <td>@item.LastLikesDate.ToString().Replace(",", ".")</td>
+                        <td>@item.BegeniSikligi</td>
+                    }
+                    <td><div class="metinkaydir" style="width:60px">@item.FollowersStatus</div></td>
+                    <td>
+                        @{ string id = item.Username + "Unf";}
+                        <form method="post" asp-controller="Home" asp-action="TakipCik" data-ajax="true" data-ajax-method="post"
+                              data-ajax-update="#@id" data-ajax-mode="replace">
+                            <button id="@id" name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
+                        </form>
+                        <button asp-action="Engelle" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-danger userbutons">Engelle</button>
+                        <button asp-action="SessizeAl" asp-controller="Home" type="button" name="Usernames" value="@item.Username" class="btn btn-warning userbutons">Sessize Al</button>
 
-                            @*<form action="@Url.Action("TakipCik")" method="post">
-                                    <button name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
-                                </form>*@
-                        </td>
-                    </tr>
+                        @*<form action="@Url.Action("TakipCik")" method="post">
+                <button name="Usernames" value="@item.Username" class="btn btn-primary metinkaydir userbutons">@item.FollowStatus</button>
+            </form>*@
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

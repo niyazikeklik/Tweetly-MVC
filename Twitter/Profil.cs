@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Tweetly_MVC.Init
@@ -79,27 +80,23 @@ namespace Tweetly_MVC.Init
                     if (count == 20) return 0;
                 }
 
-                double toplamGunSayisi = 0;
+            
                 dynamic result = driverr.JSCodeRun(
                     "var tarihler= []; var x = document.querySelectorAll('[data-testid=tweet] time'); x.forEach(x => tarihler.push(x.getAttribute('datetime'))); return tarihler;");
                 //      bool sabitTweetVarmi = (bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=socialContext]').length > 0");
-                int kuralaUygunTarihler = 0;
+                double toplamGunSayisi = 0; int kuralaUygunTarihler = 0;
                 for (int i = 0; i < result.Count; i++)
                 {
-                    if (!DateTime.TryParse(result[i], out DateTime tarih)) continue;
-                    DateTime tarih2 = new();
+                    if (!DateTime.TryParse(result[i], out DateTime YakinTarih)) continue;
+                    bool kuralaUygun = true;
                     for (int j = i + 1; j < result.Count; j++)
                     {
-                        if (!DateTime.TryParse(result[j], out tarih2)) continue;
-                        if ((tarih - tarih2).TotalDays < -7) break;
+                        if (!DateTime.TryParse(result[j], out DateTime UzakTarih)) continue;
+                        double AradakiGunSayisi = (YakinTarih - UzakTarih).TotalDays;
+                        if (AradakiGunSayisi < -7) { kuralaUygun = false; break; }
                     }
-                    if ((tarih - tarih2).TotalDays > -7)
-                    {
-                        toplamGunSayisi += (DateTime.Now - tarih).TotalDays;
-                        kuralaUygunTarihler++;
-                    }
+                    if (kuralaUygun) { toplamGunSayisi += (DateTime.Now - YakinTarih).TotalDays; kuralaUygunTarihler++; }
                 }
-
                 return Math.Round(toplamGunSayisi / kuralaUygunTarihler, 1);
             }
         }

@@ -46,3 +46,4 @@ function progresCalistir(element) {
 }
 progresCalistir("#takipciler");
 progresCalistir("#listGetir");
+progresCalistir("#begeniGetir");

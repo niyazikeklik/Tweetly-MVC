@@ -47,13 +47,6 @@ namespace Tweetly_MVC.Controllers
             return View(x);
         }
         [HttpGet]
-        public IActionResult BegenenleriGetir(string username, int kontrolEdilecekTweetSayisi)
-        {
-            List<User> r = CreateUser.BegenenleriGetir(username, kontrolEdilecekTweetSayisi);
-            return View("Index", r);
-        }
-
-        [HttpGet]
         public IActionResult ListGetir(string username, string listName)
         {
             DatabasesContext context = new();
@@ -68,6 +61,22 @@ namespace Tweetly_MVC.Controllers
                 context.RecordsUpdateOrAdd(Hesap.Ins.Liste);
 
             return View("Index", Hesap.Ins.Liste);
+        }
+        [HttpGet]
+        public IActionResult BegenenleriGetir(string username)
+        {
+            DatabasesContext context = new();
+            if (Hesap.Ins.Begenenler.Count > 0) return View("Index", Hesap.Ins.Begenenler);
+            if (Hesap.Ins.UserPrefs.CheckClearDB)
+                context.RecordsAllDelete();
+
+            Hesap.Ins.Begenenler = CreateUser.BegenenleriGetir(username);
+
+            ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
+            if (Hesap.Ins.UserPrefs.CheckDetayGetir)
+                context.RecordsUpdateOrAdd(Hesap.Ins.Begenenler);
+
+            return View("Index", Hesap.Ins.Begenenler);
         }
 
         [HttpPost]
