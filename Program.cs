@@ -9,7 +9,7 @@ namespace Tweetly_MVC
     {
         public static void Main(string[] args)
         {
-            Hesap.Instance.Liste = new();
+            Hesap.Ins.Liste = new();
             Yardimci.KillProcces();
             Drivers.CreateDrivers();
             /* var config = new ConfigurationBuilder()

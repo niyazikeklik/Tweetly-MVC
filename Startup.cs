@@ -54,8 +54,7 @@ namespace Tweetly_MVC
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 //http://localhost:6553/progressHub
                 endpoints.MapHub<Hubs.ProgressBarHub>("/progressHub");
                 endpoints.MapControllerRoute(

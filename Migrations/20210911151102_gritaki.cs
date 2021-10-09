@@ -18,8 +18,7 @@ namespace Tweetly_MVC.Migrations
 
             migrationBuilder.CreateTable(
                 name: "GeriTakipEtmeyenler",
-                columns: table => new
-                {
+                columns: table => new {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),

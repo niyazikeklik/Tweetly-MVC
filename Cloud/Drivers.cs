@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,7 +39,7 @@ namespace Tweetly_MVC.Tweetly
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
             driver.LinkeGit("https://mobile.twitter.com/login", 1500);
-            Login.Giris(Hesap.Instance.SettingsUser.Username, Hesap.Instance.SettingsUser.Pass, driver);
+            Login.Giris(Hesap.Ins.UserSettings.Username, Hesap.Ins.UserSettings.Pass, driver);
 
             return driver;
         }
@@ -49,9 +48,9 @@ namespace Tweetly_MVC.Tweetly
 
         public static IWebDriver MusaitOlanDriver()
         {
-            List<IWebDriver> driverss = 
-                Hesap.Instance.SettingsFinder.CheckUseAllDriver ? 
-                new() { Driver2, Driver3, Driver4, Driver5 } : 
+            List<IWebDriver> driverss =
+                Hesap.Ins.UserPrefs.CheckUseAllDriver ?
+                new() { Driver2, Driver3, Driver4, Driver5 } :
                 new() { Driver2 };
 
             foreach (IWebDriver item in driverss)
@@ -66,10 +65,9 @@ namespace Tweetly_MVC.Tweetly
 
         public static void CreateDrivers()
         {
-            Task g1 = Task.Run(() => OptionDriver()).ContinueWith(x =>
-            {
+            Task g1 = Task.Run(() => OptionDriver()).ContinueWith(x => {
                 Drivers.Driver = x.Result;
-                Hesap.Instance.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Instance.SettingsUser.Username);
+                Hesap.Ins.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Ins.UserSettings.Username);
             });
             Task.Run(() => Drivers.Driver2 = Drivers.OptionDriver());
             //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR

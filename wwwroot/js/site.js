@@ -8,24 +8,25 @@
 })
 
 settingsCreate();
-
+function fotoBuyut() {
+    $(".gizli2").hide();
+    $(".images").on({
+        mouseenter: function () {
+            var element = $(this.getElementsByClassName("gizli"));
+            element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('200x200', "400x400").replace('x96', "400x400"));
+            element.show(500);
+        },
+        mouseleave: function () {
+            var element = $(this.getElementsByClassName("gizli"));
+            element.hide(500);
+            element.attr('src', '#');
+        }
+    });
+}
 function modalGetir() {
     $('#exampleModal').modal('toggle');
 }
-$(".gizli2").hide();
-$(".images").on({
-    mouseenter: function () {
-        var element = $(this.getElementsByClassName("gizli"));
-        element.attr('src', $(this.getElementsByClassName("photo")).attr('src').replace('x96', "normal"));
-        element.show(500);
-    },
-    mouseleave: function () {
-        var element = $(this.getElementsByClassName("gizli"));
-        element.hide(500);
-        element.attr('src', '#');
-    }
-});
-
+document.addEventListener('scroll', function () {fotoBuyut()});
 function progresCalistir(element) {
     $(element).on("click", function () {
         $("#progressbox").css("display", "block");

@@ -60,7 +60,7 @@
                     <tr>
 
                         <td>@item.Count</td>
-                        <td>
+                        <td class="phototd">
 
                             <p class="product">
                                 <a class="images" href="@item.PhotoURL.Replace("200x200", "400x400")" target="_blank">
@@ -68,7 +68,7 @@
                                     {
                                         <img style="position:absolute; left: -10px" src="https://cdn0.iconfinder.com/data/icons/security-8/500/lock2-32.png">
                                     }
-                                    <img class="photo" src="@item.PhotoURL" alt="" style="border-radius: 50%; width: 200px; height: 200px;"
+                                    <img class="photo" src="@item.PhotoURL" alt="" style="border-radius: 50%;"
                                          onerror="console.log('Profil Fotoğrafını Değiştirmiş: ' + @item.Username)" />
                                     <img class="gizli" src="#" alt="" />
                                 </a>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Tweetly_MVC.Models;
+using static Tweetly_MVC.Models.AppSettings;
 
 namespace Tweetly_MVC.Tweetly
 {
@@ -23,10 +24,8 @@ namespace Tweetly_MVC.Tweetly
         private static Hesap instance;
         public IILetisim Iletisim;
 
-        public static Hesap Instance
-        {
-            get
-            {
+        public static Hesap Ins {
+            get {
                 if (instance == null)
                     instance = new();
                 return instance;
@@ -35,13 +34,13 @@ namespace Tweetly_MVC.Tweetly
 
         private Hesap()
         {
-            SettingsUser = AppSettings.Get();
+            UserSettings = Models.AppSettings.Get();
             OturumBilgileri = new();
             Liste = new();
             Takipciler = new();
             TakipEdilenler = new();
             GeriTakipYapmayanlar = new();
-            SettingsFinder = new();
+            UserPrefs = new();
             Iletisim = new();
             Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
         }
@@ -52,7 +51,7 @@ namespace Tweetly_MVC.Tweetly
         public List<User> Takipciler;
         public List<User> TakipEdilenler;
         public List<User> GeriTakipYapmayanlar;
-        public FinderSettings SettingsFinder;
-        public UserSettings SettingsUser;
+        public FinderSettings UserPrefs;
+        public UserSettings UserSettings;
     }
 }

@@ -17,8 +17,7 @@ namespace Tweetly_MVC.Migrations
 
             migrationBuilder.CreateTable(
                 name: "User",
-                columns: table => new
-                {
+                columns: table => new {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsPrivate = table.Column<bool>(type: "bit", nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
@@ -49,8 +48,7 @@ namespace Tweetly_MVC.Migrations
 
             migrationBuilder.CreateTable(
                 name: "GeriTakipEtmeyenler",
-                columns: table => new
-                {
+                columns: table => new {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BegeniSikligi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -75,8 +73,7 @@ namespace Tweetly_MVC.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Takipciler",
-                columns: table => new
-                {
+                columns: table => new {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BegeniSikligi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -101,8 +98,7 @@ namespace Tweetly_MVC.Migrations
 
             migrationBuilder.CreateTable(
                 name: "TakipEdilenler",
-                columns: table => new
-                {
+                columns: table => new {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BegeniSikligi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),

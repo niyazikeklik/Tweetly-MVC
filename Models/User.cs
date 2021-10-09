@@ -14,7 +14,7 @@ namespace Tweetly_MVC.Tweetly
 
         public int BegeniSayisi { get; set; }
         public double BegeniOrani { get; set; }
-       
+
         public string Cinsiyet { get; set; }
         public string Location { get; set; }
         public string Bio { get; set; }

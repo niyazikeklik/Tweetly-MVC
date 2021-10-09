@@ -307,17 +307,14 @@ p.product a .gizli {
     position: absolute;
     left: 200px;
     top: -150px;
+    max-width: 500px;
+    width: 500px;
+    height: 500px;
 }
 
 p.product a {
     display: inline-block;
     position: relative;
-}
-
-p.product a .gizli {
-    max-width: 400px;
-    width: 400px;
-    height: 400px;
 }
 
 #username {
@@ -558,6 +555,10 @@ nav.blend ul li a:hover:before {
 .kucuk {
     width: 50px !important;
     max-width: 50px !important;
+}
+.phototd {
+    width: 200px !important;
+    max-width: 200px !important;
 }
 .orta {
     width: 75px !important;

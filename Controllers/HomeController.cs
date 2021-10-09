@@ -22,8 +22,7 @@ namespace Tweetly_MVC.Controllers
                 if (string.IsNullOrEmpty(item)) continue;
                 IWebDriver driver = Drivers.MusaitOlanDriver();
                 driver.Navigate().GoToUrl("https://mobile.twitter.com/" + item);
-                Task.Run(() =>
-                {
+                Task.Run(() => {
                     butontext = driver.ProfilUserButonClick();
                     Drivers.kullanıyorum.Remove(driver);
                 });
@@ -34,8 +33,8 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Hesap.Instance.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Hesap.Instance.Iletisim.currentValue;
-            IILetisim yedek = Hesap.Instance.Iletisim;
+            Hesap.Ins.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Hesap.Ins.Iletisim.currentValue;
+            IILetisim yedek = Hesap.Ins.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
 
@@ -50,7 +49,7 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public IActionResult BegenenleriGetir(string username, int kontrolEdilecekTweetSayisi)
         {
-            var r = CreateUser.BegenenleriGetir(username, kontrolEdilecekTweetSayisi);
+            List<User> r = CreateUser.BegenenleriGetir(username, kontrolEdilecekTweetSayisi);
             return View("Index", r);
         }
 
@@ -58,24 +57,24 @@ namespace Tweetly_MVC.Controllers
         public IActionResult ListGetir(string username, string listName)
         {
             DatabasesContext context = new();
-            ViewBag.sutunGizle = !Hesap.Instance.SettingsFinder.CheckDetayGetir;
-            if (Hesap.Instance.Liste.Count > 0) return View("Index", Hesap.Instance.Liste);
-            if (Hesap.Instance.SettingsFinder.CheckClearDB)
+            ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
+            if (Hesap.Ins.Liste.Count > 0) return View("Index", Hesap.Ins.Liste);
+            if (Hesap.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
-            Hesap.Instance.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
+            Hesap.Ins.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
 
-            if (Hesap.Instance.SettingsFinder.CheckDetayGetir)
-                context.RecordsUpdateOrAdd(Hesap.Instance.Liste);
+            if (Hesap.Ins.UserPrefs.CheckDetayGetir)
+                context.RecordsUpdateOrAdd(Hesap.Ins.Liste);
 
-            return View("Index", Hesap.Instance.Liste);
+            return View("Index", Hesap.Ins.Liste);
         }
 
         [HttpPost]
         public ActionResult SettingSave(string Model)
         {
             FinderSettings ayarlar = JsonConvert.DeserializeObject<FinderSettings>(Model);
-            Hesap.Instance.SettingsFinder = ayarlar;
+            Hesap.Ins.UserPrefs = ayarlar;
             return Content("Başarılı!");
         }
     }

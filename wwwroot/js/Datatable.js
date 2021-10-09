@@ -74,6 +74,9 @@ async function tableAyarla() {
 
 tableAyarla();
 
+
+
+
 /* $('.dt-buttons.field.is-grouped').append(`<button id="Yenile" asp-area="" asp-controller="Home" asp-action="Yenile" class ="button is-light buttons-collection tablobutonlar"">Yenile</button>`);*/
 
 // $("tr.selected").css("background-color", "#dc3545");

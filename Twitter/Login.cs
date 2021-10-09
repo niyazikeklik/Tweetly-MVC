@@ -19,12 +19,12 @@ namespace Tweetly_MVC.Init
                 Thread.Sleep(2500);
 
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", Hesap.Instance.SettingsUser.Pass, driver);
-                   
+                    Giris("niyazikeklik@gmail.com", Hesap.Ins.UserSettings.Pass, driver);
+
             }
-           // driver.LinkeGit("https://mobile.twitter.com/settings/language", 1500);
-         //   driver.JSCodeRun("document.querySelector('select [value=\"tr\"]').selected = true;");
-//driver.JSCodeRun("document.querySelector('[data-testid=settingsDetailSave]').click();");
+            // driver.LinkeGit("https://mobile.twitter.com/settings/language", 1500);
+            //   driver.JSCodeRun("document.querySelector('select [value=\"tr\"]').selected = true;");
+            //driver.JSCodeRun("document.querySelector('[data-testid=settingsDetailSave]').click();");
         }
     }
 }
