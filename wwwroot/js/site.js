@@ -19,14 +19,15 @@ function fotoBuyut() {
         mouseleave: function () {
             var element = $(this.getElementsByClassName("gizli"));
             element.hide(500);
-            element.attr('src', '#');
+            element.attr('src', '');
         }
     });
 }
+document.addEventListener('scroll', function () { fotoBuyut() });
 function modalGetir() {
     $('#exampleModal').modal('toggle');
 }
-document.addEventListener('scroll', function () {fotoBuyut()});
+
 function progresCalistir(element) {
     $(element).on("click", function () {
         $("#progressbox").css("display", "block");

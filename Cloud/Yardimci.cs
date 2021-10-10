@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Tweetly_MVC.Tweetly;
@@ -94,8 +95,40 @@ namespace Tweetly_MVC.Init
             int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
+        public static string GetGenderFromPhoto(string photoURL)
+        {
+            Stopwatch watch = new();
+            watch.Start();
+            string Gender = "Belirsiz";
+            string fileName = @"python C:/Users/niyazi/source/repos/Tweetly_MVC/bin/Debug/net5.0/YapayZeka/detect.py";
+            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c " + string.Format(fileName + " --image " + photoURL));
+            ProcessInfo.CreateNoWindow = false;
+            ProcessInfo.UseShellExecute = false;
+            ProcessInfo.RedirectStandardOutput = true;
+            ProcessInfo.Verb = "runas";
+            Process Process = Process.Start(ProcessInfo);
+            using StreamReader reader = Process.StandardOutput;
+            string result = reader.ReadToEnd();
+            if (result.Contains("Age") || result.Contains("Gender"))
+            {
 
-        public static string CinsiyetBul(string name)
+                //  Bağlantı süresini ekrana yazdırıyoruz.
+                int basla = result.IndexOf("Gender: *") + 9;
+                Gender = result[basla..result.IndexOf("*", basla)].Replace("female", "Kadın").Replace("male", "Erkek");
+
+                /* int basla = result.IndexOf("Age: *") + 6;
+                 int bitir = result.IndexOf("*", basla);
+                 string Age = result.Substring(basla, bitir - basla);
+                Console.Write(Age + " - " + Gender);*/
+
+            }
+            Process.WaitForExit();
+            Process.Close();
+            watch.Stop();
+            Console.WriteLine("Yapay Zeka Cinsiyet Tespit Süresi: " + watch.Elapsed.TotalSeconds + " saniye");
+            return Gender; //Console.WriteLine(result);
+        }
+        public static string CinsiyetBul(string name,string link)
         {
             if (string.IsNullOrEmpty(name)) return "Belirsiz";
             string[] isimler = name?.Split(' ');
@@ -121,7 +154,7 @@ namespace Tweetly_MVC.Init
 
                 /*Yapay Zeka ile Tespit*/
 
-                return "Belirsiz";
+                return GetGenderFromPhoto(link);
             }
         }
 

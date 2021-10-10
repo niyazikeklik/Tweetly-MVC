@@ -6,7 +6,10 @@
               ${checkItemEkle("Veritabanını kullan", "Kullanıcılar kontrol edilirken daha önceden veritabanında kayıt varsa oradan çekilir. Bu işlem tutarsız verilere sebep olabilir. Hız açısından avantajlıdır.", "CheckUseDB")}
               ${checkItemEkle("Veritabanını temizle", "Veritabanında eski kayıtlar tamamen silinir, güncel veri için önerilir, hız açısından dezavantajlıdır.", "CheckClearDB")}
               ${checkItemEkle("Detay Getir", "Etkinleştirilirse detay bilgiler toplanır, hız önemli ölçüde azalır. Etkinleştirilmez ise temel bilgiler toplanır, hız önemli ölçüde artar.", "CheckDetayGetir")}
-              ${checkItemEkle("Tüm driverları kullan", "Kazıma yapılırken tam güç kullanılır, bu sizin daha kısa sürede daha çok profile ulaşmanızı sağlarken Twitter tarafından limit yeme şansınızı arttıracağı için performansı düşürebilir, az sayıda kullanıcı kontrolü için önerilir. ", "CheckUseAllDriver")}
+           
+
+            ${textItemEkle("Beğenisi Kontrol Edilecek Tweet Sayısı", "Kronolojik sıraya göre girilen sayı kadar atılan tweetler'in beğenisi kontrol edilir.", "TextTweetControl", "Tweet Sayısı", 200)}
+            ${textItemEkle("Bulunacak Kişi Sayısı", "Liste aramalarında kaç kişi bulunacağını ayarlar. Liste sonuna kadar arama devam etsin, tüm liste getirilsin istiyorsanız büyük bir sayı girin.", "TextBulunacakKisiSayisi", "Kişi Sayısı", 99999)}
 
        <div style ="margin-top: 50px; margin-bottom: 15px;"><strong class="mb-5" >Cinsiyet Tercihi</strong></div>
                ${checkItemEkle("Erkek Kullanıcıları Getir", "Erkek kullanıcılar aramaya dahil edilir.", "CheckErkek")}
@@ -52,6 +55,22 @@ function checkItemEkle(baslik, aciklama, id) {
 <div class="checkboxDiv form-check form-switch">
   <input class="form-check-input" type="checkbox" style="width: 3.5em; height: 1.75em;" id="${id}">
 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+}
+
+function textItemEkle(baslik, aciklama, id, placeholder, defaultValue) {
+    return `<div class="list-group mb-2 shadow" style="margin: 10px">
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <strong class="mb-0">${baslik}</strong>
+                            <p class="text-muted mb-0">${aciklama}</p>
+                        </div>
+                        <div class="col-auto">
+                            <input id=${id} class="form-control" value="${defaultValue}" type="text" placeholder="${placeholder}" aria-label="${placeholder}">
                         </div>
                     </div>
                 </div>
@@ -139,5 +158,11 @@ function getValues() {
     obj.checkClearDB = $("#CheckClearDB").is(":checked");;
     obj.checkUseDB = $("#CheckUseDB").is(":checked");
     obj.CheckUseAllDriver = $("#CheckUseAllDriver").is(":checked");
+    obj.TextTweetControl = $("#TextTweetControl").val();
+    obj.TextBulunacakKisiSayisi = $("#TextBulunacakKisiSayisi").val();
     return obj;
 }
+
+
+
+/*checkItemEkle("Tüm driverları kullan", "Kazıma yapılırken tam güç kullanılır, bu sizin daha kısa sürede daha çok profile ulaşmanızı sağlarken Twitter tarafından limit yeme şansınızı arttıracağı için performansı düşürebilir, az sayıda kullanıcı kontrolü için önerilir. ", "CheckUseAllDriver")*/

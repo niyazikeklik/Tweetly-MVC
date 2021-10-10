@@ -32,10 +32,10 @@ namespace Tweetly_MVC.Init
                 return false;
             return true;
         }
-        public static List<User> BegenenleriGetir(string username, int tweetCount = 200)
+        public static List<User> BegenenleriGetir(string username)
         {
             List<User> Begenenler = new();
-            List<string> Tweets = GetUrlsOfTweet(username, tweetCount);
+            List<string> Tweets = GetUrlsOfTweet(username, Hesap.Ins.UserPrefs.TextTweetControl);
             Hesap.Ins.Iletisim.currentValue = 0;
 
             foreach (string item in Tweets)
@@ -64,7 +64,7 @@ namespace Tweetly_MVC.Init
             List<User> yerelList = new();
             IWebDriver driverr = Drivers.Driver.LinkeGit(link, sayfaLoadWait_MS);
             List<IWebElement> kontrolEdildi = new();
-            while (!driverr.IsSayfaSonu())
+            while (!driverr.IsSayfaSonu() && yerelList.Count < Hesap.Ins.UserPrefs.TextBulunacakKisiSayisi)
             {
                 IReadOnlyCollection<IWebElement> elementler = Drivers.Driver.GetListelenenler();
                 List<IWebElement> kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
@@ -75,6 +75,7 @@ namespace Tweetly_MVC.Init
                     if (profil == null) continue;
                     if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
                     yerelList.Add(profil);
+                    if (yerelList.Count >= Hesap.Ins.UserPrefs.TextBulunacakKisiSayisi) break;
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
             }
@@ -87,9 +88,10 @@ namespace Tweetly_MVC.Init
 
             profil.Count = Hesap.Ins.Liste.Count + 1;
             profil.Name = Liste.GetName(Text);
-            profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name);
-            profil.Username = Liste.GetUserName(Text);
             profil.PhotoURL = element.GetPhotoURL();
+            profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name, profil.PhotoURL);
+            profil.Username = Liste.GetUserName(Text);
+
             profil.IsPrivate = element.İsPrivate();
             profil.FollowersStatus = Liste.GetFollowersStatus(Text);
             profil.FollowStatus = Liste.GetFollowStatus(Text);
@@ -135,7 +137,7 @@ namespace Tweetly_MVC.Init
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
                 profil.IsPrivate = driver.IsPrivate();
-                profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name);
+                profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name, profil.PhotoURL);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
                 driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");

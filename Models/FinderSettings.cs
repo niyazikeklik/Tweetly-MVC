@@ -15,5 +15,7 @@
         public bool CheckGizliHesap { get; set; }
         public bool CheckBeniTakipEdenler { get; set; }
         public bool CheckUseAllDriver { get; set; }
+        public int TextTweetControl { get; set; }
+        public int TextBulunacakKisiSayisi { get; set; }
     }
 }
