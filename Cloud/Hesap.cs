@@ -6,11 +6,7 @@ using static Tweetly_MVC.Models.AppSettings;
 
 namespace Tweetly_MVC.Tweetly
 {
-    public class Cinsiyetler
-    {
-        public string Ad { get; set; }
-        public string Cins { get; set; }
-    }
+   
 
     public struct IILetisim
     {
