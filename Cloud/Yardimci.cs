@@ -95,12 +95,13 @@ namespace Tweetly_MVC.Init
             int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
-        public static string GetGenderFromPhoto(string photoURL)
+             private static string GetGenderFromPhoto(string photoURL)
         {
+            photoURL = photoURL.Replace("200x200", "x96");
             Stopwatch watch = new();
             watch.Start();
             string Gender = "Belirsiz";
-            string fileName = @"python C:/Users/niyazi/source/repos/Tweetly_MVC/bin/Debug/net5.0/YapayZeka/detect.py";
+            string fileName = @"python C:\Users\niyazi\Desktop\Tweetly\Tweetly-MVC\YapayZeka\detect.py";
             ProcessStartInfo ProcessInfo = new("cmd.exe", "/c " + string.Format(fileName + " --image " + photoURL));
             ProcessInfo.CreateNoWindow = false;
             ProcessInfo.UseShellExecute = false;
@@ -112,9 +113,8 @@ namespace Tweetly_MVC.Init
             if (result.Contains("Age") || result.Contains("Gender"))
             {
 
-                //  Bağlantı süresini ekrana yazdırıyoruz.
                 int basla = result.IndexOf("Gender: *") + 9;
-                Gender = result[basla..result.IndexOf("*", basla)].Replace("female", "Kadın").Replace("male", "Erkek");
+                Gender = result[basla..result.IndexOf("*", basla)].Replace("Female", "Kadın").Replace("Male", "Erkek");
 
                 /* int basla = result.IndexOf("Age: *") + 6;
                  int bitir = result.IndexOf("*", basla);
@@ -122,40 +122,54 @@ namespace Tweetly_MVC.Init
                 Console.Write(Age + " - " + Gender);*/
 
             }
+            else Gender = "Belirsiz";
             Process.WaitForExit();
             Process.Close();
             watch.Stop();
-            Console.WriteLine("Yapay Zeka Cinsiyet Tespit Süresi: " + watch.Elapsed.TotalSeconds + " saniye");
-            return Gender; //Console.WriteLine(result);
+            Debug.WriteLine("Yapay Zeka Cinsiyet Tespit Süresi: " + watch.Elapsed.TotalSeconds + " saniye");
+            return Gender;
         }
-        public static string CinsiyetBul(string name,string link)
+        private static string GetGenderFromAPI(string name)
         {
-            if (string.IsNullOrEmpty(name)) return "Belirsiz";
-            string[] isimler = name?.Split(' ');
-            string isim = isimler[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
-            string cinsiyet = "Belirsi...z";
-            Cinsiyetler result = Hesap.Ins.Cins.FirstOrDefault(x => x.Ad == isim);
-            if (result != null)
+            string cinsiyet = "Belirsiz";
+            var msg = new WebClient().DownloadString("https://api.genderize.io?name=" + name.StringReplace());
+            if (msg.Contains("female"))
             {
-                cinsiyet = result.Cinsiyet == "e" ? "Erkek" :
-                           result.Cinsiyet == "k" ? "Kadın" :
-                           result.Cinsiyet == "u" ? "Unisex" : "Belirsi...z";
-                return cinsiyet;
+                Hesap.Ins.Cins.Add(new Cinsiyetler(name, "k"));
+                cinsiyet = "Kadın";
             }
-            else
+            else if (msg.Contains("male"))
             {
-                /*
-                isim = isim.StringReplace();
-                var msg =  await client.GetStringAsync("https://api.genderize.io?name=" + isim);
-                cinsiyet = msg.Contains("male") ? "Erke-k" :
-                           msg.Contains("female") ? "Kadı-n" :
-                           "Belirsiz";
-                return cinsiyet;*/
-
-                /*Yapay Zeka ile Tespit*/
-
-                return GetGenderFromPhoto(link);
+                Hesap.Ins.Cins.Add(new Cinsiyetler(name, "e"));
+                cinsiyet = "Erkek";
             }
+            else return cinsiyet;
+
+            Task.Run(() => {
+                string stringJSON = JsonConvert.SerializeObject(Hesap.Ins.Cins);
+                File.WriteAllText("Cinsiyetler.json", stringJSON);
+            });
+            return cinsiyet;
+        }
+        public static string CinsiyetBul(string name, string link)
+        {
+            string cinsiyet = "Belirsiz";
+            if (!String.IsNullOrEmpty(name))
+            {
+                string isim = name.Split(' ')[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
+                Cinsiyetler result = Hesap.Ins.Cins.FirstOrDefault(x => x.Ad == isim);
+                if (result != null)
+                {
+                    cinsiyet = result.Cins == "e" ? "Erkek" :
+                               result.Cins == "k" ? "Kadın" :
+                               GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
+                    return cinsiyet;
+                }
+            }
+            cinsiyet = GetGenderFromPhoto(link);
+            if (!cinsiyet.Contains("Belirsiz")) return cinsiyet;
+            if (!String.IsNullOrEmpty(name)) cinsiyet = GetGenderFromAPI(name);
+            return cinsiyet;
         }
 
         public static List<User> DistinctByUserName(this List<User> list) => list.GroupBy(x => x.Username).Select(x => x.First()).ToList();

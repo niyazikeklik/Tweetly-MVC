@@ -9,7 +9,7 @@ namespace Tweetly_MVC.Tweetly
     public class Cinsiyetler
     {
         public string Ad { get; set; }
-        public string Cinsiyet { get; set; }
+        public string Cins { get; set; }
     }
 
     public struct IILetisim
