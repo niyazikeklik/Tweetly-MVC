@@ -54,7 +54,7 @@ namespace Tweetly_MVC.Controllers
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
-            if (Hesap.Ins.Liste.Count > 0) return View("Index", Hesap.Ins.Liste);
+          //  if (Hesap.Ins.Liste.Count > 0) return View("Index", Hesap.Ins.Liste);
             if (Hesap.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
@@ -69,7 +69,7 @@ namespace Tweetly_MVC.Controllers
         public IActionResult BegenenleriGetir(string username)
         {
             DatabasesContext context = new();
-            if (Hesap.Ins.Begenenler.Count > 0) return View("Index", Hesap.Ins.Begenenler);
+            //if (Hesap.Ins.Begenenler.Count > 0) return View("Index", Hesap.Ins.Begenenler);
             if (Hesap.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
