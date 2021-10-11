@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Tweetly_MVC.Init;
 using Tweetly_MVC.Models;
 using Tweetly_MVC.Tweetly;
-
+using System.Net;
+using System.IO;
 namespace Tweetly_MVC.Controllers
 {
     public class HomeController : Controller
@@ -56,7 +59,7 @@ namespace Tweetly_MVC.Controllers
                 context.RecordsAllDelete();
 
             Hesap.Ins.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
-
+            Yardimci.WriteGenderJson();
             if (Hesap.Ins.UserPrefs.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Hesap.Ins.Liste);
 
@@ -71,7 +74,7 @@ namespace Tweetly_MVC.Controllers
                 context.RecordsAllDelete();
 
             Hesap.Ins.Begenenler = CreateUser.BegenenleriGetir(username);
-
+            Yardimci.WriteGenderJson();
             ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
             if (Hesap.Ins.UserPrefs.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Hesap.Ins.Begenenler);

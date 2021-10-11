@@ -1,10 +1,13 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
@@ -40,7 +43,13 @@ namespace Tweetly_MVC.Init
                 throw new ApplicationException(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
             else return null;
         }
-
+        public static void WriteGenderJson()
+        {
+            var x = DateTime.Now;
+            string stringJSON = JsonConvert.SerializeObject(Hesap.Ins.Cins);
+            File.WriteAllText("Cinsiyetler.json", stringJSON);
+            Debug.WriteLine("Dosya Yazma Süresi:" + (DateTime.Now - x).TotalSeconds);
+        }
         public static void KillProcces()
         {
             foreach (Process item in Process.GetProcesses())
@@ -95,7 +104,7 @@ namespace Tweetly_MVC.Init
             int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
-             private static string GetGenderFromPhoto(string photoURL)
+        private static string GetGenderFromPhoto(string photoURL)
         {
             photoURL = photoURL.Replace("200x200", "x96");
             Stopwatch watch = new();
@@ -143,12 +152,6 @@ namespace Tweetly_MVC.Init
                 Hesap.Ins.Cins.Add(new Cinsiyetler(name, "e"));
                 cinsiyet = "Erkek";
             }
-            else return cinsiyet;
-
-            Task.Run(() => {
-                string stringJSON = JsonConvert.SerializeObject(Hesap.Ins.Cins);
-                File.WriteAllText("Cinsiyetler.json", stringJSON);
-            });
             return cinsiyet;
         }
         public static string CinsiyetBul(string name, string link)
@@ -228,6 +231,22 @@ namespace Tweetly_MVC.Init
                 return true;
             else return false;
         }
+        private static string StringReplace(this string text)
+        {
+            text = text.Replace("İ", "I");
+            text = text.Replace("ı", "i");
+            text = text.Replace("Ğ", "G");
+            text = text.Replace("ğ", "g");
+            text = text.Replace("Ö", "O");
+            text = text.Replace("ö", "o");
+            text = text.Replace("Ü", "U");
+            text = text.Replace("ü", "u");
+            text = text.Replace("Ş", "S");
+            text = text.Replace("ş", "s");
+            text = text.Replace("Ç", "C");
+            text = text.Replace("ç", "c");
+            return text;
+        }
     }
 }
 
@@ -249,22 +268,7 @@ namespace Tweetly_MVC.Init
                return true;
            }
        }*/
-/*private static string StringReplace(this string text)
-{
-    text = text.Replace("İ", "I");
-    text = text.Replace("ı", "i");
-    text = text.Replace("Ğ", "G");
-    text = text.Replace("ğ", "g");
-    text = text.Replace("Ö", "O");
-    text = text.Replace("ö", "o");
-    text = text.Replace("Ü", "U");
-    text = text.Replace("ü", "u");
-    text = text.Replace("Ş", "S");
-    text = text.Replace("ş", "s");
-    text = text.Replace("Ç", "C");
-    text = text.Replace("ç", "c");
-    return text;
-}*/
+
 /*  public static T BaseToSub<T>(object BaseObject)
      {
          string serialized = JsonConvert.SerializeObject(BaseObject);
