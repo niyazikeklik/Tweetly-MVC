@@ -18,8 +18,6 @@ namespace Tweetly_MVC.Tweetly
     public class Repo
     {
         private static Repo instance;
-        public ILetisim Iletisim;
-
         public static Repo Ins {
             get {
                 if (instance == null)
@@ -30,25 +28,23 @@ namespace Tweetly_MVC.Tweetly
         private Repo()
         {
             UserSettings = UserSettings.Get();
+            UserPrefs = new();
             OturumBilgileri = new();
             Liste = new();
-            //mTakipciler = new();
-            //TakipEdilenler = new();
-           // GeriTakipYapmayanlar = new();
-            UserPrefs = new();
             Begenenler = new();
             Iletisim = new();
-            Cins = JsonConvert.DeserializeObject<List<Cinsiyetler>>(File.ReadAllText("Cinsiyetler.json").ToLower());
+            Cins = JsonConvert
+                .DeserializeObject<List<Cinsiyetler>>(
+                File.ReadAllText("Cinsiyetler.json")
+                .ToLower());
         }
 
         public User OturumBilgileri;
         public List<Cinsiyetler> Cins;
         public List<User> Liste;
         public List<User> Begenenler;
-   //     public List<User> Takipciler;
-        //public List<User> TakipEdilenler;
-        //public List<User> GeriTakipYapmayanlar;
         public FinderSettings UserPrefs;
         public UserSettings UserSettings;
+        public ILetisim Iletisim;
     }
 }
