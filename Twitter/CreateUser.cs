@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tweetly_MVC.Cloud;
 using Tweetly_MVC.Tweetly;
 using Tweetly_MVC.Twitter;
 
@@ -11,32 +13,32 @@ namespace Tweetly_MVC.Init
     {
         public static bool Filter(this User profil)
         {
-            if (profil.Cinsiyet == "Erkek" && !Hesap.Ins.UserPrefs.CheckErkek)
+            if (profil.Cinsiyet == "Erkek" && !Repo.Ins.UserPrefs.CheckErkek)
                 return false;
-            if (profil.Cinsiyet == "Kadın" && !Hesap.Ins.UserPrefs.CheckKadin)
+            if (profil.Cinsiyet == "Kadın" && !Repo.Ins.UserPrefs.CheckKadin)
                 return false;
-            if (profil.Cinsiyet == "Unisex" && !Hesap.Ins.UserPrefs.CheckUnisex)
+            if (profil.Cinsiyet == "Unisex" && !Repo.Ins.UserPrefs.CheckUnisex)
                 return false;
-            if (profil.Cinsiyet == "Belirsiz" && !Hesap.Ins.UserPrefs.CheckBelirsiz)
+            if (profil.Cinsiyet == "Belirsiz" && !Repo.Ins.UserPrefs.CheckBelirsiz)
                 return false;
 
-            if (profil.FollowStatus == "Takip et" && Hesap.Ins.UserPrefs.CheckTakipEtmediklerim)
+            if (profil.FollowStatus == "Takip et" && Repo.Ins.UserPrefs.CheckTakipEtmediklerim)
                 return false;
-            if (profil.FollowStatus == "Takip ediliyor" && Hesap.Ins.UserPrefs.CheckTakipEttiklerim)
+            if (profil.FollowStatus == "Takip ediliyor" && Repo.Ins.UserPrefs.CheckTakipEttiklerim)
                 return false;
-            if (profil.FollowersStatus == "Takip etmiyor" && Hesap.Ins.UserPrefs.CheckBeniTakipEtmeyenler)
+            if (profil.FollowersStatus == "Takip etmiyor" && Repo.Ins.UserPrefs.CheckBeniTakipEtmeyenler)
                 return false;
-            if (profil.FollowersStatus == "Seni takip ediyor" && Hesap.Ins.UserPrefs.CheckBeniTakipEdenler)
+            if (profil.FollowersStatus == "Seni takip ediyor" && Repo.Ins.UserPrefs.CheckBeniTakipEdenler)
                 return false;
-            if (profil.IsPrivate && Hesap.Ins.UserPrefs.CheckGizliHesap)
+            if (profil.IsPrivate && Repo.Ins.UserPrefs.CheckGizliHesap)
                 return false;
             return true;
         }
         public static List<User> BegenenleriGetir(string username)
         {
             List<User> Begenenler = new();
-            List<string> Tweets = GetUrlsOfTweet(username, Hesap.Ins.UserPrefs.TextTweetControl);
-            Hesap.Ins.Iletisim.currentValue = 0;
+            List<string> Tweets = GetUrlsOfTweet(username, Repo.Ins.UserPrefs.TextTweetControl);
+            Repo.Ins.Iletisim.currentValue = 0;
 
             foreach (string item in Tweets)
             {
@@ -44,41 +46,43 @@ namespace Tweetly_MVC.Init
                 foreach (User profil in TweetiBegenenler)
                 {
                     User x = Begenenler.FirstOrDefault(x => x.Username == profil.Username);
-                    if (x != null)
-                    {
-                        Begenenler.Remove(x);
-                        x.BegeniSayisi++;
-                        x.BegeniOrani = 100 * x.BegeniSayisi / Tweets.Count;
-                        Begenenler.Add(x);
-                    }
-                    else
-                        Begenenler.Add(profil.DetayGetir(Drivers.MusaitOlanDriver()));
+                    if (x != null) Begenenler.Remove(x);
+                    else x = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                    x.BegeniSayisi++;
+                    x.BegeniOrani = Math.Round((double)x.BegeniSayisi / (double)Tweets.Count, 2); 
+                    Begenenler.Add(x);
                 }
-                Hesap.Ins.Iletisim.currentValue++;
+                Repo.Ins.Iletisim.currentValue++;
             }
             return Begenenler;
 
         }
-        public static List<User> ListeGezici(string link, bool detay = true, int sayfaLoadWait_MS = 1000)
+        public static List<User> ListeGezici(string link, bool detay = true, int sayfaLoadWait_MS = 2500)
         {
+            List<Task> quest = new();
             List<User> yerelList = new();
             IWebDriver driverr = Drivers.Driver.LinkeGit(link, sayfaLoadWait_MS);
             List<IWebElement> kontrolEdildi = new();
-            while (!driverr.IsSayfaSonu() && yerelList.Count < Hesap.Ins.UserPrefs.TextBulunacakKisiSayisi)
+            while (!driverr.IsSayfaSonu() && yerelList.Count < Repo.Ins.UserPrefs.TextBulunacakKisiSayisi)
             {
-                IReadOnlyCollection<IWebElement> elementler = Drivers.Driver.GetListelenenler();
-                List<IWebElement> kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
+                var elementler = Drivers.Driver.GetListelenenler();
+                var kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
                 foreach (IWebElement element in kontrolEdilecekler)
                 {
-                    Hesap.Ins.Iletisim.currentValue = yerelList.Count;
-                    User profil = element.GetProfil();
-                    if (profil == null) continue;
-                    if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
-                    yerelList.Add(profil);
-                    if (yerelList.Count >= Hesap.Ins.UserPrefs.TextBulunacakKisiSayisi) break;
+                    Task g1 = Task.Run(() => {
+                        Repo.Ins.Iletisim.currentValue = yerelList.Count;
+                        User profil = element.GetProfil();
+                        if (profil != null)
+                        {
+                            if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                            yerelList.Add(profil);
+                        }
+                    });
+                    quest.Add(g1);
                 }
                 kontrolEdildi.AddRange(kontrolEdilecekler);
             }
+            Task.WaitAll(quest.ToArray());
             return yerelList;
         }
         public static User GetProfil(this IWebElement element)
@@ -86,10 +90,10 @@ namespace Tweetly_MVC.Init
             User profil = new();
             string Text = element.Text.Replace("\r", "");
 
-            profil.Count = Hesap.Ins.Liste.Count + 1;
+            profil.Count = Repo.Ins.Liste.Count + 1;
             profil.Name = Liste.GetName(Text);
             profil.PhotoURL = element.GetPhotoURL();
-            profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name, profil.PhotoURL);
+            profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
             profil.Username = Liste.GetUserName(Text);
 
             profil.IsPrivate = element.İsPrivate();
@@ -109,7 +113,7 @@ namespace Tweetly_MVC.Init
                 Drivers.kullanıyorum.Remove(musaitDriver);
                 return null;
             }
-            if (Hesap.Ins.UserPrefs.CheckDetayGetir)
+            if (Repo.Ins.UserPrefs.CheckDetayGetir)
                 return musaitDriver.GetProfil(profil);
             else
             {
@@ -122,9 +126,9 @@ namespace Tweetly_MVC.Init
             string link = $"https://mobile.twitter.com/{username}";
             driver.Navigate().GoToUrl(link);
             User profil = new();
-            if (Yardimci.Control(driver, username, link, 300000))
+            if (ExtensionMethod.ProfilLoadControl(driver, username, link, 300000))
             {
-                profil.Count = Hesap.Ins.Liste.Count + 1;
+                profil.Count = Repo.Ins.Liste.Count + 1;
                 profil.Username = username;
                 profil.TweetCount = driver.GetTweetCount();
                 profil.Name = driver.GetName();
@@ -137,7 +141,7 @@ namespace Tweetly_MVC.Init
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
                 profil.IsPrivate = driver.IsPrivate();
-                profil.Cinsiyet = Yardimci.CinsiyetBul(profil.Name, profil.PhotoURL);
+                profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
                 driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
@@ -153,7 +157,7 @@ namespace Tweetly_MVC.Init
         {
 
             User DBprofil = new DatabasesContext().Records.FirstOrDefault(x => x.Username == profil.Username);
-            if (DBprofil != null && Hesap.Ins.UserPrefs.CheckUseDB)
+            if (DBprofil != null && Repo.Ins.UserPrefs.CheckUseDB)
             {
                 profil.TweetCount = DBprofil.TweetCount;
                 profil.Date = DBprofil.Date;
@@ -173,7 +177,7 @@ namespace Tweetly_MVC.Init
             string link = "https://mobile.twitter.com/" + profil.Username;
             driver.Navigate().GoToUrl(link);
 
-            if (Yardimci.Control(driver, profil.Username, link, 300000))
+            if (ExtensionMethod.ProfilLoadControl(driver, profil.Username, link, 300000))
             {
                 profil.TweetCount = driver.GetTweetCount();
                 profil.Date = driver.GetDate();

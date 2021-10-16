@@ -10,6 +10,8 @@ using Tweetly_MVC.Models;
 using Tweetly_MVC.Tweetly;
 using System.Net;
 using System.IO;
+using Tweetly_MVC.Cloud;
+
 namespace Tweetly_MVC.Controllers
 {
     public class HomeController : Controller
@@ -36,8 +38,8 @@ namespace Tweetly_MVC.Controllers
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Hesap.Ins.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Hesap.Ins.Iletisim.currentValue;
-            IILetisim yedek = Hesap.Ins.Iletisim;
+            Repo.Ins.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
+            ILetisim yedek = Repo.Ins.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
 
@@ -53,40 +55,41 @@ namespace Tweetly_MVC.Controllers
         public IActionResult ListGetir(string username, string listName)
         {
             DatabasesContext context = new();
-            ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
+            ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
           //  if (Hesap.Ins.Liste.Count > 0) return View("Index", Hesap.Ins.Liste);
-            if (Hesap.Ins.UserPrefs.CheckClearDB)
+            if (Repo.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
-            Hesap.Ins.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
-            Yardimci.WriteGenderJson();
-            if (Hesap.Ins.UserPrefs.CheckDetayGetir)
-                context.RecordsUpdateOrAdd(Hesap.Ins.Liste);
+            Repo.Ins.Liste = CreateUser.ListeGezici($"https://mobile.twitter.com/{username}/{listName}");
+            DetectGender.WriteGenderJson();
+            if (Repo.Ins.UserPrefs.CheckDetayGetir)
+                context.RecordsUpdateOrAdd(Repo.Ins.Liste);
 
-            return View("Index", Hesap.Ins.Liste);
+            return View("Index", Repo.Ins.Liste);
         }
         [HttpGet]
         public IActionResult BegenenleriGetir(string username)
         {
             DatabasesContext context = new();
-            //if (Hesap.Ins.Begenenler.Count > 0) return View("Index", Hesap.Ins.Begenenler);
-            if (Hesap.Ins.UserPrefs.CheckClearDB)
+            ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
+            if (Repo.Ins.Begenenler.Count > 0) return View("Index", Repo.Ins.Begenenler);
+            if (Repo.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
-            Hesap.Ins.Begenenler = CreateUser.BegenenleriGetir(username);
-            Yardimci.WriteGenderJson();
-            ViewBag.sutunGizle = !Hesap.Ins.UserPrefs.CheckDetayGetir;
-            if (Hesap.Ins.UserPrefs.CheckDetayGetir)
-                context.RecordsUpdateOrAdd(Hesap.Ins.Begenenler);
+            Repo.Ins.Begenenler = CreateUser.BegenenleriGetir(username);
+            DetectGender.WriteGenderJson();
 
-            return View("Index", Hesap.Ins.Begenenler);
+            if (Repo.Ins.UserPrefs.CheckDetayGetir)
+                context.RecordsUpdateOrAdd(Repo.Ins.Begenenler);
+
+            return View("Index", Repo.Ins.Begenenler);
         }
 
         [HttpPost]
         public ActionResult SettingSave(string Model)
         {
             FinderSettings ayarlar = JsonConvert.DeserializeObject<FinderSettings>(Model);
-            Hesap.Ins.UserPrefs = ayarlar;
+            Repo.Ins.UserPrefs = ayarlar;
             return Content("Başarılı!");
         }
     }

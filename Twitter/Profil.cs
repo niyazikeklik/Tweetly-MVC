@@ -7,6 +7,42 @@ namespace Tweetly_MVC.Init
 {
     public static class Profil
     {
+        private static string Donustur(this string metin)
+        {
+            metin = metin
+                .Replace("Tweets", "")
+                .Replace("Tweet", "")
+                .Replace("Tweetler", "")
+                .Replace("Beğeniler", "")
+                .Replace("Beğeni", "")
+                .Replace("Likes", "")
+                .Replace("Like", "");
+
+            metin = metin.Replace(" Mn ", "000000");
+            metin = !metin.Contains(',') && !metin.Contains('.')
+                ? metin.Replace(" B ", "000").Replace(" K ", "000")
+                : metin.Replace(" B ", "00").Replace(" K ", "00");
+
+            string number = "";
+            foreach (char item in metin)
+            {
+                if (char.IsNumber(item))
+                    number += item;
+            }
+
+            return number;
+        }
+        private static double UyelikSuresi(this string kayittarihi)
+        {
+            List<string> Months = new() { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık" };
+
+            string AyAdi = kayittarihi.Split(' ')[0];
+            int Yil = Convert.ToInt32(kayittarihi.Split(' ')[1]);
+
+            int Index = Months.IndexOf(AyAdi) + 1;
+            int Ay = Index > 12 ? Index - 12 : Index;
+            return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
+        }
         public static string GetUserName(this IWebElement element)
         {
             string text = element.Text.Replace("\r", null);
@@ -20,14 +56,14 @@ namespace Tweetly_MVC.Init
         public static int GetFollowing(this IWebDriver driverr, string ka)
         {
             string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/following\"] > span ').textContent;");
-            secilenElement = Yardimci.Donustur(secilenElement);
+            secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
 
         public static int GetFollowers(this IWebDriver driverr, string ka)
         {
             string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/followers\"] > span ').textContent;");
-            secilenElement = Yardimci.Donustur(secilenElement);
+            secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
 
@@ -36,7 +72,7 @@ namespace Tweetly_MVC.Init
             string lc = (string)driverr.JSCodeRun("return document.querySelector('header').innerText;");
             string[] dizi = lc.Split("\n");
             lc = dizi[^2];
-            int likecount = Convert.ToInt32(Yardimci.Donustur(lc));
+            int likecount = Convert.ToInt32(lc.Donustur());
             likecount = likecount > 1 ? likecount : likecount + 1;
             return likecount;
         }
@@ -45,23 +81,21 @@ namespace Tweetly_MVC.Init
         {
             string TweetCount = driverr.JSCodeRun("return document.querySelector('header').innerText;").ToString().Replace("\r", "");
             string[] dizi = TweetCount.Split("\n");
-            TweetCount = dizi[^2];
-            TweetCount = Yardimci.Donustur(TweetCount);
+            TweetCount = dizi[^2].Donustur();
             if (int.TryParse(TweetCount, out int countt))
             {
                 int r = countt > 1 ? countt : countt + 1;
                 return r;
             }
             else
-            {
                 return countt;
-            }
+            
         }
 
         public static double GetDate(this IWebDriver driverr)
         {
-            object secilenElement = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
-            return Yardimci.UyelikSuresi(secilenElement.ToString());
+            var secilenElement = (string)driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
+            return secilenElement.UyelikSuresi();
         }
 
         public static double GetLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)

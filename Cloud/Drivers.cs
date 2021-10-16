@@ -1,6 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,16 +12,30 @@ namespace Tweetly_MVC.Tweetly
 {
     public class Drivers
     {
-        public static IWebDriver Driver { get; set; }
-        public static IWebDriver Driver2 { get; set; }
-
         //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR
         /*   public static IWebDriver Driver3 { get; set; }
            public static IWebDriver Driver4 { get; set; }
            public static IWebDriver Driver5 { get; set; }*/
-
         private static int count = 20;
-
+        public static readonly List<IWebDriver> kullanıyorum = new();
+        public static IWebDriver Driver { get; set; }
+        public static IWebDriver Driver2 { get; set; }
+        public static IWebDriver MusaitOlanDriver()
+        {
+            /* List<IWebDriver> driverss =
+                 Hesap.Ins.UserPrefs.CheckUseAllDriver ?
+                 new() { Driver2, Driver3, Driver4, Driver5 } :
+                 new() { Driver2 };*/
+            List<IWebDriver> driverss = new() { Driver2 };
+            foreach (IWebDriver item in driverss)
+                if (!kullanıyorum.Contains(item))
+                {
+                    kullanıyorum.Add(item);
+                    return item;
+                }
+            Thread.Sleep(1500);
+            return MusaitOlanDriver();
+        }
         public static IWebDriver OptionDriver()
         {
             ChromeOptions chromeOptions = new();
@@ -31,41 +47,36 @@ namespace Tweetly_MVC.Tweetly
             chromeOptions.AddArgument("disable-infobars");
             chromeOptions.AddArgument("--window-size=400,820");
             chromeOptions.AddArgument("user-data-dir=C:/Users/niyazi/AppData/Local/Google/Chrome/User Data/Profile " + count++);
-            chromeOptions.AddArgument("--headless");
+            //  chromeOptions.AddArgument("--headless");
             chromeOptions.EnableMobileEmulation("Pixel 2 XL");
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
             driver.LinkeGit("https://mobile.twitter.com/login", 1500);
-            Login.Giris(Hesap.Ins.UserSettings.Username, Hesap.Ins.UserSettings.Pass, driver);
+            Login.Giris(Repo.Ins.UserSettings.Username, Repo.Ins.UserSettings.Pass,Repo.Ins.UserSettings.Mail, driver);
 
             return driver;
         }
-
-        public static readonly List<IWebDriver> kullanıyorum = new();
-
-        public static IWebDriver MusaitOlanDriver()
+        public static void KillChromeProcces()
         {
-            /* List<IWebDriver> driverss =
-                 Hesap.Ins.UserPrefs.CheckUseAllDriver ?
-                 new() { Driver2, Driver3, Driver4, Driver5 } :
-                 new() { Driver2 };*/
-            List<IWebDriver> driverss = new(){ Driver2 };
-            foreach (IWebDriver item in driverss)
-                if (!kullanıyorum.Contains(item))
+            foreach (Process item in Process.GetProcesses())
+            {
+                if (item.ProcessName is "chrome" or "chromedriver" or "conhost")
                 {
-                    kullanıyorum.Add(item);
-                    return item;
+                    try
+                    {
+                        double s = (DateTime.Now - item.StartTime).TotalSeconds;
+                        if (s >= 30) { item.Kill(); }
+                    }
+                    catch {; }
                 }
-            Thread.Sleep(1500);
-            return MusaitOlanDriver();
+            }
         }
-
         public static void CreateDrivers()
         {
             Task g1 = Task.Run(() => OptionDriver()).ContinueWith(x => {
                 Drivers.Driver = x.Result;
-                Hesap.Ins.OturumBilgileri = Drivers.Driver.GetProfil(Hesap.Ins.UserSettings.Username);
+                Repo.Ins.OturumBilgileri = Drivers.Driver.GetProfil(Repo.Ins.UserSettings.Username);
             });
             Task.Run(() => Drivers.Driver2 = Drivers.OptionDriver());
             //ALGORİTMA ASENKRON PROGRAMLAMA İLE YAPILIRSA KULLANILABİLİR

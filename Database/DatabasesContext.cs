@@ -7,13 +7,14 @@ namespace Tweetly_MVC.Tweetly
 {
     public class DatabasesContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@$"Data Source={Hesap.Ins.UserSettings.SQLServerName};Initial Catalog=TweetlyDataBase_{Hesap.Ins.OturumBilgileri.Username};Integrated Security=True");//Migrate komutu çalıştırırken cümleden usernameyi sil.//212 331 02 00
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@$"Data Source={Repo.Ins.UserSettings.SQLServerName};Initial Catalog=TweetlyDataBase_{Repo.Ins.OturumBilgileri.Username};Integrated Security=True");//Migrate komutu çalıştırırken cümleden usernameyi sil.//212 331 02 00
 
         public DbSet<User> Records { get; set; }
     }
 
     public static class DataBase
     {
+        private static List<User> DistinctByUserName(this List<User> list) => list.GroupBy(x => x.Username).Select(x => x.First()).ToList();
         public static void RecordsAllDelete(this DatabasesContext context)
         {
             context.Records.RemoveRange(context.Records);
@@ -42,12 +43,12 @@ namespace Tweetly_MVC.Tweetly
             context.SaveChanges();
         }
 
-        public static void KayitlarıListelereBol()
+       /* public static void KayitlarıListelereBol()
         {
             DatabasesContext context = new();
             Hesap.Ins.Takipciler = context.Records.Where(x => x.FollowersStatus == "Seni takip ediyor").ToList();
             Hesap.Ins.TakipEdilenler = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor").ToList();
             Hesap.Ins.GeriTakipYapmayanlar = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor" && x.FollowersStatus != "Seni takip ediyor").ToList();
-        }
+        }*/
     }
 }

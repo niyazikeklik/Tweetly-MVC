@@ -37,7 +37,7 @@ namespace Tweetly_MVC.Init
         {
             string link = "https://twitter.com/" + profil.Username;
             driver.Navigate().GoToUrl(link);
-            driver.Control(profil.Username, link);
+            driver.ProfilLoadControl(profil.Username, link);
 
             driver.ProfilEngelle();
             if (driver.GetfollowStatus().StartsWith("Engel"))

@@ -6,20 +6,21 @@ namespace Tweetly_MVC.Init
 {
     public static class Login
     {
-        public static void Giris(string ka, string ps, IWebDriver driver)
+        public static void Giris(string ka, string ps, string mail, IWebDriver driver)
         {
             Thread.Sleep(1000);
             if (driver.Url.Contains("flow"))
             {
-                IWebElement inputUserName = (IWebElement)driver.JSCodeRun("return document.querySelector('[name=username]');");
-                inputUserName.SendKeys(ka + Keys.Enter);
+                ((IWebElement)driver.JSCodeRun("return document.querySelector('[name=username]');")).SendKeys(ka + Keys.Enter);
                 Thread.Sleep(2500);
-                IWebElement inputPass = (IWebElement)driver.JSCodeRun("return document.querySelector('[name=password]');");
-                inputPass.SendKeys(ps + Keys.Enter);
+                ((IWebElement)driver.JSCodeRun("return document.querySelector('[name=password]');")).SendKeys(ps + Keys.Enter);
                 Thread.Sleep(2500);
-
                 if (driver.Url.Contains("redirect_after_login"))
-                    Giris("niyazikeklik@gmail.com", Hesap.Ins.UserSettings.Pass, driver);
+                {
+                    driver.LinkeGit("https://mobile.twitter.com/login", 1500);
+                    Giris(ka, Repo.Ins.UserSettings.Pass,mail, driver);
+                }
+                    
 
             }
             // driver.LinkeGit("https://mobile.twitter.com/settings/language", 1500);

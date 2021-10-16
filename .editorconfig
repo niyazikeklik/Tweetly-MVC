@@ -5,3 +5,6 @@ dotnet_diagnostic.IDE0046.severity = none
 
 # IDE0011: Küme ayracı ekle
 dotnet_diagnostic.IDE0011.severity = none
+
+# CA1050: Ad alanlarında türleri bildirin
+dotnet_diagnostic.CA1050.severity = none

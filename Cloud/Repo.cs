@@ -6,36 +6,35 @@ using static Tweetly_MVC.Models.AppSettings;
 
 namespace Tweetly_MVC.Tweetly
 {
-   
 
-    public struct IILetisim
+    public struct ILetisim
     {
         public string HataMetni;
         public int currentValue;
         public string BilgiMetni;
     }
 
-    public class Hesap
-    {
-        private static Hesap instance;
-        public IILetisim Iletisim;
 
-        public static Hesap Ins {
+    public class Repo
+    {
+        private static Repo instance;
+        public ILetisim Iletisim;
+
+        public static Repo Ins {
             get {
                 if (instance == null)
                     instance = new();
                 return instance;
             }
         }
-
-        private Hesap()
+        private Repo()
         {
-            UserSettings = Models.AppSettings.Get();
+            UserSettings = UserSettings.Get();
             OturumBilgileri = new();
             Liste = new();
-            Takipciler = new();
-            TakipEdilenler = new();
-            GeriTakipYapmayanlar = new();
+            //mTakipciler = new();
+            //TakipEdilenler = new();
+           // GeriTakipYapmayanlar = new();
             UserPrefs = new();
             Begenenler = new();
             Iletisim = new();
@@ -46,9 +45,9 @@ namespace Tweetly_MVC.Tweetly
         public List<Cinsiyetler> Cins;
         public List<User> Liste;
         public List<User> Begenenler;
-        public List<User> Takipciler;
-        public List<User> TakipEdilenler;
-        public List<User> GeriTakipYapmayanlar;
+   //     public List<User> Takipciler;
+        //public List<User> TakipEdilenler;
+        //public List<User> GeriTakipYapmayanlar;
         public FinderSettings UserPrefs;
         public UserSettings UserSettings;
     }

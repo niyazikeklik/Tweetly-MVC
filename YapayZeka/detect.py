@@ -29,13 +29,12 @@ def highlightFace(net, frame, conf_threshold=0.7):
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--image')
-print("Çalışma yolu:" + os.path.abspath(os.getcwd()))
 args=parser.parse_args()
 
 faceProto= os.path.abspath(os.getcwd()) + "\\YapayZeka\\opencv_face_detector.pbtxt"
 faceModel=os.path.abspath(os.getcwd()) + "\\YapayZeka\\opencv_face_detector_uint8.pb"
-ageProto=os.path.abspath(os.getcwd()) + "\\YapayZeka\\age_deploy.prototxt"
-ageModel=os.path.abspath(os.getcwd()) + "\\YapayZeka\\age_net.caffemodel"
+#ageProto=os.path.abspath(os.getcwd()) + "\\YapayZeka\\age_deploy.prototxt"
+#ageModel=os.path.abspath(os.getcwd()) + "\\YapayZeka\\age_net.caffemodel"
 genderProto=os.path.abspath(os.getcwd()) + "\\YapayZeka\\gender_deploy.prototxt"
 genderModel=os.path.abspath(os.getcwd()) + "\\YapayZeka\\gender_net.caffemodel"
 
@@ -44,7 +43,7 @@ ageList=['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)',
 genderList=['Male','Female']
 
 faceNet=cv2.dnn.readNet(faceModel,faceProto)
-ageNet=cv2.dnn.readNet(ageModel,ageProto)
+#ageNet=cv2.dnn.readNet(ageModel,ageProto)
 genderNet=cv2.dnn.readNet(genderModel,genderProto)
 
 video=cv2.VideoCapture(args.image if args.image else 0)
@@ -70,10 +69,11 @@ while cv2.waitKey(1)<0 :
         gender=genderList[genderPreds[0].argmax()]
         print(f'Gender: *{gender}*')
 
-        ageNet.setInput(blob)
-        agePreds=ageNet.forward()
-        age=ageList[agePreds[0].argmax()]
-        print(f'Age: *{age[1:-1]}* years')
+        #.setInput(blob)
+        #agePreds=ageNet.forward()
+       # age=ageList[agePreds[0].argmax()]
+       # print(f'Age: *{age[1:-1]}* years')
 
-        cv2.putText(resultImg, f'{gender}, {age}', (faceBox[0], faceBox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
-        cv2.imshow("Detecting age and gender", resultImg)
+        #cv2.putText(resultImg, f'{gender}, {age}', (faceBox[0], faceBox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
+        #cv2.imshow("Detecting age and gender", resultImg)
+        

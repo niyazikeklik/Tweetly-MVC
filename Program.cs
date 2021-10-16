@@ -9,8 +9,8 @@ namespace Tweetly_MVC
     {
         public static void Main(string[] args)
         {
-            Hesap.Ins.Liste = new();
-            Yardimci.KillProcces();
+            Repo.Ins.Liste = new();
+            Drivers.KillChromeProcces();
             Drivers.CreateDrivers();
             /* var config = new ConfigurationBuilder()
                .AddCommandLine(args)

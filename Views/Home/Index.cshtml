@@ -20,27 +20,27 @@
         <table class="fl-table" style="font-size:12px; font-weight:600;">
             <thead>
                 <tr>
-                    <th class="kucuk">Count</th>
+                    <th>Count</th>
                     <th>Fotoğraf</th>
-                    <th class="orta">Cinsiyet</th>
+                    <th>Cinsiyet</th>
                     <th>Bio</th>
                     <th>Beğeni<br />Sayısı</th>
                     <th>Beğeni<br />Oranı</th>
                     @if (!ViewBag.sutunGizle)
                     {
-                        <th class="orta">Konum</th>
-                        <th class="kucuk">Takipçi</th>
-                        <th class="kucuk">Takip<br />Edilen</th>
-                        <th class="kucuk">Kayıt<br />Tarihi</th>
-                        <th class="kucuk">Tweet</th>
-                        <th class="kucuk">Son<br />Tweet</th>
-                        <th class="kucuk">Ort.<br />Tweet</th>
-                        <th class="kucuk">Beğeni</th>
-                        <th class="kucuk">Son<br />Beğeni</th>
-                        <th class="kucuk">Ort.<br />Beğeni</th>
+                        <th>Konum</th>
+                        <th>Takipçi</th>
+                        <th>Takip<br />Edilen</th>
+                        <th>Kayıt<br />Tarihi</th>
+                        <th>Tweet</th>
+                        <th>Son<br />Tweet</th>
+                        <th>Ort.<br />Tweet<br />(Günde)</th>
+                        <th>Beğeni</th>
+                        <th>Son<br />Beğeni</th>
+                        <th>Ort.<br />Beğeni<br />(Günde)</th>
                     }
-                    <th class="orta">Takipçi<br />Durumu</th>
-                    <th class="orta">Takip<br />Durumu</th>
+                    <th>Takipçi<br />Durumu</th>
+                    <th>Takip<br />Durumu</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,7 +93,7 @@
                     <td>@item.BegeniOrani.ToString().Replace(",", ".")</td>
                     @if (!ViewBag.sutunGizle)
                     {
-                        <td>@item.Location</td>
+                        <td><div class="metinkaydir" style="width: 100px;">@item.Location</div></td>
                         <td>@item.Followers</td>
                         <td>@item.Following</td>
                         <td>@item.Date</td>
