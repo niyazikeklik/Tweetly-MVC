@@ -8,3 +8,6 @@ dotnet_diagnostic.IDE0011.severity = none
 
 # CA1050: Ad alanlarında türleri bildirin
 dotnet_diagnostic.CA1050.severity = none
+
+# IDE0022: Metotlar için ifade gövdesi kullan
+dotnet_diagnostic.IDE0022.severity = none

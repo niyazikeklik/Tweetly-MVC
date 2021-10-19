@@ -8,8 +8,10 @@ namespace Tweetly_MVC.Init
     {
         public static string ProfilUserButonClick(this IWebDriver driverr)
         {
+
             driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
             OnayButonClick(driverr);
+            Drivers.kullanıyorum.Remove(driverr);
             return driverr.GetfollowStatus();
         }
 
@@ -21,9 +23,11 @@ namespace Tweetly_MVC.Init
 
         public static void ProfilEngelle(this IWebDriver driverr)
         {
+
             driverr.ProfilUserActionsButonClick();
             driverr.JSCodeRun("document.querySelector('[data-testid=block]').click();");
             driverr.OnayButonClick();
+
         }
 
         public static void OnayButonClick(this IWebDriver driverr)
@@ -36,9 +40,7 @@ namespace Tweetly_MVC.Init
         public static void TakipcilerdenCikar(this IWebDriver driver, User profil)
         {
             string link = "https://twitter.com/" + profil.Username;
-            driver.Navigate().GoToUrl(link);
-            driver.ProfilLoadControl(profil.Username, link);
-
+            driver.LinkeGit(link);
             driver.ProfilEngelle();
             if (driver.GetfollowStatus().StartsWith("Engel"))
                 driver.ProfilUserButonClick();

@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,9 +13,8 @@ using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Init
 {
-    public static class ExtensionMethod
+    public static class Waiters
     {
-
         public static object JSCodeRun(this IWebDriver driver, string command)
         {
             IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
@@ -25,6 +25,13 @@ namespace Tweetly_MVC.Init
                 try
                 {
                     object result = jse.ExecuteScript(command);
+                    if (result?.GetType() == typeof(ReadOnlyCollection<object>)
+                        && ((ReadOnlyCollection<object>)result).Count == 0)
+                    {
+                        Thread.Sleep(250);
+                        count++; continue;
+                    }
+
                     if (result != null || !command.Contains("return")) return result;
                 }
                 catch (StaleElementReferenceException ex)
@@ -34,30 +41,39 @@ namespace Tweetly_MVC.Init
                 }
                 catch (WebDriverException ex)
                 {
-                    Thread.Sleep(150);
+                    Thread.Sleep(250);
                     exMg = ex.Message;
                     count++;
                 }
             }
 
             if (command.Contains("return"))
-                throw new ApplicationException(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
+                throw new ApplicationException(new StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
             else return null;
         }
-        public static IWebDriver LinkeGit(this IWebDriver driverr, string link, int waitForPageLoad_ms = 1000)
+        public static IWebDriver LinkeGit(this IWebDriver driverr, string link, bool WaitForLoad = true)
         {
             driverr.Navigate().GoToUrl(link);
-            Thread.Sleep(waitForPageLoad_ms);
+            Thread.Sleep(500);
+            if (WaitForLoad) driverr.WaitForPageLoad();
             return driverr;
         }
-        public static bool ProfilLoadControl(this IWebDriver driver, string userName, string link, int ms = 300000)
+        public static bool ProfilLoadControl(this IWebDriver driver, string link, int ms = 300000)
         {
             Repo.Ins.Iletisim.HataMetni = "";
-            int count = 0;
-            while (driver.FindElements(By.XPath("//a[@href='/" + userName + "/followers']")).Count == 0)
+
+            if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
+            {
+                driver.Navigate().Refresh();
+                return driver.ProfilLoadControl(link, ms);
+            }
+            if (driver.WaitForProfilBilgileri())
+                return true;
+            else
             {
                 if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
                     return false; //Engellemişse
+
 
                 if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
                 {
@@ -65,35 +81,44 @@ namespace Tweetly_MVC.Init
                     Repo.Ins.Iletisim.HataMetni = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
                     Thread.Sleep(ms);
                     Repo.Ins.Iletisim.HataMetni = "";
-                    driver.Navigate().GoToUrl(link);
-                    return driver.ProfilLoadControl(userName, link, 60000);
+                    driver.LinkeGit(link);
+                    return driver.ProfilLoadControl(link, 60000);
                 }
-                if (count is 20)
-                {
-                    driver.Navigate().Refresh();
-                    Thread.Sleep(2000);
-                }
-                Thread.Sleep(250);
-                count++;
-            }
 
-            if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
-            {
-                driver.Navigate().Refresh();
-                return driver.ProfilLoadControl(userName, link, ms);
             }
             return true;
         }
+        public static void WaitForPageLoad(this IWebDriver driverr)
+        {
+            while (driverr.IsSayfaLoading()) Thread.Sleep(300);
+        }
+        public static bool WaitForProfilBilgileri(this IWebDriver driverr)
+        {
+            int count = 0;
+            while (!driverr.IsProfilBilgileriLoad() && count < 10)
+            {
+                Thread.Sleep(500);
+                count++;
+            }
+            if (count is 10) return false;
+            else return true;
+        }
+        private static bool IsSayfaLoading(this IWebDriver driverr)
+        {
+            return (bool)driverr.JSCodeRun("return document.querySelectorAll('[role=\"progressbar\"]').length > 0");
+        }
+        private static bool IsProfilBilgileriLoad(this IWebDriver driverr)
+        {
+            return (bool)
+                driverr.JSCodeRun("return document.querySelectorAll('a[href*=\"followers\"]').length > 0");
+        }
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
-            long sonrakiY, count = 0;
+            long sonrakiY;
             long oncekiY = (long)driverr.JSCodeRun("return window.scrollY;");
             driverr.JSCodeRun("window.scrollBy(0, 500);");
-            do
-            {
-                Thread.Sleep(300);
-                sonrakiY = (long)driverr.JSCodeRun("return window.scrollY;");
-            } while (oncekiY == sonrakiY && count++ < 3);
+            driverr.WaitForPageLoad();
+            sonrakiY = (long)driverr.JSCodeRun("return window.scrollY;");
             if (oncekiY == sonrakiY)
                 return true;
             else return false;

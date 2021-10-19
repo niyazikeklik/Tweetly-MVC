@@ -43,26 +43,23 @@ namespace Tweetly_MVC.Init
             int Ay = Index > 12 ? Index - 12 : Index;
             return (DateTime.Today - new DateTime(Yil, Ay, 01)).TotalDays;
         }
-        public static string GetUserName(this IWebElement element)
+        public static string GetUserName(this IWebDriver driverr)
         {
-            string text = element.Text.Replace("\r", null);
-            int basla = text.IndexOf('@') + 1;
-            string Username = text[basla..text.IndexOf('\n', basla)];
-            return Username;
+            return (string)driverr.JSCodeRun("return document.querySelector('[data-testid=\"UserName\"]').textContent.split('@')[1];");
         }
 
         public static bool IsPrivate(this IWebDriver driverr) => (bool)driverr.JSCodeRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
 
-        public static int GetFollowing(this IWebDriver driverr, string ka)
+        public static int GetFollowing(this IWebDriver driverr)
         {
-            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/following\"] > span ').textContent;");
+            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href*=\"following\"] > span ').textContent;");
             secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
 
-        public static int GetFollowers(this IWebDriver driverr, string ka)
+        public static int GetFollowers(this IWebDriver driverr)
         {
-            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href=\"/" + ka + "/followers\"] > span ').textContent;");
+            string secilenElement = (string)driverr.JSCodeRun("return document.querySelector('a[href*=\"followers\"] > span ').textContent;");
             secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
@@ -100,21 +97,18 @@ namespace Tweetly_MVC.Init
 
         public static double GetLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)
         {
-            if (tweetorlikecount < 21)
-            {
+            if (tweetorlikecount < 20)
                 return Math.Round(date / tweetorlikecount, 2);
-            }
             else
             {
-                int count = 0;
-                while (driverr.FindElements(By.CssSelector("[data-testid=tweet]")).Count == 0 && count < 20)
-                {
-                    Thread.Sleep(150);
-                    count++;
-                    if (count == 20) return 0;
-                }
-
-            
+                /*      int count = 0;
+                      while (driverr.FindElements(By.CssSelector("[data-testid=tweet]")).Count == 0 && count < 20)
+                      {
+                          Thread.Sleep(150);
+                          count++;
+                          if (count == 20) return 0;
+                      }*/
+                driverr.WaitForPageLoad();
                 dynamic result = driverr.JSCodeRun(
                     "var tarihler= []; var x = document.querySelectorAll('[data-testid=tweet] time'); x.forEach(x => tarihler.push(x.getAttribute('datetime'))); return tarihler;");
                 //      bool sabitTweetVarmi = (bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=socialContext]').length > 0");
@@ -137,8 +131,9 @@ namespace Tweetly_MVC.Init
 
         public static string GetfollowStatus(this IWebDriver driverr)
         {
-            if ((long)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=placementTracking]').length;") > 0)
-                return (string)driverr.JSCodeRun("return document.querySelector('[data-testid=placementTracking]').textContent;");
+            string command = "return document.querySelectorAll('[data-testid=placementTracking]')";
+            if ((long)driverr.JSCodeRun(command + ".length;") > 0)
+                return (string)driverr.JSCodeRun(command + ".textContent;");
             else return null;
         }
 
@@ -169,9 +164,8 @@ namespace Tweetly_MVC.Init
 
         public static string GetLocation(this IWebDriver driverr)
         {
-            string res = driverr.JSCodeRun("return document.querySelector('[data-testid=UserProfileHeader_Items] > span').textContent;")?.ToString().ToLower();
-            if (res != null && !res.Contains("doğum") && !res.Contains("birthday") && !res.Contains("born") && !res.Contains("joined") && !res.Contains("tarih"))
-                return res;
+            if ((long)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=\"UserLocation\"]').length") > 0)
+                return (string)driverr.JSCodeRun("return document.querySelector('[data-testid=\"UserLocation\"]').textContent;");
             else return null;
         }
     }

@@ -14,7 +14,6 @@ namespace Tweetly_MVC.Tweetly
         public string BilgiMetni;
     }
 
-
     public class Repo
     {
         private static Repo instance;

@@ -16,7 +16,7 @@ namespace Tweetly_MVC.Tweetly
         /*   public static IWebDriver Driver3 { get; set; }
            public static IWebDriver Driver4 { get; set; }
            public static IWebDriver Driver5 { get; set; }*/
-        private static int count = 20;
+        private static int count = 22;
         public static readonly List<IWebDriver> kullanıyorum = new();
         public static IWebDriver Driver { get; set; }
         public static IWebDriver Driver2 { get; set; }
@@ -52,9 +52,9 @@ namespace Tweetly_MVC.Tweetly
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
-            driver.LinkeGit("https://mobile.twitter.com/login", 1500);
+            driver.LinkeGit("https://mobile.twitter.com/login");
             Login.Giris(Repo.Ins.UserSettings.Username, Repo.Ins.UserSettings.Pass,Repo.Ins.UserSettings.Mail, driver);
-
+  
             return driver;
         }
         public static void KillChromeProcces()

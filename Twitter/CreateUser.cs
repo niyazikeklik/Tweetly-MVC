@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Tweetly_MVC.Cloud;
@@ -38,7 +39,6 @@ namespace Tweetly_MVC.Init
         {
             List<User> Begenenler = new();
             List<string> Tweets = GetUrlsOfTweet(username, Repo.Ins.UserPrefs.TextTweetControl);
-            Repo.Ins.Iletisim.currentValue = 0;
 
             foreach (string item in Tweets)
             {
@@ -49,57 +49,55 @@ namespace Tweetly_MVC.Init
                     if (x != null) Begenenler.Remove(x);
                     else x = profil.DetayGetir(Drivers.MusaitOlanDriver());
                     x.BegeniSayisi++;
-                    x.BegeniOrani = Math.Round((double)x.BegeniSayisi / (double)Tweets.Count, 2); 
+                    x.BegeniOrani = Math.Round((double)x.BegeniSayisi / (double)Tweets.Count, 2);
                     Begenenler.Add(x);
                 }
-                Repo.Ins.Iletisim.currentValue++;
+                Repo.Ins.Iletisim.HataMetni = "Kontrol Edilen Tweet: " + Tweets.IndexOf(item) + 1 + " | ";
             }
             return Begenenler;
 
         }
-        public static List<User> ListeGezici(string link, bool detay = true, int sayfaLoadWait_MS = 2500)
+        public static List<User> ListeGezici(string link, bool detay = true)
         {
-            List<Task> quest = new();
             List<User> yerelList = new();
-            IWebDriver driverr = Drivers.Driver.LinkeGit(link, sayfaLoadWait_MS);
-            List<IWebElement> kontrolEdildi = new();
+            IWebDriver driverr = Drivers.Driver.LinkeGit(link);
+            List<string> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu() && yerelList.Count < Repo.Ins.UserPrefs.TextBulunacakKisiSayisi)
             {
                 var elementler = Drivers.Driver.GetListelenenler();
-                var kontrolEdilecekler = elementler.Except(kontrolEdildi).ToList();
-                foreach (IWebElement element in kontrolEdilecekler)
+                foreach (string element in elementler)
                 {
-                    Task g1 = Task.Run(() => {
-                        Repo.Ins.Iletisim.currentValue = yerelList.Count;
-                        User profil = element.GetProfil();
-                        if (profil != null)
-                        {
-                            if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
-                            yerelList.Add(profil);
-                        }
-                    });
-                    quest.Add(g1);
+                    string html = element.Split(new string(Liste.sabit))[0];
+                    string text = element.Split(new string(Liste.sabit))[1]; 
+                    if (kontrolEdildi.Contains(text)) continue;
+                    Repo.Ins.Iletisim.currentValue = yerelList.Count;
+                    User profil = GetProfil(html, text);
+                    if (profil != null)
+                    {
+                        if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                        yerelList.Add(profil);
+                    }
+                    kontrolEdildi.Add(text);
                 }
-                kontrolEdildi.AddRange(kontrolEdilecekler);
+             
             }
-            Task.WaitAll(quest.ToArray());
+
             return yerelList;
         }
-        public static User GetProfil(this IWebElement element)
+        public static User GetProfil(string innerHTML, string innerText)
         {
             User profil = new();
-            string Text = element.Text.Replace("\r", "");
 
             profil.Count = Repo.Ins.Liste.Count + 1;
-            profil.Name = Liste.GetName(Text);
-            profil.PhotoURL = element.GetPhotoURL();
+            profil.Name = Liste.GetName(innerText);
+            profil.PhotoURL = innerHTML.GetPhotoURL();
             profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
-            profil.Username = Liste.GetUserName(Text);
+            profil.Username = Liste.GetUserName(innerText);
 
-            profil.IsPrivate = element.İsPrivate();
-            profil.FollowersStatus = Liste.GetFollowersStatus(Text);
-            profil.FollowStatus = Liste.GetFollowStatus(Text);
-            profil.Bio = Liste.GetBio(element);
+            profil.IsPrivate = innerHTML.İsPrivate();
+            profil.FollowersStatus = Liste.GetFollowersStatus(innerText);
+            profil.FollowStatus = Liste.GetFollowStatus(innerText);
+            profil.Bio = Liste.GetBio(innerHTML);
             profil.BegeniSayisi = 0;
             profil.BegeniOrani = 0;
 
@@ -124,9 +122,9 @@ namespace Tweetly_MVC.Init
         public static User GetProfil(this IWebDriver driver, string username)
         {
             string link = $"https://mobile.twitter.com/{username}";
-            driver.Navigate().GoToUrl(link);
+            driver.LinkeGit(link);
             User profil = new();
-            if (ExtensionMethod.ProfilLoadControl(driver, username, link, 300000))
+            if (Waiters.ProfilLoadControl(driver, link, 300000))
             {
                 profil.Count = Repo.Ins.Liste.Count + 1;
                 profil.Username = username;
@@ -135,8 +133,8 @@ namespace Tweetly_MVC.Init
                 profil.Date = driver.GetDate();
                 profil.Location = driver.GetLocation();
                 profil.PhotoURL = driver.GetPhotoURL(username);
-                profil.Following = driver.GetFollowing(username);
-                profil.Followers = driver.GetFollowers(username);
+                profil.Following = driver.GetFollowing();
+                profil.Followers = driver.GetFollowers();
                 profil.FollowersStatus = driver.IsFollowers();
                 profil.FollowStatus = driver.GetfollowStatus();
                 profil.Bio = driver.GetBio();
@@ -175,15 +173,15 @@ namespace Tweetly_MVC.Init
 
 
             string link = "https://mobile.twitter.com/" + profil.Username;
-            driver.Navigate().GoToUrl(link);
+            driver.LinkeGit(link);
 
-            if (ExtensionMethod.ProfilLoadControl(driver, profil.Username, link, 300000))
+            if (Waiters.ProfilLoadControl(driver, link, 300000))
             {
                 profil.TweetCount = driver.GetTweetCount();
                 profil.Date = driver.GetDate();
                 profil.Location = driver.GetLocation();
-                profil.Following = driver.GetFollowing(profil.Username);
-                profil.Followers = driver.GetFollowers(profil.Username);
+                profil.Following = driver.GetFollowing();
+                profil.Followers = driver.GetFollowers();
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
 
@@ -200,7 +198,7 @@ namespace Tweetly_MVC.Init
         {
 
             List<string> TweetIds = new();
-            Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}", 2000);
+            Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}");
             while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
             {
                 object result = Drivers.Driver.JSCodeRun("return document.querySelectorAll(\"a[id^='id__']\");");

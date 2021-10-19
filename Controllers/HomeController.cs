@@ -19,6 +19,7 @@ namespace Tweetly_MVC.Controllers
         [HttpPost]
         public string TakipCik(string Usernames)
         {
+            List<Task> Gorevler = new();
             string butontext = "";
             string[] takiptenCikilicaklar = Usernames?.Split('@');
             if (takiptenCikilicaklar is null) return null;
@@ -26,19 +27,26 @@ namespace Tweetly_MVC.Controllers
             {
                 if (string.IsNullOrEmpty(item)) continue;
                 IWebDriver driver = Drivers.MusaitOlanDriver();
-                driver.Navigate().GoToUrl("https://mobile.twitter.com/" + item);
-                Task.Run(() => {
-                    butontext = driver.ProfilUserButonClick();
-                    Drivers.kullanıyorum.Remove(driver);
-                });
+                driver.LinkeGit("https://mobile.twitter.com/" + item, false);
+                var x = Task.Run(() => driver.ProfilUserButonClick()).ContinueWith(x => butontext = x.Result); ;
+                Gorevler.Add(x);
             }
+            Task.WaitAll(Gorevler.ToArray());
             return butontext;
         }
+
+       /* [HttpPost]
+        public void GuncelleProgress()
+        {
+            Repo.Ins.Iletisim.BilgiMetni = Repo.Ins.Iletisim.HataMetni + "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
+            ILetisim yedek = Repo.Ins.Iletisim;
+            return Json(JsonConvert.SerializeObject(yedek));
+        }*/
 
         [HttpGet]
         public JsonResult GuncelleProgress()
         {
-            Repo.Ins.Iletisim.BilgiMetni = "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
+            Repo.Ins.Iletisim.BilgiMetni = Repo.Ins.Iletisim.HataMetni + "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
             ILetisim yedek = Repo.Ins.Iletisim;
             return Json(JsonConvert.SerializeObject(yedek));
         }
@@ -56,7 +64,7 @@ namespace Tweetly_MVC.Controllers
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
-          //  if (Hesap.Ins.Liste.Count > 0) return View("Index", Hesap.Ins.Liste);
+            if (Repo.Ins.Liste.Count > 0) return View("Index", Repo.Ins.Liste);
             if (Repo.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 
@@ -64,9 +72,12 @@ namespace Tweetly_MVC.Controllers
             DetectGender.WriteGenderJson();
             if (Repo.Ins.UserPrefs.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Repo.Ins.Liste);
+            if (listName.Contains("following"))
+                context.UpdateFollowStatus(Repo.Ins.Liste);
 
             return View("Index", Repo.Ins.Liste);
         }
+        
         [HttpGet]
         public IActionResult BegenenleriGetir(string username)
         {

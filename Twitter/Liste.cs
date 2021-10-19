@@ -1,12 +1,22 @@
-﻿using OpenQA.Selenium;
+﻿using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors.NetCore;
+using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Tweetly_MVC.Init;
 
 namespace Tweetly_MVC.Twitter
 {
     public static class Liste
     {
-        public static IReadOnlyCollection<IWebElement> GetListelenenler(this IWebDriver driverr) => (IReadOnlyCollection<IWebElement>)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=\"UserCell\"]');");
+        public const string sabit = "**__*-*__**";
+        public static ReadOnlyCollection<object> GetListelenenler(this IWebDriver driverr)
+        {
+            var result = (ReadOnlyCollection<object>)driverr.JSCodeRun("var list =[]; var x = document.querySelectorAll('[data-testid=\"UserCell\"]'); x.forEach(elem =>{list.push(elem.innerHTML + \"" + sabit + "\" + elem.innerText);}); return list;");
+            return result;
+        }
         public static string GetUserName(string elementText)
         {
             int basla = elementText.IndexOf('@') + 1;
@@ -15,9 +25,18 @@ namespace Tweetly_MVC.Twitter
 
         public static string GetName(string elementText) => elementText.Split('\n')[0].StartsWith('@') ? null : elementText.Split('\n')[0];
 
-        public static string GetPhotoURL(this IWebElement element) => element.FindElement(By.TagName("img")).GetAttribute("src").Replace("x96", "200x200");
+        public static string GetPhotoURL(this string element)
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(element);
+            var result = htmlDoc.QuerySelector("img").Attributes["src"].Value.Replace("x96", "200x200");
+            return result;
+        }
 
-        public static bool İsPrivate(this IWebElement element) => element.FindElements(By.CssSelector("[aria-label='Korumalı hesap']")).Count > 0;
+        public static bool İsPrivate(this string element)
+        {
+            return element.Contains("Korumalı hesap");
+        }
 
         public static string GetFollowersStatus(string elementText)
         {
@@ -35,11 +54,20 @@ namespace Tweetly_MVC.Twitter
             return "Engellendi";
         }
 
-        public static string GetBio(this IWebElement element)
+        public static string GetBio(this string element)
         {
-            System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> bios = element.FindElements(By.CssSelector("div > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)"));
-            if (bios.Count > 0) return bios[0].Text;
-            return null;
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(element);
+            HtmlNode node = htmlDoc.QuerySelector("div:nth-child(1) > div:nth-child(2) > div:nth-child(2)");
+            var result = node?.InnerText;
+            return result;
+            /*   string name = htmlDoc.QuerySelector()
+                   .SelectSingleNode("")
+                   .Attributes["value"].Value;*/
+
+            /*    System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> bios = element.FindElements(By.CssSelector(""));
+                if (bios.Count > 0) return bios[0].Text;
+                return null;*/
         }
     }
 }

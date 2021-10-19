@@ -23,17 +23,21 @@ namespace Tweetly_MVC.Tweetly
 
         public static void RecordsUpdateOrAdd(this DatabasesContext context, List<User> GuncellenecekKayitlar)
         {
-            context.Records.RecordsDeleteExist(GuncellenecekKayitlar);
-            context.RecordsAdd(GuncellenecekKayitlar);
+            GuncellenecekKayitlar.ForEach(x => {
+                var y = context.Records.FirstOrDefault(x => x.Username == x.Username); y = x;
+            });
+            context.SaveChanges();
+            /* context.RecordsDeleteExist(GuncellenecekKayitlar);
+             context.RecordsAdd(GuncellenecekKayitlar);*/
         }
 
-        private static void RecordsDeleteExist(this DbSet<User> DBtablo, List<User> guncelTablo)
+        private static void RecordsDeleteExist(this DatabasesContext context, List<User> guncelTablo)
         {
             foreach (User item in guncelTablo)
             {
-                User silinecek = DBtablo.FirstOrDefault(x => x.Username == item.Username);
+                User silinecek = context.Records.FirstOrDefault(x => x.Username == item.Username);
                 if (silinecek != null)
-                    DBtablo.Remove(silinecek);
+                    context.Records.Remove(silinecek);
             }
         }
 
@@ -42,13 +46,23 @@ namespace Tweetly_MVC.Tweetly
             context.Records.AddRange(EklenecekKayitlar.DistinctByUserName());
             context.SaveChanges();
         }
-
-       /* public static void KayitlarıListelereBol()
+        public static void UpdateFollowStatus(this DatabasesContext context, List<User> takipEdilenler)
         {
-            DatabasesContext context = new();
-            Hesap.Ins.Takipciler = context.Records.Where(x => x.FollowersStatus == "Seni takip ediyor").ToList();
-            Hesap.Ins.TakipEdilenler = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor").ToList();
-            Hesap.Ins.GeriTakipYapmayanlar = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor" && x.FollowersStatus != "Seni takip ediyor").ToList();
-        }*/
+            var DBTakipEdilenler = context.Records.Where(x => x.FollowStatus == "Takip ediliyor");
+            foreach (var item in DBTakipEdilenler)
+            {
+                if (takipEdilenler.FirstOrDefault(y => y.Username == item.Username) == null)
+                    item.FollowStatus = "Takip et";
+            }
+            context.SaveChanges();
+        }
+
+        /* public static void KayitlarıListelereBol()
+         {
+             DatabasesContext context = new();
+             Hesap.Ins.Takipciler = context.Records.Where(x => x.FollowersStatus == "Seni takip ediyor").ToList();
+             Hesap.Ins.TakipEdilenler = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor").ToList();
+             Hesap.Ins.GeriTakipYapmayanlar = context.Records.Where(x => x.FollowersStatus == "Takip ediliyor" && x.FollowersStatus != "Seni takip ediyor").ToList();
+         }*/
     }
 }

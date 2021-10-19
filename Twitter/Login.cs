@@ -8,7 +8,8 @@ namespace Tweetly_MVC.Init
     {
         public static void Giris(string ka, string ps, string mail, IWebDriver driver)
         {
-            Thread.Sleep(1000);
+         
+            Thread.Sleep(2500);
             if (driver.Url.Contains("flow"))
             {
                 ((IWebElement)driver.JSCodeRun("return document.querySelector('[name=username]');")).SendKeys(ka + Keys.Enter);
@@ -17,7 +18,7 @@ namespace Tweetly_MVC.Init
                 Thread.Sleep(2500);
                 if (driver.Url.Contains("redirect_after_login"))
                 {
-                    driver.LinkeGit("https://mobile.twitter.com/login", 1500);
+                    driver.LinkeGit("https://mobile.twitter.com/login");
                     Giris(ka, Repo.Ins.UserSettings.Pass,mail, driver);
                 }
                     
