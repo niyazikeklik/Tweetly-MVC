@@ -59,14 +59,18 @@ async function tableAyarla() {
     $('#DataTables_Table_0_filter input').attr("placeholder", "Ara");
 
     $("#TakipCik").on("click", function () {
+        var usernames = "";
+        $("tr.selected #username").each(function () {
+            usernames += "@" + $(this).text();
+        })
         $.ajax({
             type: "POST",
             url: "/Home/TakipCik",
-            data: { Usernames: $("tr.selected #username").text() },
+            data: { Usernames: usernames },
             dataType: "text",
             success: function (msg) {
                 $('tr.selected button[name="Usernames"]').text("Takip et");
-                $('tr.selected').remove();
+                $('tr.selected').css("background-color", "grey");
             }
         });
     });

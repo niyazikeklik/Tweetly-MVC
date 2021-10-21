@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tweetly_MVC.Init;
@@ -46,15 +47,50 @@ namespace Tweetly_MVC.Tweetly
             context.Records.AddRange(EklenecekKayitlar.DistinctByUserName());
             context.SaveChanges();
         }
-        public static void UpdateFollowStatus(this DatabasesContext context, List<User> takipEdilenler)
+        public static void UpdateTemelBilgiler(this DatabasesContext context, List<User> takipEdilenler)
         {
-            var DBTakipEdilenler = context.Records.Where(x => x.FollowStatus == "Takip ediliyor");
-            foreach (var item in DBTakipEdilenler)
-            {
-                if (takipEdilenler.FirstOrDefault(y => y.Username == item.Username) == null)
-                    item.FollowStatus = "Takip et";
-            }
+            int count = 0;
+            context.Records.ForEachAsync(DbUser => {
+                var guncel = takipEdilenler.FirstOrDefault(x => x.Username == DbUser.Username);
+                if(guncel != null)
+                {
+                    DbUser.Count = ++count;
+                    DbUser.PhotoURL = guncel.PhotoURL;
+                    DbUser.FollowStatus = guncel.FollowStatus;
+                    DbUser.FollowersStatus = guncel.FollowersStatus;
+                    DbUser.Name = guncel.Name;
+                    DbUser.IsPrivate = guncel.IsPrivate;
+                    DbUser.Bio = guncel.Bio;
+                    DbUser.Cinsiyet = 
+                    DbUser.Cinsiyet.Equals("Belirsiz") ? guncel.Cinsiyet : DbUser.Cinsiyet;
+                }
+                else
+                {
+                    DbUser.FollowStatus = takipEdilenler.First().FollowStatus.Equals("Takip ediliyor") ? "Takip et" : "Takip ediliyor";
+                }
+            
+            }).Wait();
             context.SaveChanges();
+            /*     context.Records.ForEachAsync(y => y.FollowStatus = "Takip et").Wait();
+
+                 takipEdilenler.ForEach(x => {
+
+                     var DBuser = context.Records.FirstOrDefault(y => x.Username == y.Username);
+                     if (DBuser != null)
+                     {
+                         DBuser.Count = ++count;
+                         DBuser.PhotoURL = x.PhotoURL;
+                         DBuser.FollowStatus = x.FollowStatus;
+                         DBuser.FollowersStatus = x.FollowersStatus;
+                         DBuser.Name = x.Name;
+                         DBuser.IsPrivate = x.IsPrivate;
+                         DBuser.Bio = x.Bio;
+                         DBuser.Cinsiyet = DBuser.Cinsiyet.Equals("Belirsiz") ? x.Cinsiyet : DBuser.Cinsiyet;
+                     }
+
+                 });*/
+
+
         }
 
         /* public static void KayitlarıListelereBol()

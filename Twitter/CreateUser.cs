@@ -50,6 +50,7 @@ namespace Tweetly_MVC.Init
                     else x = profil.DetayGetir(Drivers.MusaitOlanDriver());
                     x.BegeniSayisi++;
                     x.BegeniOrani = Math.Round((double)x.BegeniSayisi / (double)Tweets.Count, 2);
+                    x.Count = Begenenler.Count;
                     Begenenler.Add(x);
                 }
                 Repo.Ins.Iletisim.HataMetni = "Kontrol Edilen Tweet: " + Tweets.IndexOf(item) + 1 + " | ";
@@ -72,9 +73,11 @@ namespace Tweetly_MVC.Init
                     if (kontrolEdildi.Contains(text)) continue;
                     Repo.Ins.Iletisim.currentValue = yerelList.Count;
                     User profil = GetProfil(html, text);
+                    
                     if (profil != null)
                     {
                         if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                        profil.Count = yerelList.Count;
                         yerelList.Add(profil);
                     }
                     kontrolEdildi.Add(text);
@@ -88,7 +91,6 @@ namespace Tweetly_MVC.Init
         {
             User profil = new();
 
-            profil.Count = Repo.Ins.Liste.Count + 1;
             profil.Name = Liste.GetName(innerText);
             profil.PhotoURL = innerHTML.GetPhotoURL();
             profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);

@@ -22,28 +22,24 @@ namespace Tweetly_MVC.Init
             string exMg = "";
             while (count < 10)
             {
+                Thread.Sleep(250);
+                count++;
                 try
                 {
-                    object result = jse.ExecuteScript(command);
-                    if (result?.GetType() == typeof(ReadOnlyCollection<object>)
-                        && ((ReadOnlyCollection<object>)result).Count == 0)
-                    {
-                        Thread.Sleep(250);
-                        count++; continue;
-                    }
+                    dynamic result = jse.ExecuteScript(command);
+                    
+                    var tp = typeof(ReadOnlyCollection<object>);
+                    //result?.GetType() == typeof(ReadOnlyCollection<object>)
+                    if (result?.GetType() == tp && 
+                        result.Count == 0)
+                        continue;
 
                     if (result != null || !command.Contains("return")) return result;
                 }
-                catch (StaleElementReferenceException ex)
-                {
-                    exMg = ex.Message;
-                    count++;
-                }
-                catch (WebDriverException ex)
+                catch (Exception ex)
                 {
                     Thread.Sleep(250);
                     exMg = ex.Message;
-                    count++;
                 }
             }
 

@@ -12,12 +12,18 @@ namespace Tweetly_MVC.Cloud
 {
     public static class DetectGender
     {
+        const string cinsiyetlerJsonYolu = "Cinsiyetler.json";
+        const string yapayZekaYolu = @"python C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
         public static void WriteGenderJson()
         {
-            var x = DateTime.Now;
             string stringJSON = JsonConvert.SerializeObject(Repo.Ins.Cins);
-            File.WriteAllText("Cinsiyetler.json", stringJSON);
-            Debug.WriteLine("Dosya Yazma Süresi:" + (DateTime.Now - x).TotalSeconds);
+            File.WriteAllText(cinsiyetlerJsonYolu, stringJSON);
+        }
+        public static List<Cinsiyetler> ReadGenderJson()
+        {
+            string dosyaText = File.ReadAllText(cinsiyetlerJsonYolu).ToLower();
+            var x = JsonConvert.DeserializeObject<List<Cinsiyetler>>(dosyaText);
+            return x;
         }
         private static string StringReplace(this string text)
         {
@@ -38,43 +44,42 @@ namespace Tweetly_MVC.Cloud
         private static string GetGenderFromPhoto(string photoURL)
         {
             //   photoURL = photoURL.Replace("200x200", "x96");
-            string Gender = "Belirsiz";
-            string fileName = @"python C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
-            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c " + string.Format(fileName + " --image " + photoURL));
+  
+            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c" + $" {yapayZekaYolu} --image {photoURL}");
             ProcessInfo.CreateNoWindow = false;
             ProcessInfo.UseShellExecute = false;
             ProcessInfo.RedirectStandardOutput = true;
             ProcessInfo.Verb = "runas";
             Process Process = Process.Start(ProcessInfo);
-            using StreamReader reader = Process.StandardOutput;
-            string result = reader.ReadToEnd();
-            if (result.Contains("Age") || result.Contains("Gender"))
-            {
-
-                int basla = result.IndexOf("Gender: *") + 9;
-                Gender = result[basla..result.IndexOf("*", basla)]
-                    .Replace("Female", "Kadın")
-                    .Replace("Male", "Erkek");
-            }
-            else Gender = "Belirsiz";
+            string result = Process.StandardOutput.ReadToEnd();
             Process.WaitForExit();
             Process.Close();
-            return Gender;
+            return result;
         }
         private static string GetGenderFromAPI(string name)
         {
             string cinsiyet = "Belirsiz";
-            var msg = new WebClient().DownloadString("https://api.genderize.io?name=" + name.StringReplace());
-            if (msg.Contains("female"))
+            try
             {
-                Repo.Ins.Cins.Add(new Cinsiyetler(name, "k"));
-                cinsiyet = "Kadın";
+
+                var msg = new WebClient().DownloadString("https://api.genderize.io?name=" + name.StringReplace());
+                if (msg.Contains("female"))
+                {
+                    Repo.Ins.Cins.Add(new Cinsiyetler(name, "k"));
+                    cinsiyet = "Kadın";
+                }
+                else if (msg.Contains("male"))
+                {
+                    Repo.Ins.Cins.Add(new Cinsiyetler(name, "e"));
+                    cinsiyet = "Erkek";
+                }
             }
-            else if (msg.Contains("male"))
+            catch (Exception)
             {
-                Repo.Ins.Cins.Add(new Cinsiyetler(name, "e"));
-                cinsiyet = "Erkek";
+
+                ;
             }
+
             return cinsiyet;
         }
         public static string CinsiyetBul(string name, string link)
@@ -97,6 +102,14 @@ namespace Tweetly_MVC.Cloud
             if (!String.IsNullOrEmpty(name)) cinsiyet = GetGenderFromAPI(name);
             return cinsiyet;
         }
-  
+
     }
 }
+/*  if (result.Contains("Age") || result.Contains("Gender"))
+     {
+
+         int basla = result.IndexOf("Gender: *") + 9;
+         Gender = result[basla..result.IndexOf("*", basla)]
+             .Replace("Female", "Kadın")
+             .Replace("Male", "Erkek");
+     }*/

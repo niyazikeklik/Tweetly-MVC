@@ -19,7 +19,7 @@ namespace Tweetly_MVC.Controllers
         [HttpPost]
         public string TakipCik(string Usernames)
         {
-            List<Task> Gorevler = new();
+
             string butontext = "";
             string[] takiptenCikilicaklar = Usernames?.Split('@');
             if (takiptenCikilicaklar is null) return null;
@@ -28,20 +28,19 @@ namespace Tweetly_MVC.Controllers
                 if (string.IsNullOrEmpty(item)) continue;
                 IWebDriver driver = Drivers.MusaitOlanDriver();
                 driver.LinkeGit("https://mobile.twitter.com/" + item, false);
-                var x = Task.Run(() => driver.ProfilUserButonClick()).ContinueWith(x => butontext = x.Result); ;
-                Gorevler.Add(x);
+                if (driver.WaitForProfilBilgileri())
+                    driver.ProfilUserButonClick();
             }
-            Task.WaitAll(Gorevler.ToArray());
             return butontext;
         }
 
-       /* [HttpPost]
-        public void GuncelleProgress()
-        {
-            Repo.Ins.Iletisim.BilgiMetni = Repo.Ins.Iletisim.HataMetni + "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
-            ILetisim yedek = Repo.Ins.Iletisim;
-            return Json(JsonConvert.SerializeObject(yedek));
-        }*/
+        /* [HttpPost]
+         public void GuncelleProgress()
+         {
+             Repo.Ins.Iletisim.BilgiMetni = Repo.Ins.Iletisim.HataMetni + "Bulunan Kullanıcı Sayısı: " + Repo.Ins.Iletisim.currentValue;
+             ILetisim yedek = Repo.Ins.Iletisim;
+             return Json(JsonConvert.SerializeObject(yedek));
+         }*/
 
         [HttpGet]
         public JsonResult GuncelleProgress()
@@ -60,7 +59,7 @@ namespace Tweetly_MVC.Controllers
             return View(x);
         }
         [HttpGet]
-        public IActionResult ListGetir(string username, string listName)
+        public ViewResult ListGetir(string username, string listName)
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
@@ -72,14 +71,13 @@ namespace Tweetly_MVC.Controllers
             DetectGender.WriteGenderJson();
             if (Repo.Ins.UserPrefs.CheckDetayGetir)
                 context.RecordsUpdateOrAdd(Repo.Ins.Liste);
-            if (listName.Contains("following"))
-                context.UpdateFollowStatus(Repo.Ins.Liste);
+            else context.UpdateTemelBilgiler(Repo.Ins.Liste);
 
             return View("Index", Repo.Ins.Liste);
         }
-        
+
         [HttpGet]
-        public IActionResult BegenenleriGetir(string username)
+        public ViewResult BegenenleriGetir(string username)
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;

@@ -133,7 +133,7 @@ namespace Tweetly_MVC.Init
         {
             string command = "return document.querySelectorAll('[data-testid=placementTracking]')";
             if ((long)driverr.JSCodeRun(command + ".length;") > 0)
-                return (string)driverr.JSCodeRun(command + ".textContent;");
+                return (string)driverr.JSCodeRun(command + "[0].textContent;");
             else return null;
         }
 

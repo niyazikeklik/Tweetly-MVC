@@ -39,8 +39,8 @@ genderProto=os.path.abspath(os.getcwd()) + "\\YapayZeka\\gender_deploy.prototxt"
 genderModel=os.path.abspath(os.getcwd()) + "\\YapayZeka\\gender_net.caffemodel"
 
 MODEL_MEAN_VALUES=(78.4263377603, 87.7689143744, 114.895847746)
-ageList=['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
-genderList=['Male','Female']
+#ageList=['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
+genderList=['Erkek','Kadýn']
 
 faceNet=cv2.dnn.readNet(faceModel,faceProto)
 #ageNet=cv2.dnn.readNet(ageModel,ageProto)
@@ -56,7 +56,7 @@ while cv2.waitKey(1)<0 :
     
     resultImg,faceBoxes=highlightFace(faceNet,frame)
     if not faceBoxes:
-        print("No face detected")
+        print("Belirsiz")
 
     for faceBox in faceBoxes:
         face=frame[max(0,faceBox[1]-padding):
@@ -67,7 +67,7 @@ while cv2.waitKey(1)<0 :
         genderNet.setInput(blob)
         genderPreds=genderNet.forward()
         gender=genderList[genderPreds[0].argmax()]
-        print(f'Gender: *{gender}*')
+        print(f'{gender}')
 
         #.setInput(blob)
         #agePreds=ageNet.forward()

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using Tweetly_MVC.Cloud;
 using Tweetly_MVC.Models;
 using static Tweetly_MVC.Models.AppSettings;
 
@@ -32,10 +33,7 @@ namespace Tweetly_MVC.Tweetly
             Liste = new();
             Begenenler = new();
             Iletisim = new();
-            Cins = JsonConvert
-                .DeserializeObject<List<Cinsiyetler>>(
-                File.ReadAllText("Cinsiyetler.json")
-                .ToLower());
+            Cins = DetectGender.ReadGenderJson();
         }
 
         public User OturumBilgileri;
@@ -45,5 +43,7 @@ namespace Tweetly_MVC.Tweetly
         public FinderSettings UserPrefs;
         public UserSettings UserSettings;
         public ILetisim Iletisim;
+
+
     }
 }
