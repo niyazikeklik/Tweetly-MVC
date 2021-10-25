@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Tweetly_MVC.Tweetly;
 
 namespace Tweetly_MVC.Cloud
@@ -13,7 +14,7 @@ namespace Tweetly_MVC.Cloud
     public static class DetectGender
     {
         const string cinsiyetlerJsonYolu = "Cinsiyetler.json";
-        const string yapayZekaYolu = @"python C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
+        const string yapayZekaYolu = @" C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
         public static void WriteGenderJson()
         {
             string stringJSON = JsonConvert.SerializeObject(Repo.Ins.Cins);
@@ -43,15 +44,15 @@ namespace Tweetly_MVC.Cloud
         }
         private static string GetGenderFromPhoto(string photoURL)
         {
-            //   photoURL = photoURL.Replace("200x200", "x96");
+               photoURL = photoURL.Replace("200x200", "400x400");
   
-            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c" + $" {yapayZekaYolu} --image {photoURL}");
+            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c" + $" python {yapayZekaYolu} --image {photoURL}");
             ProcessInfo.CreateNoWindow = false;
             ProcessInfo.UseShellExecute = false;
             ProcessInfo.RedirectStandardOutput = true;
             ProcessInfo.Verb = "runas";
             Process Process = Process.Start(ProcessInfo);
-            string result = Process.StandardOutput.ReadToEnd();
+            string result = Process.StandardOutput.ReadToEnd().Replace("Kadin","Kadın");
             Process.WaitForExit();
             Process.Close();
             return result;
@@ -82,23 +83,33 @@ namespace Tweetly_MVC.Cloud
 
             return cinsiyet;
         }
+        private static string getCenderFromName(string name)
+        {
+            string cinsiyet = "Belirsiz";
+            string isim = name.Split(' ')[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
+            Cinsiyetler result = Repo.Ins.Cins.FirstOrDefault(x => x.Ad == isim);
+            if (result != null)
+            {
+                cinsiyet = result.Cins == "e" ? "Erkek" :
+                           result.Cins == "k" ? "Kadın" :
+                           result.Cins == "u" ? "Unisex" : "Belirsiz";
+                return cinsiyet;
+            }
+            return null;
+
+        }
         public static string CinsiyetBul(string name, string link)
         {
             string cinsiyet = "Belirsiz";
+       
             if (!String.IsNullOrEmpty(name))
             {
-                string isim = name.Split(' ')[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
-                Cinsiyetler result = Repo.Ins.Cins.FirstOrDefault(x => x.Ad == isim);
-                if (result != null)
-                {
-                    cinsiyet = result.Cins == "e" ? "Erkek" :
-                               result.Cins == "k" ? "Kadın" :
-                               GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
-                    return cinsiyet;
-                }
+                cinsiyet = getCenderFromName(name);
+                if (cinsiyet == "Unisex") return GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
+                else if (cinsiyet != null) return cinsiyet;
             }
             cinsiyet = GetGenderFromPhoto(link);
-            if (!cinsiyet.Contains("Belirsiz")) return cinsiyet;
+            if (!cinsiyet.Equals("Belirsiz")) return cinsiyet;
             if (!String.IsNullOrEmpty(name)) cinsiyet = GetGenderFromAPI(name);
             return cinsiyet;
         }

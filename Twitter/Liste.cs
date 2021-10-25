@@ -14,7 +14,7 @@ namespace Tweetly_MVC.Twitter
         public const string sabit = "**__*-*__**";
         public static ReadOnlyCollection<object> GetListelenenler(this IWebDriver driverr)
         {
-            var result = (ReadOnlyCollection<object>)driverr.JSCodeRun("var list =[]; var x = document.querySelectorAll('[data-testid=\"UserCell\"]'); x.forEach(elem =>{list.push(elem.innerHTML + \"" + sabit + "\" + elem.innerText);}); return list;");
+            var result = (ReadOnlyCollection<object>)driverr.JsRun("var list =[]; var x = document.querySelectorAll('[data-testid=\"UserCell\"]'); x.forEach(elem =>{list.push(elem.innerHTML + \"" + sabit + "\" + elem.innerText);}); return list;");
             return result;
         }
         public static string GetUserName(string elementText)
@@ -40,9 +40,8 @@ namespace Tweetly_MVC.Twitter
 
         public static string GetFollowersStatus(string elementText)
         {
-            if (elementText.Contains("Seni takip ediyor"))
-                return "Seni takip ediyor";
-            return "Takip etmiyor";
+            string r = elementText.Contains("ediyor") ? "Seni takip ediyor" : "Takip etmiyor";
+            return r;
         }
 
         public static string GetFollowStatus(string elementText)

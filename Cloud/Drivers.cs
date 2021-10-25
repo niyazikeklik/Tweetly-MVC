@@ -52,7 +52,7 @@ namespace Tweetly_MVC.Tweetly
             service.HideCommandPromptWindow = true;
             IWebDriver driver = new ChromeDriver(service, chromeOptions);
             driver.Manage().Window.Size = new Size(400, 820);
-            driver.LinkeGit("https://mobile.twitter.com/login");
+           
             Login.Giris(Repo.Ins.UserSettings.Username, Repo.Ins.UserSettings.Pass,Repo.Ins.UserSettings.Mail, driver);
   
             return driver;

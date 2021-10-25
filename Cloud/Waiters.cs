@@ -15,42 +15,46 @@ namespace Tweetly_MVC.Init
 {
     public static class Waiters
     {
-        public static object JSCodeRun(this IWebDriver driver, string command)
+     
+        public static object JsRun(this IWebDriver driver, string command)
         {
             IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
             int count = 0;
             string exMg = "";
             while (count < 10)
             {
-                Thread.Sleep(250);
+                
                 count++;
                 try
                 {
                     dynamic result = jse.ExecuteScript(command);
-                    
                     var tp = typeof(ReadOnlyCollection<object>);
                     //result?.GetType() == typeof(ReadOnlyCollection<object>)
-                    if (result?.GetType() == tp && 
-                        result.Count == 0)
+                    if (result?.GetType() == tp && result.Count == 0)
+                    {
+                        driver.WaitForPageLoad();
                         continue;
-
+                    }
+                   
+                    
                     if (result != null || !command.Contains("return")) return result;
                 }
                 catch (Exception ex)
                 {
-                    Thread.Sleep(250);
+                    driver.WaitForPageLoad();
                     exMg = ex.Message;
+                    continue;
+                  
                 }
             }
-
-            if (command.Contains("return"))
-                throw new ApplicationException(new StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);
-            else return null;
+ /*           if (command.Contains("return"))
+                throw new ApplicationException(new StackTrace().GetFrame(1).GetMethod().Name + " Hata,\nparametre: " + command + "\nCount: " + count + "\nHata Mesajı: " + exMg);*/
+            return null;
         }
         public static IWebDriver LinkeGit(this IWebDriver driverr, string link, bool WaitForLoad = true)
         {
             driverr.Navigate().GoToUrl(link);
-            Thread.Sleep(500);
+            Thread.Sleep(250);
             if (WaitForLoad) driverr.WaitForPageLoad();
             return driverr;
         }
@@ -59,19 +63,17 @@ namespace Tweetly_MVC.Init
             Repo.Ins.Iletisim.HataMetni = "";
 
             if (driver.FindElements(By.CssSelector("[data-testid=login]")).Count > 0)
-            {
+            {//Giriş butonu gözüküyorsa..
                 driver.Navigate().Refresh();
                 return driver.ProfilLoadControl(link, ms);
             }
-            if (driver.WaitForProfilBilgileri())
-                return true;
-            else
+            if (!driver.WaitForProfilBilgileri())
             {
-                if (driver.FindElements(By.CssSelector("[data-testid=emptyState]")).Count > 0)
+                if (driver.isBlocker())
                     return false; //Engellemişse
 
 
-                if (driver.Url.Contains("limit") || (bool)driver.JSCodeRun("return document.querySelectorAll('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;"))
+                if (driver.Url.Contains("limit") || driver.YenileButonuContains())
                 {
                     //Yenile butonu görürse veya url'de limit varsa
                     Repo.Ins.Iletisim.HataMetni = "Limite takıldı. Bitiş: " + DateTime.Now.AddMilliseconds(ms) + " | ";
@@ -101,20 +103,20 @@ namespace Tweetly_MVC.Init
         }
         private static bool IsSayfaLoading(this IWebDriver driverr)
         {
-            return (bool)driverr.JSCodeRun("return document.querySelectorAll('[role=\"progressbar\"]').length > 0");
+            return (bool)driverr.JsRun("return document.querySelectorAll('[role=\"progressbar\"]').length > 0");
         }
         private static bool IsProfilBilgileriLoad(this IWebDriver driverr)
         {
             return (bool)
-                driverr.JSCodeRun("return document.querySelectorAll('a[href*=\"followers\"]').length > 0");
+                driverr.JsRun("return document.querySelectorAll('a[href*=\"followers\"]').length > 0");
         }
         public static bool IsSayfaSonu(this IWebDriver driverr)
         {
             long sonrakiY;
-            long oncekiY = (long)driverr.JSCodeRun("return window.scrollY;");
-            driverr.JSCodeRun("window.scrollBy(0, 500);");
+            long oncekiY = (long)driverr.JsRun("return window.scrollY;");
+            driverr.JsRun("window.scrollBy(0, 500);");
             driverr.WaitForPageLoad();
-            sonrakiY = (long)driverr.JSCodeRun("return window.scrollY;");
+            sonrakiY = (long)driverr.JsRun("return window.scrollY;");
             if (oncekiY == sonrakiY)
                 return true;
             else return false;

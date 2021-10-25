@@ -9,7 +9,7 @@ namespace Tweetly_MVC.Init
         public static string ProfilUserButonClick(this IWebDriver driverr)
         {
 
-            driverr.JSCodeRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
+            driverr.JsRun("document.querySelector('[data-testid=placementTracking] [role=button]').click();");
             OnayButonClick(driverr);
             Drivers.kullanıyorum.Remove(driverr);
             return driverr.GetfollowStatus();
@@ -17,7 +17,7 @@ namespace Tweetly_MVC.Init
 
         public static void ProfilUserActionsButonClick(this IWebDriver driverr)
         {
-            driverr.JSCodeRun("document.querySelector('[data-testid=userActions]').click();");
+            driverr.JsRun("document.querySelector('[data-testid=userActions]').click();");
             Thread.Sleep(200);
         }
 
@@ -25,7 +25,7 @@ namespace Tweetly_MVC.Init
         {
 
             driverr.ProfilUserActionsButonClick();
-            driverr.JSCodeRun("document.querySelector('[data-testid=block]').click();");
+            driverr.JsRun("document.querySelector('[data-testid=block]').click();");
             driverr.OnayButonClick();
 
         }
@@ -33,8 +33,8 @@ namespace Tweetly_MVC.Init
         public static void OnayButonClick(this IWebDriver driverr)
         {
             Thread.Sleep(200);
-            if ((bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
-                driverr.JSCodeRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
+            if ((bool)driverr.JsRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
+                driverr.JsRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
         }
 
         public static void TakipcilerdenCikar(this IWebDriver driver, User profil)

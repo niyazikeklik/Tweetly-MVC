@@ -29,7 +29,7 @@ namespace Tweetly_MVC.Controllers
                 IWebDriver driver = Drivers.MusaitOlanDriver();
                 driver.LinkeGit("https://mobile.twitter.com/" + item, false);
                 if (driver.WaitForProfilBilgileri())
-                    driver.ProfilUserButonClick();
+                    butontext = driver.ProfilUserButonClick();
             }
             return butontext;
         }
@@ -63,7 +63,7 @@ namespace Tweetly_MVC.Controllers
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
-            if (Repo.Ins.Liste.Count > 0) return View("Index", Repo.Ins.Liste);
+            //if (Repo.Ins.Liste.Count > 0) return View("Index", Repo.Ins.Liste);
             if (Repo.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 

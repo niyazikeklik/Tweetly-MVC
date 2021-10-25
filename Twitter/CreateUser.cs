@@ -69,11 +69,11 @@ namespace Tweetly_MVC.Init
                 foreach (string element in elementler)
                 {
                     string html = element.Split(new string(Liste.sabit))[0];
-                    string text = element.Split(new string(Liste.sabit))[1]; 
+                    string text = element.Split(new string(Liste.sabit))[1];
                     if (kontrolEdildi.Contains(text)) continue;
                     Repo.Ins.Iletisim.currentValue = yerelList.Count;
                     User profil = GetProfil(html, text);
-                    
+
                     if (profil != null)
                     {
                         if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
@@ -82,7 +82,7 @@ namespace Tweetly_MVC.Init
                     }
                     kontrolEdildi.Add(text);
                 }
-             
+
             }
 
             return yerelList;
@@ -100,8 +100,9 @@ namespace Tweetly_MVC.Init
             profil.FollowersStatus = Liste.GetFollowersStatus(innerText);
             profil.FollowStatus = Liste.GetFollowStatus(innerText);
             profil.Bio = Liste.GetBio(innerHTML);
-            profil.BegeniSayisi = 0;
-            profil.BegeniOrani = 0;
+            User dbprofil = new DatabasesContext().Records.FirstOrDefault(x => profil.Username == x.Username);
+            profil.BegeniSayisi = dbprofil?.BegeniSayisi;
+            profil.BegeniOrani = dbprofil?.BegeniOrani;
 
             profil = Filter(profil) ? profil : null;
             return profil;
@@ -115,11 +116,10 @@ namespace Tweetly_MVC.Init
             }
             if (Repo.Ins.UserPrefs.CheckDetayGetir)
                 return musaitDriver.GetProfil(profil);
-            else
-            {
-                Drivers.kullanıyorum.Remove(musaitDriver);
-                return profil;
-            }
+
+            Drivers.kullanıyorum.Remove(musaitDriver);
+            return profil;
+
         }
         public static User GetProfil(this IWebDriver driver, string username)
         {
@@ -144,7 +144,7 @@ namespace Tweetly_MVC.Init
                 profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
-                driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
+                driver.JsRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
                 profil.LikeCount = driver.GetLikeCount();
                 profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
                 profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
@@ -175,7 +175,7 @@ namespace Tweetly_MVC.Init
 
 
             string link = "https://mobile.twitter.com/" + profil.Username;
-            driver.LinkeGit(link);
+            driver.LinkeGit(link, false);
 
             if (Waiters.ProfilLoadControl(driver, link, 300000))
             {
@@ -187,7 +187,7 @@ namespace Tweetly_MVC.Init
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
                 profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
 
-                driver.JSCodeRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
+                driver.JsRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
 
                 profil.LikeCount = driver.GetLikeCount();
                 profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
@@ -203,7 +203,7 @@ namespace Tweetly_MVC.Init
             Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}");
             while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
             {
-                object result = Drivers.Driver.JSCodeRun("return document.querySelectorAll(\"a[id^='id__']\");");
+                object result = Drivers.Driver.JsRun("return document.querySelectorAll(\"a[id^='id__']\");");
                 foreach (IWebElement item in (IReadOnlyCollection<IWebElement>)result)
                 {
                     try
