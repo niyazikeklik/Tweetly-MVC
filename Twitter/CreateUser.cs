@@ -29,32 +29,48 @@ namespace Tweetly_MVC.Init
                 return false;
             if (profil.FollowersStatus == "Takip etmiyor" && Repo.Ins.UserPrefs.CheckBeniTakipEtmeyenler)
                 return false;
-            if (profil.FollowersStatus == "Seni takip ediyor" && Repo.Ins.UserPrefs.CheckBeniTakipEdenler)
-                return false;
-            if (profil.IsPrivate && Repo.Ins.UserPrefs.CheckGizliHesap)
+            if ((profil.FollowersStatus == "Seni takip ediyor" && Repo.Ins.UserPrefs.CheckBeniTakipEdenler) || (profil.IsPrivate && Repo.Ins.UserPrefs.CheckGizliHesap))
                 return false;
             return true;
+        }
+        private static List<string> GetUrlsOfTweet(string username, int tweetCount)
+        {
+
+            List<string> TweetIds = new();
+            Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}");
+            while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
+            {
+                object result = Drivers.Driver.JsRun("return document.querySelectorAll(\"a[id^='id__']\");");
+                foreach (IWebElement item in (IReadOnlyCollection<IWebElement>)result)
+                {
+                    try
+                    {
+                        string url = item.GetAttribute("href");
+                        if (url.Contains($"/{username}/status/") && !TweetIds.Contains(url))
+                            TweetIds.Add(url);
+                    }
+                    catch (System.Exception) { continue; }
+
+                }
+            }
+            return TweetIds;
+
         }
         public static List<User> BegenenleriGetir(string username)
         {
             List<User> Begenenler = new();
-            List<string> Tweets = GetUrlsOfTweet(username, Repo.Ins.UserPrefs.TextTweetControl);
-
-            foreach (string item in Tweets)
-            {
-                List<User> TweetiBegenenler = ListeGezici(link: item + "/likes", detay: false);
-                foreach (User profil in TweetiBegenenler)
+            List<string> TweetUrls = GetUrlsOfTweet(username, Repo.Ins.UserPrefs.TextTweetControl);
+            foreach (string TweetUrl in TweetUrls)
+                foreach (User profil in ListeGezici(link: TweetUrl + "/likes", detay: false))
                 {
                     User x = Begenenler.FirstOrDefault(x => x.Username == profil.Username);
                     if (x != null) Begenenler.Remove(x);
-                    else x = profil.DetayGetir(Drivers.MusaitOlanDriver());
+                    else x = Drivers.MusaitOlanDriver().DetayGetir(profil);
                     x.BegeniSayisi++;
-                    x.BegeniOrani = Math.Round((double)x.BegeniSayisi / (double)Tweets.Count, 2);
+                    x.BegeniOrani = Math.Round((double)x.BegeniSayisi / TweetUrls.Count, 2);
                     x.Count = Begenenler.Count;
                     Begenenler.Add(x);
                 }
-                Repo.Ins.Iletisim.HataMetni = "Kontrol Edilen Tweet: " + Tweets.IndexOf(item) + 1 + " | ";
-            }
             return Begenenler;
 
         }
@@ -64,60 +80,32 @@ namespace Tweetly_MVC.Init
             IWebDriver driverr = Drivers.Driver.LinkeGit(link);
             List<string> kontrolEdildi = new();
             while (!driverr.IsSayfaSonu() && yerelList.Count < Repo.Ins.UserPrefs.TextBulunacakKisiSayisi)
-            {
-                var elementler = Drivers.Driver.GetListelenenler();
-                foreach (string element in elementler)
+                foreach (string element in Drivers.Driver.GetListelenenler())
                 {
                     string html = element.Split(new string(Liste.sabit))[0];
                     string text = element.Split(new string(Liste.sabit))[1];
                     if (kontrolEdildi.Contains(text)) continue;
-                    Repo.Ins.Iletisim.currentValue = yerelList.Count;
+                    else kontrolEdildi.Add(text);
                     User profil = GetProfil(html, text);
-
-                    if (profil != null)
-                    {
-                        if (detay) profil = profil.DetayGetir(Drivers.MusaitOlanDriver());
-                        profil.Count = yerelList.Count;
-                        yerelList.Add(profil);
-                    }
-                    kontrolEdildi.Add(text);
+                    if (profil is null) continue;
+                    if (detay) profil = Drivers.MusaitOlanDriver().DetayGetir(profil);
+                    profil.Count = yerelList.Count;
+                    yerelList.Add(profil);
+                    Repo.Ins.Iletisim.currentValue = yerelList.Count;
                 }
-
-            }
-
             return yerelList;
         }
-        public static User GetProfil(string innerHTML, string innerText)
-        {
-            User profil = new();
-
-            profil.Name = Liste.GetName(innerText);
-            profil.PhotoURL = innerHTML.GetPhotoURL();
-            profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
-            profil.Username = Liste.GetUserName(innerText);
-
-            profil.IsPrivate = innerHTML.İsPrivate();
-            profil.FollowersStatus = Liste.GetFollowersStatus(innerText);
-            profil.FollowStatus = Liste.GetFollowStatus(innerText);
-            profil.Bio = Liste.GetBio(innerHTML);
-            User dbprofil = new DatabasesContext().Records.FirstOrDefault(x => profil.Username == x.Username);
-            profil.BegeniSayisi = dbprofil?.BegeniSayisi;
-            profil.BegeniOrani = dbprofil?.BegeniOrani;
-
-            profil = Filter(profil) ? profil : null;
-            return profil;
-        }
-        public static User DetayGetir(this User profil, IWebDriver musaitDriver)
+        public static User DetayGetir(this IWebDriver driver, User profil)
         {
             if (profil == null)
             {
-                Drivers.kullanıyorum.Remove(musaitDriver);
+                Drivers.kullanıyorum.Remove(driver);
                 return null;
             }
             if (Repo.Ins.UserPrefs.CheckDetayGetir)
-                return musaitDriver.GetProfil(profil);
+                return driver.GetProfil(profil);
 
-            Drivers.kullanıyorum.Remove(musaitDriver);
+            Drivers.kullanıyorum.Remove(driver);
             return profil;
 
         }
@@ -143,11 +131,11 @@ namespace Tweetly_MVC.Init
                 profil.IsPrivate = driver.IsPrivate();
                 profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
-                profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
+                profil.LastTweetsDate = driver.GetSonEtkilesimOrtalama(profil.Date, profil.TweetCount);
                 driver.JsRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
                 profil.LikeCount = driver.GetLikeCount();
                 profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
-                profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
+                profil.LastLikesDate = driver.GetSonEtkilesimOrtalama(profil.Date, profil.LikeCount);
             }
 
             Drivers.kullanıyorum.Remove(driver);
@@ -185,39 +173,36 @@ namespace Tweetly_MVC.Init
                 profil.Following = driver.GetFollowing();
                 profil.Followers = driver.GetFollowers();
                 profil.TweetSikligi = Profil.GetGunlukSiklik(profil.TweetCount, profil.Date);
-                profil.LastTweetsDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.TweetCount);
+                profil.LastTweetsDate = driver.GetSonEtkilesimOrtalama(profil.Date, profil.TweetCount);
 
                 driver.JsRun("document.querySelector('[data-testid=ScrollSnap-List] > div:last-child a').click();");
 
                 profil.LikeCount = driver.GetLikeCount();
                 profil.BegeniSikligi = Profil.GetGunlukSiklik(profil.LikeCount, profil.Date);
-                profil.LastLikesDate = driver.GetLastTweetsoOrLikesDateAVC(profil.Date, profil.LikeCount);
+                profil.LastLikesDate = driver.GetSonEtkilesimOrtalama(profil.Date, profil.LikeCount);
             }
             Drivers.kullanıyorum.Remove(driver);
             return profil;
         }
-        private static List<string> GetUrlsOfTweet(string username, int tweetCount)
+        public static User GetProfil(string innerHTML, string innerText)
         {
+            User profil = new();
 
-            List<string> TweetIds = new();
-            Drivers.Driver.LinkeGit($"https://mobile.twitter.com/{username}");
-            while (!Drivers.Driver.IsSayfaSonu() && TweetIds.Count < tweetCount)
-            {
-                object result = Drivers.Driver.JsRun("return document.querySelectorAll(\"a[id^='id__']\");");
-                foreach (IWebElement item in (IReadOnlyCollection<IWebElement>)result)
-                {
-                    try
-                    {
-                        string url = item.GetAttribute("href");
-                        if (url.Contains($"/{username}/status/") && !TweetIds.Contains(url))
-                            TweetIds.Add(url);
-                    }
-                    catch (System.Exception) { continue; }
+            profil.Name = innerText.GetName();
+            profil.PhotoURL = innerHTML.GetPhotoURL();
+            profil.Cinsiyet = DetectGender.CinsiyetBul(profil.Name, profil.PhotoURL);
+            profil.Username = innerText.GetUserName();
+            profil.IsPrivate = innerHTML.İsPrivate();
+            profil.FollowersStatus = innerText.GetFollowersStatus();
+            profil.FollowStatus = innerText.GetFollowStatus();
+            profil.Bio = innerHTML.GetBio();
+            User dbprofil = new DatabasesContext().Records.FirstOrDefault(x => profil.Username == x.Username);
+            profil.BegeniSayisi = dbprofil?.BegeniSayisi;
+            profil.BegeniOrani = dbprofil?.BegeniOrani;
 
-                }
-            }
-            return TweetIds;
-
+            profil = Filter(profil) ? profil : null;
+            return profil;
         }
+     
     }
 }

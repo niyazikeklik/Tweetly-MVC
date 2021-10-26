@@ -13,8 +13,8 @@ namespace Tweetly_MVC.Cloud
 {
     public static class DetectGender
     {
-        const string cinsiyetlerJsonYolu = "Cinsiyetler.json";
-        const string yapayZekaYolu = @" C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
+        private const string cinsiyetlerJsonYolu = "Cinsiyetler.json";
+        private const string yapayZekaYolu = @" C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
         public static void WriteGenderJson()
         {
             string stringJSON = JsonConvert.SerializeObject(Repo.Ins.Cins);
@@ -83,7 +83,7 @@ namespace Tweetly_MVC.Cloud
 
             return cinsiyet;
         }
-        private static string getCenderFromName(string name)
+        private static string GetGenderFromName(string name)
         {
             string cinsiyet = "Belirsiz";
             string isim = name.Split(' ')[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
@@ -101,10 +101,9 @@ namespace Tweetly_MVC.Cloud
         public static string CinsiyetBul(string name, string link)
         {
             string cinsiyet = "Belirsiz";
-       
             if (!String.IsNullOrEmpty(name))
             {
-                cinsiyet = getCenderFromName(name);
+                cinsiyet = GetGenderFromName(name);
                 if (cinsiyet == "Unisex") return GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
                 else if (cinsiyet != null) return cinsiyet;
             }

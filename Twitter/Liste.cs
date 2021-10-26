@@ -17,14 +17,12 @@ namespace Tweetly_MVC.Twitter
             var result = (ReadOnlyCollection<object>)driverr.JsRun("var list =[]; var x = document.querySelectorAll('[data-testid=\"UserCell\"]'); x.forEach(elem =>{list.push(elem.innerHTML + \"" + sabit + "\" + elem.innerText);}); return list;");
             return result;
         }
-        public static string GetUserName(string elementText)
+        public static string GetUserName(this string elementText)
         {
             int basla = elementText.IndexOf('@') + 1;
             return elementText[basla..elementText.IndexOf('\n', basla)];
         }
-
-        public static string GetName(string elementText) => elementText.Split('\n')[0].StartsWith('@') ? null : elementText.Split('\n')[0];
-
+        public static string GetName(this string elementText) => elementText.Split('\n')[0].StartsWith('@') ? null : elementText.Split('\n')[0];
         public static string GetPhotoURL(this string element)
         {
             var htmlDoc = new HtmlDocument();
@@ -32,19 +30,16 @@ namespace Tweetly_MVC.Twitter
             var result = htmlDoc.QuerySelector("img").Attributes["src"].Value.Replace("x96", "200x200");
             return result;
         }
-
         public static bool İsPrivate(this string element)
         {
             return element.Contains("Korumalı hesap");
         }
-
-        public static string GetFollowersStatus(string elementText)
+        public static string GetFollowersStatus(this string elementText)
         {
             string r = elementText.Contains("ediyor") ? "Seni takip ediyor" : "Takip etmiyor";
             return r;
         }
-
-        public static string GetFollowStatus(string elementText)
+        public static string GetFollowStatus(this string elementText)
         {
             if (elementText.Contains("Takip ediliyor"))
                 return "Takip ediliyor";
@@ -52,7 +47,6 @@ namespace Tweetly_MVC.Twitter
                 return "Takip et";
             return "Engellendi";
         }
-
         public static string GetBio(this string element)
         {
             var htmlDoc = new HtmlDocument();

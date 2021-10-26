@@ -9,7 +9,6 @@ namespace Tweetly_MVC.Init
     public static class Profil
     {
         const string RDQS = "return document.querySelector";
-
         private static string Donustur(this string metin)
         {
             metin = metin
@@ -50,23 +49,21 @@ namespace Tweetly_MVC.Init
         {
             return (string)driverr.JsRun($"{RDQS}('[data-testid=\"UserName\"]').textContent.split('@')[1];");
         }
-
-        public static bool IsPrivate(this IWebDriver driverr) => (bool)driverr.JsRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
-
+        public static bool IsPrivate(this IWebDriver driverr) { 
+            return (bool)driverr.JsRun("return document.querySelectorAll('[aria-label=\"Korumalı hesap\"]').length > 0");
+        }
         public static int GetFollowing(this IWebDriver driverr)
         {
             string secilenElement = (string)driverr.JsRun($"{RDQS}('a[href*=\"following\"] > span ').textContent;");
             secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
-
         public static int GetFollowers(this IWebDriver driverr)
         {
             string secilenElement = (string)driverr.JsRun($"{RDQS}('a[href*=\"followers\"] > span ').textContent;");
             secilenElement = secilenElement.Donustur();
             return Convert.ToInt32(secilenElement);
         }
-
         public static int GetLikeCount(this IWebDriver driverr)
         {
             string lc = (string)driverr.JsRun($"{RDQS}('header').innerText;");
@@ -76,7 +73,6 @@ namespace Tweetly_MVC.Init
             likecount = likecount > 1 ? likecount : likecount + 1;
             return likecount;
         }
-
         public static int GetTweetCount(this IWebDriver driverr)
         {
             string TweetCount = driverr.JsRun($"{RDQS}('header').innerText;").ToString().Replace("\r", "");
@@ -89,26 +85,22 @@ namespace Tweetly_MVC.Init
             }
             else
                 return countt;
-            
         }
-
         public static double GetDate(this IWebDriver driverr)
         {
             var secilenElement = (string)driverr.JsRun($"{RDQS}('[data-testid=UserProfileHeader_Items] > span:last-child').textContent;");
             return secilenElement.UyelikSuresi();
         }
-
-        public static double GetLastTweetsoOrLikesDateAVC(this IWebDriver driverr, double date, int tweetorlikecount)
+        public static double GetSonEtkilesimOrtalama(this IWebDriver driverr, double date, int count)
         {
-            if (tweetorlikecount < 20)
-                return Math.Round(date / tweetorlikecount, 2);
+            if (count < 20)
+                return Math.Round(date / count, 2);
             else
             {
                 driverr.WaitForPageLoad();
-                dynamic Tarihler = driverr.JsRun(
-                    "var tarihler= []; var x = document.querySelectorAll('[data-testid=tweet] time'); x.forEach(x => tarihler.push(x.getAttribute('datetime'))); return tarihler;");
-                //      bool sabitTweetVarmi = (bool)driverr.JSCodeRun("return document.querySelectorAll('[data-testid=socialContext]').length > 0");
+                dynamic Tarihler = driverr.JsRun("var tarihler= []; var x = document.querySelectorAll('[data-testid=tweet] time'); x.forEach(x => tarihler.push(x.getAttribute('datetime'))); return tarihler;");
                 double toplamGunSayisi = 0; int kuralaUygunTarihler = 0;
+                if (Tarihler == null) return Math.Round(date / count, 2);
                 for (int i = 0; i < Tarihler.Count; i++)
                 {
                     if (!DateTime.TryParse(Tarihler[i], out DateTime YakinTarih)) continue;
@@ -119,12 +111,15 @@ namespace Tweetly_MVC.Init
                         double AradakiGunSayisi = (YakinTarih - UzakTarih).TotalDays;
                         if (AradakiGunSayisi < -7) { kuralaUygun = false; break; }
                     }
-                    if (kuralaUygun) { toplamGunSayisi += (DateTime.Now - YakinTarih).TotalDays; kuralaUygunTarihler++; }
+                    if (kuralaUygun)
+                    {
+                        toplamGunSayisi += (DateTime.Now - YakinTarih).TotalDays;
+                        kuralaUygunTarihler++;
+                    }  
                 }
                 return Math.Round(toplamGunSayisi / kuralaUygunTarihler, 1);
             }
         }
-
         public static string GetfollowStatus(this IWebDriver driverr)
         {
             string command = $"{RDQS}All('[data-testid=placementTracking]')";
@@ -132,7 +127,6 @@ namespace Tweetly_MVC.Init
                 return (string)driverr.JsRun(command + "[0].textContent;");
             else return null;
         }
-
         public static string IsFollowers(this IWebDriver driverr)
         {
             if ((bool)driverr.JsRun("var x = false; document.querySelectorAll(\"div[data-testid='primaryColumn'] div[dir='auto'] > span\").forEach(element => {if (element.textContent.indexOf('Seni takip ediyor') != -1) x = true;}); return x; "))
@@ -143,8 +137,7 @@ namespace Tweetly_MVC.Init
         {
             return (bool)driverr.JsRun($"{RDQS}All('[data-testid=primaryColumn] > div > div > div > [role=button]').length > 0;");
         }
-
-        public static bool isBlocker(this IWebDriver driverr)
+        public static bool IsBlocker(this IWebDriver driverr)
         {
            return (bool)driverr.JsRun($"{RDQS}All('[data-testid=\"emptyState\"]').length > 0");
         }
@@ -154,18 +147,18 @@ namespace Tweetly_MVC.Init
             if (x) return (string)driverr.JsRun($"{RDQS}All('[data-testid=UserDescription]')[0].textContent;");
             else return null;
         }
-
-        public static string GetPhotoURL(this IWebDriver driverr, string ka) => (string)driverr.JsRun("return document.querySelector('a[href=\"/" + ka + "/photo\"] img').getAttribute(\"src\");");
-
-        public static string GetName(this IWebDriver driverr) => driverr.JsRun($"{RDQS}('header h2').textContent;").ToString();
-
+        public static string GetPhotoURL(this IWebDriver driverr, string ka) { 
+            return (string)driverr.JsRun("return document.querySelector('a[href=\"/" + ka + "/photo\"] img').getAttribute(\"src\");"); 
+        }
+        public static string GetName(this IWebDriver driverr) { 
+            return driverr.JsRun($"{RDQS}('header h2').textContent;").ToString(); 
+        }
         public static string GetGunlukSiklik(int count, double date)
         {
             double gunluktweet = count / date;
             string result = gunluktweet >= 1 ? Math.Round(gunluktweet, 0).ToString() : (-1 * Math.Round(1 / gunluktweet, 0)).ToString();
             return result;
         }
-
         public static string GetLocation(this IWebDriver driverr)
         {
             if ((long)driverr.JsRun($"{RDQS}All('[data-testid=\"UserLocation\"]').length") > 0)

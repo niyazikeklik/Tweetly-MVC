@@ -20,7 +20,7 @@ namespace Tweetly_MVC.Init
         {
             IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
             int count = 0;
-            string exMg = "";
+            string exMg;
             while (count < 10)
             {
                 
@@ -69,7 +69,7 @@ namespace Tweetly_MVC.Init
             }
             if (!driver.WaitForProfilBilgileri())
             {
-                if (driver.isBlocker())
+                if (driver.IsBlocker())
                     return false; //Engellemişse
 
 

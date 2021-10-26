@@ -46,17 +46,15 @@ namespace Tweetly_MVC
             {
                 client.Database.Migrate();
             }
-
+            
             app.UseCors();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => {
                 //http://localhost:6553/progressHub
-                endpoints.MapHub<Hubs.ProgressBarHub>("/progressHub");
+                endpoints.MapHub<Hubs.ProgressBarHub>("/progressHub");//SignalR için
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

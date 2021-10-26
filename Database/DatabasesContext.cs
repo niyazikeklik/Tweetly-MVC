@@ -8,7 +8,9 @@ namespace Tweetly_MVC.Tweetly
 {
     public class DatabasesContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(@$"Data Source={Repo.Ins.UserSettings.SQLServerName};Initial Catalog=TweetlyDataBase_{Repo.Ins.OturumBilgileri.Username};Integrated Security=True");//Migrate komutu çalıştırırken cümleden usernameyi sil.//212 331 02 00
+        readonly string connectionString = @$"Data Source={Repo.Ins.UserSettings.SQLServerName};Initial Catalog=TweetlyDataBase_{Repo.Ins.OturumBilgileri.Username};Integrated Security=True";
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(connectionString);
+        //Migrate komutu çalıştırırken cümleden usernameyi sil.//212 331 02 00
 
         public DbSet<User> Records { get; set; }
     }

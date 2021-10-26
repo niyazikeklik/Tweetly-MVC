@@ -50,6 +50,8 @@ namespace Tweetly_MVC.Controllers
             return Json(JsonConvert.SerializeObject(yedek));
         }
 
+       
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -63,7 +65,7 @@ namespace Tweetly_MVC.Controllers
         {
             DatabasesContext context = new();
             ViewBag.sutunGizle = !Repo.Ins.UserPrefs.CheckDetayGetir;
-            //if (Repo.Ins.Liste.Count > 0) return View("Index", Repo.Ins.Liste);
+            if (Repo.Ins.Liste.Count > 0) return View("Index", Repo.Ins.Liste);
             if (Repo.Ins.UserPrefs.CheckClearDB)
                 context.RecordsAllDelete();
 

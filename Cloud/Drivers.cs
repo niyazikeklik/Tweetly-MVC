@@ -19,7 +19,7 @@ namespace Tweetly_MVC.Tweetly
         private static int count = 22;
         public static readonly List<IWebDriver> kullanıyorum = new();
         public static IWebDriver Driver { get; set; }
-        public static IWebDriver Driver2 { get; set; }
+        private static IWebDriver Driver2 { get; set; }
         public static IWebDriver MusaitOlanDriver()
         {
             /* List<IWebDriver> driverss =
@@ -36,7 +36,7 @@ namespace Tweetly_MVC.Tweetly
             Thread.Sleep(1500);
             return MusaitOlanDriver();
         }
-        public static IWebDriver OptionDriver()
+        private static IWebDriver OptionDriver()
         {
             ChromeOptions chromeOptions = new();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();

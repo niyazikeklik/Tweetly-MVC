@@ -10,7 +10,7 @@ namespace Tweetly_MVC.Migrations
 {
     [DbContext(typeof(DatabasesContext))]
     [Migration("20211021114729_askjda")]
-    partial class askjda
+    partial class Askjda
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

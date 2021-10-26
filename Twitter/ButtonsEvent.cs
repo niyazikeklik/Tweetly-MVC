@@ -14,13 +14,11 @@ namespace Tweetly_MVC.Init
             Drivers.kullanıyorum.Remove(driverr);
             return driverr.GetfollowStatus();
         }
-
         public static void ProfilUserActionsButonClick(this IWebDriver driverr)
         {
             driverr.JsRun("document.querySelector('[data-testid=userActions]').click();");
             Thread.Sleep(200);
         }
-
         public static void ProfilEngelle(this IWebDriver driverr)
         {
 
@@ -29,24 +27,21 @@ namespace Tweetly_MVC.Init
             driverr.OnayButonClick();
 
         }
-
         public static void OnayButonClick(this IWebDriver driverr)
         {
             Thread.Sleep(200);
             if ((bool)driverr.JsRun("return document.querySelectorAll('[data-testid=confirmationSheetConfirm]').length > 0"))
                 driverr.JsRun("document.querySelector('[data-testid=confirmationSheetConfirm]').click();");
         }
-
-        public static void TakipcilerdenCikar(this IWebDriver driver, User profil)
+        public static void TakipcilerdenCikar(this IWebDriver driver)
         {
-            string link = "https://twitter.com/" + profil.Username;
-            driver.LinkeGit(link);
-            driver.ProfilEngelle();
-            if (driver.GetfollowStatus().StartsWith("Engel"))
-                driver.ProfilUserButonClick();
-            // Engeli kaldır.
-
-            Drivers.kullanıyorum.Remove(driver);
+            if (driver.IsFollowers().StartsWith("Seni"))
+            {
+                driver.ProfilUserActionsButonClick();
+                driver.JsRun("document.querySelectorAll('[role=\"menuitem\"]')[8].click();");
+                driver.OnayButonClick();
+            }
+                
         }
     }
 }
