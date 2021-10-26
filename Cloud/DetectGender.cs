@@ -88,14 +88,11 @@ namespace Tweetly_MVC.Cloud
             string cinsiyet = "Belirsiz";
             string isim = name.Split(' ')[0].Replace("'", "").Replace(".", "").Replace(",", "").ToLower();
             Cinsiyetler result = Repo.Ins.Cins.FirstOrDefault(x => x.Ad == isim);
-            if (result != null)
-            {
-                cinsiyet = result.Cins == "e" ? "Erkek" :
-                           result.Cins == "k" ? "Kadın" :
-                           result.Cins == "u" ? "Unisex" : "Belirsiz";
+            if (result == null) return null;
+            cinsiyet = result.Cins == "e" ? "Erkek" :
+                       result.Cins == "k" ? "Kadın" : "Unisex";
                 return cinsiyet;
-            }
-            return null;
+            
 
         }
         public static string CinsiyetBul(string name, string link)
@@ -104,8 +101,8 @@ namespace Tweetly_MVC.Cloud
             if (!String.IsNullOrEmpty(name))
             {
                 cinsiyet = GetGenderFromName(name);
-                if (cinsiyet == "Unisex") return GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
-                else if (cinsiyet != null) return cinsiyet;
+                if (cinsiyet == "Erkek" || cinsiyet == "Kadın") return cinsiyet;
+                else if(cinsiyet == "Unisex") return GetGenderFromPhoto(link).Replace("Belirsiz", "Unisex");
             }
             cinsiyet = GetGenderFromPhoto(link);
             if (!cinsiyet.Equals("Belirsiz")) return cinsiyet;
