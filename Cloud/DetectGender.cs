@@ -112,11 +112,3 @@ namespace Tweetly_MVC.Cloud
 
     }
 }
-/*  if (result.Contains("Age") || result.Contains("Gender"))
-     {
-
-         int basla = result.IndexOf("Gender: *") + 9;
-         Gender = result[basla..result.IndexOf("*", basla)]
-             .Replace("Female", "Kadın")
-             .Replace("Male", "Erkek");
-     }*/
