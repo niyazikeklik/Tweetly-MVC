@@ -14,7 +14,7 @@ namespace Tweetly_MVC.Cloud
     public static class DetectGender
     {
         private const string cinsiyetlerJsonYolu = "Cinsiyetler.json";
-        private const string yapayZekaYolu = @" C:\Users\niyazi\Desktop\son\Tweetly-MVC\YapayZeka\detect.py";
+        private const string yapayZekaYolu = @"C:\Users\niyazi\Desktop\Projeler\son\Tweetly-MVC\YapayZeka\detect.py";
         public static void WriteGenderJson()
         {
             string stringJSON = JsonConvert.SerializeObject(Repo.Ins.Cins);
@@ -44,9 +44,9 @@ namespace Tweetly_MVC.Cloud
         }
         private static string GetGenderFromPhoto(string photoURL)
         {
-               photoURL = photoURL.Replace("200x200", "400x400");
+            photoURL = photoURL.Replace("200x200", "400x400");
   
-            ProcessStartInfo ProcessInfo = new("cmd.exe", "/c" + $" python {yapayZekaYolu} --image {photoURL}");
+            ProcessStartInfo ProcessInfo = new("cmd.exe", $"c/ python {yapayZekaYolu} --image {photoURL}");
             ProcessInfo.CreateNoWindow = false;
             ProcessInfo.UseShellExecute = false;
             ProcessInfo.RedirectStandardOutput = true;

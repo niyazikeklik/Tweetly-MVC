@@ -75,6 +75,6 @@ while cv2.waitKey(1)<0 :
        # age=ageList[agePreds[0].argmax()]
        # print(f'Age: *{age[1:-1]}* years')
 
-        #cv2.putText(resultImg, f'{gender}', (faceBox[0], faceBox[3]+ 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
-        #cv2.imshow("window", resultImg)
+        cv2.putText(resultImg, f'{gender}', (faceBox[0], faceBox[3]+ 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,255), 2, cv2.LINE_AA)
+        cv2.imshow("window", resultImg)
         
